@@ -1,5 +1,6 @@
 """Load the solution from files."""
 
+import os
 from typing import Optional
 import paraview.simple as ps
 import paraview.servermanager
@@ -38,7 +39,7 @@ def load_solution_vtu(
         If no .pvtu files are found in the `results_folder`.
     """
 
-    search_pattern = results_folder + "/" + base_file_name + "*.vtu"
+    search_pattern = os.path.join(results_folder, base_file_name + "*.vtu")
     vtu_files = paraview.util.Glob(search_pattern)
     if not vtu_files:
         raise FileNotFoundError(
@@ -91,7 +92,7 @@ def load_solution_pvtu(
     - The 'TimeArray' property is set to "None".
     """
 
-    search_pattern = results_folder + "/" + base_file_name + "*.pvtu"
+    search_pattern = os.path.join(results_folder, base_file_name + "*.pvtu")
     pvtu_files = paraview.util.Glob(search_pattern)
     if not pvtu_files:
         raise FileNotFoundError(
@@ -108,6 +109,60 @@ def load_solution_pvtu(
     if load_arrays:
         solution.PointArrayStatus = load_arrays
     solution.TimeArray = "None"
+    return solution
+
+
+def load_solution_hdf5_with_xdmf(
+    results_folder: str,
+    base_file_name: str = "solution",
+    load_arrays: Optional[list[str]] = None,
+) -> paraview.servermanager.SourceProxy:
+    """
+    Loads a series of .hdf5 solution files from a XDMF file
+    in the specified results folder
+    using ParaView's Xdmf3ReaderS.
+
+    Parameters
+    ----------
+    results_folder : str
+        Path to the folder containing *.pvtu files.
+    base_file_name : str, optional
+        Base name of the solutions files.
+    load_arrays : list[str], optional
+        The name of the arrays in the solution that should be loaded.
+
+    Returns
+    -------
+    solution : paraview.servermanager.SourceProxy
+        A ParaView reader object with selected point arrays enabled.
+
+    Raises
+    ------
+    FileNotFoundError
+        If no  matching .xdmf file found in the `results_folder`.
+
+    Notes
+    -----
+    - The 'TimeArray' property is set to "None".
+    """
+
+    search_pattern = os.path.join(results_folder, base_file_name + ".xdmf")
+    xdmf_file = paraview.util.Glob(search_pattern)
+    if not xdmf_file:
+        raise FileNotFoundError(
+            f"No .xdmf file found matching '{search_pattern}'"
+        )
+    print(f"Load results in '{search_pattern}'")
+
+    # create a new 'Xdmf3 Reader S'
+    solution = ps.Xdmf3ReaderS(
+        registrationName=base_file_name,
+        FileName=xdmf_file,
+    )
+    solution.UpdatePipelineInformation()
+    if load_arrays:
+        solution.PointArrayStatus = load_arrays
+    # solution.TimeArray = "TIME"
     return solution
 
 
@@ -164,6 +219,12 @@ def load_solution(
             )
         case "pvtu":
             solution = load_solution_vtu(
+                results_folder,
+                base_file_name=base_file_name,
+                load_arrays=plot_properties.series_names,
+            )
+        case "hdf5":
+            solution = load_solution_hdf5_with_xdmf(
                 results_folder,
                 base_file_name=base_file_name,
                 load_arrays=plot_properties.series_names,
