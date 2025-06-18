@@ -5,6 +5,9 @@ import paraview.simple as ps
 import paraview.servermanager
 import paraview.util
 
+from sapphireppplot.utils import get_results_folder
+from sapphireppplot.plot_properties import PlotProperties
+
 
 def load_solution_vtu(
     results_folder: str,
@@ -26,7 +29,7 @@ def load_solution_vtu(
 
     Returns
     -------
-    paraview.servermanager.SourceProxy
+    solution : paraview.servermanager.SourceProxy
         A ParaView reader object with selected point arrays enabled.
 
     Raises
@@ -75,7 +78,7 @@ def load_solution_pvtu(
 
     Returns
     -------
-    paraview.servermanager.SourceProxy
+    solution : paraview.servermanager.SourceProxy
         A ParaView reader object with selected point arrays enabled.
 
     Raises
@@ -106,3 +109,70 @@ def load_solution_pvtu(
         solution.PointArrayStatus = load_arrays
     solution.TimeArray = "None"
     return solution
+
+
+def load_solution(
+    plot_properties: PlotProperties,
+    file_format: str = "vtu",
+    path_prefix: str = "",
+    base_file_name: str = "solution",
+) -> tuple[
+    str, paraview.servermanager.SourceProxy, paraview.servermanager.Proxy
+]:
+    """
+    Simplified loading of the solution independent of file format.
+
+    This function performs the following steps:
+    1. Retrieves the folder containing simulation results.
+    2. Loads the solution data from the files in the results folder.
+    3. Updates the animation scene to the last available time step.
+
+    Parameters
+    ----------
+    plot_properties : PlotProperties
+        Properties of the solution to load.
+    file_format : str, optional
+        Format of the solution files.
+    path_prefix : str, optional
+        Prefix for relative path.
+    base_file_name : str, optional
+        Base name of the solutions files.
+
+    Returns
+    -------
+    results_folder : str
+        The path to the results folder.
+    solution : paraview.servermanager.SourceProxy
+        A ParaView reader object with selected point arrays enabled.
+    animation_scene : paraview.servermanager.Proxy
+        The ParaView AnimationScene.
+
+    Raises
+    ------
+    ValueError
+        If no matching files are found.
+    """
+
+    results_folder = get_results_folder(path_prefix=path_prefix)
+
+    match file_format:
+        case "vtu":
+            solution = load_solution_vtu(
+                results_folder,
+                base_file_name=base_file_name,
+                load_arrays=plot_properties.series_names,
+            )
+        case "pvtu":
+            solution = load_solution_vtu(
+                results_folder,
+                base_file_name=base_file_name,
+                load_arrays=plot_properties.series_names,
+            )
+        case _:
+            raise ValueError(f"Unknown file_format: '{file_format}'")
+
+    animation_scene = ps.GetAnimationScene()
+    animation_scene.UpdateAnimationUsingDataTimeSteps()
+    animation_scene.GoToLast()
+
+    return results_folder, solution, animation_scene

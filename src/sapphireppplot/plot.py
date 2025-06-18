@@ -3,6 +3,7 @@
 from typing import Optional
 import paraview.simple as ps
 import paraview.servermanager
+from sapphireppplot.plot_properties import PlotProperties
 
 
 def plot_line_chart_view(
@@ -10,9 +11,7 @@ def plot_line_chart_view(
     layout_name: str = "Layout #1",
     title: str = "",
     visible_lines: Optional[list[str]] = None,
-    labels: Optional[list[str]] = None,
-    colors: Optional[list[str]] = None,
-    line_styles: Optional[list[str]] = None,
+    plot_properties: PlotProperties = PlotProperties(),
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -30,12 +29,8 @@ def plot_line_chart_view(
         Title for the left axis of the chart.
     visible_lines : list[str], optional
         List of series names to display in the chart.
-    labels : list[str], optional
-        Labels for the series quantities in the chart.
-    colors : list[str], optional
-        Line colors for the series quantities in the chart.
-    line_styles : list[str], optional
-        Line styles for the series quantities in the chart.
+    plot_properties : PlotProperties, optional
+        Properties for plotting like the labels.
 
     Returns
     -------
@@ -77,12 +72,7 @@ def plot_line_chart_view(
     # Properties modified on solution_display
     solution_display.UseIndexForXAxis = 0
     solution_display.XArrayName = "Points_X"
-    if labels:
-        solution_display.SeriesLabel = labels
-    if colors:
-        solution_display.SeriesColor = colors
-    if line_styles:
-        solution_display.SeriesLineStyle = line_styles
+    plot_properties.set_display_properties_line_chart_view(solution_display)
     if visible_lines:
         solution_display.SeriesVisibility = visible_lines
 

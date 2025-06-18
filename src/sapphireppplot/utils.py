@@ -19,7 +19,7 @@ def get_results_folder(path_prefix: str = "") -> str:
 
     Returns
     -------
-    str
+    results_folder : str
         The path to the results folder.
 
     Raises
