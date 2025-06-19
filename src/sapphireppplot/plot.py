@@ -212,6 +212,26 @@ def display_text(
     location: str | list[float] = "Upper Center",
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
+    """
+    Display text on a view.
+
+    Parameters
+    ----------
+    view : paraview.servermanager.Proxy
+        ParaView view to display the text.
+    text : str
+        Text to display.
+    location : str | list[float], optional
+        Text postion.
+        Either descriptive string or coordinates.
+    plot_properties : PlotProperties, optional
+        Properties for plotting like the color.
+
+    Returns
+    -------
+    text_proxy : paraview.servermanager.Proxy
+        The text proxy.
+    """
     # create a new 'Text'
     text_proxy = ps.Text(registrationName="Text")
     text_proxy.Text = text
@@ -233,6 +253,55 @@ def display_text(
 
     view.Update()
     return text_proxy
+
+
+def display_time(
+    view: paraview.servermanager.Proxy,
+    time_format: str = r"Time: {time:.2f}",
+    location: str | list[float] = "Upper Left Corner",
+    plot_properties: PlotProperties = PlotProperties(),
+) -> paraview.servermanager.Proxy:
+    """
+    Display the animation time.
+
+    Parameters
+    ----------
+    view : paraview.servermanager.Proxy
+        ParaView view to display the text.
+    time_format : str, optional
+        Formatted text for the time.
+    location : str | list[float], optional
+        Text postion.
+        Either descriptive string or coordinates.
+    plot_properties : PlotProperties, optional
+        Properties for plotting like the color.
+
+    Returns
+    -------
+    annotate_time : paraview.servermanager.Proxy
+        The text proxy.
+    """
+    # create a new 'Annotate Time'
+    annotate_time = ps.AnnotateTime(registrationName="AnnotateTime")
+    annotate_time.Format = time_format
+
+    ps.SetActiveSource(annotate_time)
+
+    # show data in view
+    time_display = ps.Show(annotate_time, view, "TextSourceRepresentation")
+
+    # Properties modified on time_display
+    time_display.FontSize = 18
+    time_display.Color = plot_properties.text_color
+    match location:
+        case str():
+            time_display.WindowLocation = location
+        case _:
+            time_display.WindowLocation = "Any Location"
+            time_display.Position = location
+
+    view.Update()
+    return annotate_time
 
 
 def save_screenshot(
