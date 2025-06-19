@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from typing import Optional
+import copy
 import paraview.simple as ps
 import paraview.servermanager
 
@@ -24,6 +25,8 @@ class PlotPropertiesMHD(PlotProperties):
         Show projected solution.
     interpol : bool
         Show interpolated solution.
+    annotation_project_interpol : str
+        Label annotation for projected/interpolated solution.
     show_indicators : bool
         Show debug indicators, like the shock indicator.
     """
@@ -32,6 +35,7 @@ class PlotPropertiesMHD(PlotProperties):
     prefix_numeric: bool = False
     project: bool = False
     interpol: bool = False
+    annotation_project_interpol: str = "ana"
     show_indicators: bool = False
 
     def __post_init__(self):
@@ -63,11 +67,11 @@ class PlotPropertiesMHD(PlotProperties):
             prefix_list = ["numeric_"]
         if self.project:
             prefix_list += ["project_"]
-            label_postfix_list += ["ana"]
+            label_postfix_list += [self.annotation_project_interpol]
             line_style_list += ["2"]
         if self.interpol:
             prefix_list += ["interpol_"]
-            label_postfix_list += ["ana"]
+            label_postfix_list += [self.annotation_project_interpol]
             line_style_list += ["2"]
 
         for i, prefix in enumerate(prefix_list):
@@ -319,8 +323,6 @@ def plot_quantities_1d(
     line_chart_view : paraview.servermanager.XYChartViewProxy
         The configured XY chart view.
     """
-
-    # name = "linear-wave-1d-" + quantity
     title = r"$\mathbf{w}(x)$"
     if len(quantities) == 1:
         title = plot_properties.quantity_label(quantities[0])
@@ -360,6 +362,109 @@ def plot_quantities_1d(
     # Exit preview mode
     # layout.PreviewMode = [0, 0]
     return layout, line_chart_view
+
+
+def plot_split_view_1d(
+    solution: paraview.servermanager.SourceProxy,
+    results_folder: str,
+    quantities: list[str],
+    name: str,
+    plot_properties_in: PlotPropertiesMHD,
+    labels: Optional[list[str]] = None,
+    value_range: Optional[list[float]] = None,
+    do_save_animation=False,
+) -> paraview.servermanager.ViewLayoutProxy:
+    """
+    Creates a split plot of with one quantity per line chart plot.
+
+    Parameters
+    ----------
+    solution : paraview.servermanager.SourceProxy
+        The simulation or computation result containing the data to plot.
+    results_folder : str
+        Path to the folder where results (images/animations) will be saved.
+    quantities : list[str]
+        List of physical quantity to plot.
+    name : str
+        Name of the layout and image/animation files.
+    plot_properties : plot_properties, optional
+        Properties for plotting.
+    labels : Optional[list[str]], optional
+        Labels for the numeric and projected/interpolated solution.
+    value_range : list[float], optional
+        Minimal (`value_range[0]`)
+        and maximal (`value_range[1]`) value for the y-axes.
+    do_save_animation : bool, optional
+        If True, also saves an animation of the plot.
+        Defaults to False.
+
+    Returns
+    -------
+    paraview.servermanager.ViewLayoutProxy
+        The layout object used for the plot.
+    """
+    # create new layout object
+    layout = ps.CreateLayout(name)
+
+    # split cell
+    layout.SplitHorizontal(0, 0.5)
+    # layout.SplitVertical(1, 0.5)
+    layout.SplitVertical(1, 1.0 / 3.0)
+    layout.SplitVertical(4, 0.5)
+    # layout.SplitVertical(2, 0.5)
+    layout.SplitVertical(2, 1.0 / 3.0)
+    layout.SplitVertical(6, 0.5)
+    layout.EqualizeViews()
+
+    # Temporarily modify properties
+    plot_properties = copy.deepcopy(plot_properties_in)
+    # Set all lines black
+    for key in plot_properties.line_colors:
+        plot_properties.line_colors[key] = ["0", "0", "0"]
+
+    for i, quantity in enumerate(quantities):
+        title = plot_properties.quantity_label(quantity)
+
+        visible_lines = []
+        if plot_properties.prefix_numeric:
+            visible_lines += [
+                plot_properties.quantity_name(quantity, "numeric_")
+            ]
+        else:
+            visible_lines += [plot_properties.quantity_name(quantity)]
+        if plot_properties.project:
+            visible_lines += [
+                plot_properties.quantity_name(quantity, "project_")
+            ]
+        if plot_properties.interpol:
+            visible_lines += [
+                plot_properties.quantity_name(quantity, "interpol_")
+            ]
+        if labels:
+            plot_properties.labels = {
+                plot_properties.quantity_name(quantity, "numeric_"): labels[0],
+                plot_properties.quantity_name(quantity, "project_"): labels[1],
+                plot_properties.quantity_name(quantity, "interpol_"): labels[1],
+            }
+
+        # The subplots seem to work without the `hint` parameter?!
+        line_chart_view = plot.plot_line_chart_view(
+            solution,
+            layout,
+            title=title,
+            visible_lines=visible_lines,
+            value_range=value_range,
+            plot_properties=plot_properties,
+        )
+        line_chart_view.ShowLegend = 0
+        if i == 0 and labels:
+            line_chart_view.ShowLegend = 1
+
+    plot.save_screenshot(layout, results_folder, name)
+    if do_save_animation:
+        plot.save_animation(layout, results_folder, name)
+
+    return layout
 
 
 def plot_quantity_2d(
