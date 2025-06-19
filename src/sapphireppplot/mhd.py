@@ -24,16 +24,15 @@ class PlotPropertiesMHD(PlotProperties):
         Show projected solution.
     interpol : bool
         Show interpolated solution.
-    quantity_names : dict[str, str]
-        Look up of base ParaView series names for quantities.
-    quantity_labels : dict[str, str]
-        Look up of labels for quantities.
+    show_indicators : bool
+        Show debug indicators, like the shock indicator.
     """
 
     dimension: int = 3
     prefix_numeric: bool = False
     project: bool = False
     interpol: bool = False
+    show_indicators: bool = False
 
     def __post_init__(self):
         self.series_names = []
@@ -54,6 +53,7 @@ class PlotPropertiesMHD(PlotProperties):
             "u_x",
             "u_y",
             "u_z",
+            "psi",
         ]
 
         prefix_list = [""]
@@ -81,6 +81,7 @@ class PlotPropertiesMHD(PlotProperties):
                 prefix + "b",
                 prefix + "P",
                 prefix + "u",
+                prefix + "psi",
             ]
             if self.dimension <= 1:
                 self.series_names += [
@@ -148,6 +149,37 @@ class PlotPropertiesMHD(PlotProperties):
                     "0.4899977147579193",
                     "0.7199969291687012",
                 ],
+                self.quantity_name("psi", prefix): ["0", "0", "0"],
+            }
+            self.line_colors.update(new_colors)
+
+        if self.show_indicators:
+            indicators = [
+                "magnetic_divergence",
+                "shock_indicator",
+                "positivity_limiter",
+                "subdomian",
+            ]
+            self.series_names += indicators
+            for quantity in indicators:
+                self.labels[self.quantity_name(quantity)] = self.quantity_label(
+                    quantity
+                )
+                self.line_styles[self.quantity_name(quantity)] = "1"
+
+            new_colors = {
+                "magnetic_divergence": [
+                    "0.3000076413154602",
+                    "0.6899977326393127",
+                    "0.2899976968765259",
+                ],
+                "shock_indicator": [
+                    "0.6500037908554077",
+                    "0.34000152349472046",
+                    "0.1600061058998108",
+                ],
+                "positivity_limiter": ["0", "0", "0"],
+                "subdomian": ["0", "0", "0"],
             }
             self.line_colors.update(new_colors)
 
@@ -167,6 +199,15 @@ class PlotPropertiesMHD(PlotProperties):
         quantity_name : str
             The ParaView Series name for the quantity.
         """
+        indicators = [
+            "magnetic_divergence",
+            "shock_indicator",
+            "positivity_limiter",
+            "subdomian",
+        ]
+        if quantity in indicators:
+            return quantity
+
         quantity_names = {
             "rho": "rho",
             "E": "E",
@@ -180,6 +221,7 @@ class PlotPropertiesMHD(PlotProperties):
             "u_x": "u_X",
             "u_y": "u_Y",
             "u_z": "u_Z",
+            "psi": "psi",
         }
         if self.dimension <= 1:
             quantity_names["p_y"] = "p_y"
@@ -226,6 +268,11 @@ class PlotPropertiesMHD(PlotProperties):
             "u_x": r"$_{x" + tmp_postfix_2 + r"}$",
             "u_y": r"$_{y" + tmp_postfix_2 + r"}$",
             "u_z": r"$_{z" + tmp_postfix_2 + r"}$",
+            "psi": r"$\psi" + tmp_postfix_1 + "r$",
+            "magnetic_divergence": r"$\nabla \cdot \mathbf{B}$",
+            "shock_indicator": "Shock Indicator",
+            "positivity_limiter": "Pos. Limiter",
+            "subdomian": "Subdomain",
         }
 
         return quantity_labels[quantity]
