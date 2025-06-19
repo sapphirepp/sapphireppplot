@@ -161,7 +161,7 @@ def load_solution_hdf5_with_xdmf(
     )
     solution.UpdatePipelineInformation()
     if load_arrays:
-        solution.PointArrayStatus = load_arrays
+        solution.PointArrays = load_arrays
     # solution.TimeArray = "TIME"
     return solution
 

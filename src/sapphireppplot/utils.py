@@ -16,16 +16,15 @@ def get_results_folder(path_prefix: str = "") -> str:
     ----------
     path_prefix : str, optional
         Prefix for relative path.
+        Note that relative path and environment variables
+        are evaluated on the executing machine.
+        Avoid relative path if you are connected to a data server
+        with client-side execution.
 
     Returns
     -------
     results_folder : str
         The path to the results folder.
-
-    Raises
-    ------
-    FileNotFoundError
-        If results folder is not found.
     """
     results_folder = ""
     if len(sys.argv) > 1:
@@ -38,12 +37,6 @@ def get_results_folder(path_prefix: str = "") -> str:
     results_folder = os.path.expandvars(results_folder)
     results_folder = os.path.expanduser(results_folder)
     results_folder = os.path.abspath(results_folder)
-
-    if not os.path.isdir(results_folder):
-        raise FileNotFoundError(
-            f"Results folder '{results_folder}' does not exist "
-            "or is not a directory."
-        )
 
     print(f"Using results in '{results_folder}'")
     return results_folder
