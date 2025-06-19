@@ -22,9 +22,13 @@ class PlotPropertiesMHD(PlotProperties):
         Show projected solution.
     interpol : bool
         Show interpolated solution.
+    quantity_names : dict[str, str]
+        Look up of base ParaView series names for quantities.
+    quantity_labels : dict[str, str]
+        Look up of labels for quantities.
     """
 
-    dimension: int = 1
+    dimension: int = 3
     prefix_numeric: bool = False
     project: bool = False
     interpol: bool = False
@@ -43,11 +47,11 @@ class PlotPropertiesMHD(PlotProperties):
         if self.project:
             prefix_list += ["project_"]
             label_postfix_list += ["ana"]
-            label_postfix_list += ["2"]
+            line_style_list += ["2"]
         if self.interpol:
             prefix_list += ["interpol_"]
             label_postfix_list += ["ana"]
-            label_postfix_list += ["2"]
+            line_style_list += ["2"]
 
         for i, prefix in enumerate(prefix_list):
             label_postfix = label_postfix_list[i]
@@ -59,158 +63,158 @@ class PlotPropertiesMHD(PlotProperties):
                 prefix + "p",
                 prefix + "b",
             ]
+            if self.dimension <= 1:
+                self.series_names += [
+                    prefix + "p_y",
+                    prefix + "b_y",
+                ]
+            if self.dimension <= 2:
+                self.series_names += [
+                    prefix + "p_z",
+                    prefix + "b_z",
+                ]
+
+            self.labels += [
+                self.quantity_name("rho", prefix),
+                self.quantity_label("rho", label_postfix),
+                self.quantity_name("E", prefix),
+                self.quantity_label("E", label_postfix),
+                self.quantity_name("p_x", prefix),
+                self.quantity_label("p_x", label_postfix),
+                self.quantity_name("p_y", prefix),
+                self.quantity_label("p_y", label_postfix),
+                self.quantity_name("p_z", prefix),
+                self.quantity_label("p_z", label_postfix),
+                self.quantity_name("b_x", prefix),
+                self.quantity_label("b_x", label_postfix),
+                self.quantity_name("b_y", prefix),
+                self.quantity_label("b_y", label_postfix),
+                self.quantity_name("b_z", prefix),
+                self.quantity_label("b_z", label_postfix),
+            ]
             self.colors += [
-                prefix + "rho",
+                self.quantity_name("rho", prefix),
                 "0.3000076413154602",
                 "0.6899977326393127",
                 "0.2899976968765259",
-                prefix + "E",
+                self.quantity_name("E", prefix),
                 "0.22000457346439362",
                 "0.4899977147579193",
                 "0.7199969291687012",
-                prefix + "p_X",
+                self.quantity_name("p_x", prefix),
                 "0.6000000238418579",
                 "0.31000229716300964",
                 "0.6399939060211182",
-                prefix + "b_X",
+                self.quantity_name("p_y", prefix),
+                "0",
+                "0",
+                "0",
+                self.quantity_name("p_z", prefix),
+                "0.22000457346439362",
+                "0.4899977147579193",
+                "0.7199969291687012",
+                self.quantity_name("b_x", prefix),
                 "0.3000076413154602",
                 "0.6899977326393127",
                 "0.2899976968765259",
+                self.quantity_name("b_y", prefix),
+                "0",
+                "0",
+                "0",
+                self.quantity_name("b_z", prefix),
+                "0",
+                "0",
+                "0",
             ]
             self.line_styles += [
-                prefix + "rho",
+                self.quantity_name("rho", prefix),
                 line_style,
-                prefix + "E",
+                self.quantity_name("E", prefix),
                 line_style,
-                prefix + "p_X",
+                self.quantity_name("p_x", prefix),
                 line_style,
-                prefix + "b_X",
+                self.quantity_name("p_y", prefix),
+                line_style,
+                self.quantity_name("p_z", prefix),
+                line_style,
+                self.quantity_name("b_x", prefix),
+                line_style,
+                self.quantity_name("b_y", prefix),
+                line_style,
+                self.quantity_name("b_z", prefix),
                 line_style,
             ]
-
-            if self.dimension <= 1:
-                self.series_names += [
-                    prefix + "p_y",
-                    prefix + "b_y",
-                ]
-                self.colors += [
-                    prefix + "p_y",
-                    "0",
-                    "0",
-                    "0",
-                    prefix + "b_y",
-                    "0",
-                    "0",
-                    "0",
-                ]
-                self.line_styles += [
-                    prefix + "p_y",
-                    line_style,
-                    prefix + "b_y",
-                    line_style,
-                ]
-            else:
-                self.colors += [
-                    prefix + "p_Y",
-                    "0",
-                    "0",
-                    "0",
-                    prefix + "b_Y",
-                    "0",
-                    "0",
-                    "0",
-                ]
-                self.line_styles += [
-                    prefix + "p_Y",
-                    line_style,
-                    prefix + "b_Y",
-                    line_style,
-                ]
-
-            if self.dimension <= 2:
-                self.series_names += [
-                    prefix + "p_z",
-                    prefix + "b_z",
-                ]
-                self.colors += [
-                    prefix + "p_z",
-                    "0.22000457346439362",
-                    "0.4899977147579193",
-                    "0.7199969291687012",
-                    prefix + "b_z",
-                    "0",
-                    "0",
-                    "0",
-                ]
-                self.line_styles += [
-                    prefix + "p_z",
-                    line_style,
-                    prefix + "b_z",
-                    line_style,
-                ]
-            else:
-                self.colors += [
-                    prefix + "p_Z",
-                    "0.22000457346439362",
-                    "0.4899977147579193",
-                    "0.7199969291687012",
-                    prefix + "b_Z",
-                    "0",
-                    "0",
-                    "0",
-                ]
-                self.line_styles += [
-                    prefix + "p_",
-                    line_style,
-                    prefix + "b_",
-                    line_style,
-                ]
-
-            tmp_postfix_1 = ""
-            tmp_postfix_2 = ""
-            if label_postfix:
-                tmp_postfix_1 = r"_{" + label_postfix + r"}"
-                tmp_postfix_2 = ", " + label_postfix
-            self.labels += [
-                prefix + "rho",
-                r"$\rho" + tmp_postfix_1 + r"$",
-                prefix + "E",
-                r"$E" + tmp_postfix_1 + r"$",
-                prefix + "p_X",
-                r"$p_{x" + tmp_postfix_2 + r"}$",
-                prefix + "B_X",
-                r"$B_{x" + tmp_postfix_2 + r"}$",
-            ]
-            if self.dimension <= 1:
-                self.labels += [
-                    prefix + "p_y",
-                    r"$p_{y" + tmp_postfix_2 + r"}$",
-                    prefix + "b_y",
-                    r"$B_{y" + tmp_postfix_2 + r"}$",
-                ]
-            else:
-                self.labels += [
-                    prefix + "p_Y",
-                    r"$p_{y" + tmp_postfix_2 + r"}$",
-                    prefix + "b_Y",
-                    r"$B_{y" + tmp_postfix_2 + r"}$",
-                ]
-            if self.dimension <= 2:
-                self.labels += [
-                    prefix + "p_z",
-                    r"$p_{z" + tmp_postfix_2 + r"}$",
-                    prefix + "b_z",
-                    r"$B_{z" + tmp_postfix_2 + r"}$",
-                ]
-            else:
-                self.labels += [
-                    prefix + "p_Z",
-                    r"$p_{z" + tmp_postfix_2 + r"}$",
-                    prefix + "b_Z",
-                    r"$B_{z" + tmp_postfix_2 + r"}$",
-                ]
 
         print(self)
+
+    def quantity_name(self, quantity: str, prefix: str = "") -> str:
+        """
+        Look up of ParaView series names for quantities.
+
+        Parameters
+        ----------
+        quantity : str
+            The physical quantity.
+        prefix : str, optional
+            Prefix
+
+        Returns
+        -------
+        quantity_name : str
+            The ParaView Series name for the quantity.
+        """
+        quantity_names = {
+            "rho": "rho",
+            "E": "E",
+            "p_x": "p_X",
+            "p_y": "p_Y",
+            "p_z": "p_Z",
+            "b_x": "b_X",
+            "b_y": "b_Y",
+            "b_z": "b_Z",
+        }
+        if self.dimension <= 1:
+            quantity_names["p_y"] = "p_y"
+            quantity_names["b_y"] = "b_y"
+        if self.dimension <= 2:
+            quantity_names["p_z"] = "p_z"
+            quantity_names["b_z"] = "b_z"
+
+        return prefix + quantity_names[quantity]
+
+    def quantity_label(self, quantity: str, annotation: str = "") -> str:
+        """
+        Look up of label for quantities.
+
+        Parameters
+        ----------
+        quantity : str
+            The physical quantity.
+        annotation : str, optional
+            Postfix annotation of quantity.
+
+        Returns
+        -------
+        quantity_label : str
+            The label for the quantity.
+        """
+        tmp_postfix_1 = ""
+        tmp_postfix_2 = ""
+        if annotation:
+            tmp_postfix_1 = r"_{" + annotation + r"}"
+            tmp_postfix_2 = ", " + annotation
+        quantity_labels = {
+            "rho": r"$\rho" + tmp_postfix_1 + r"$",
+            "E": r"$E" + tmp_postfix_1 + r"$",
+            "p_x": r"$p_{x" + tmp_postfix_2 + r"}$",
+            "p_y": r"$p_{y" + tmp_postfix_2 + r"}$",
+            "p_z": r"$p_{z" + tmp_postfix_2 + r"}$",
+            "b_x": r"$B_{x" + tmp_postfix_2 + r"}$",
+            "b_y": r"$B_{y" + tmp_postfix_2 + r"}$",
+            "b_z": r"$B_{z" + tmp_postfix_2 + r"}$",
+        }
+
+        return quantity_labels[quantity]
 
 
 def plot_quantity_1d(
@@ -232,9 +236,6 @@ def plot_quantity_1d(
         Path to the folder where results (images/animations) will be saved.
     quantity : str
         The physical quantity to plot.
-        Supported values are:
-            - "rho" (density)
-            - "E" (energy).
     plot_properties : plot_properties, optional
         Properties for plotting.
     do_save_animation : bool, optional
@@ -245,36 +246,15 @@ def plot_quantity_1d(
     -------
     layout : paraview.servermanager.ViewLayoutProxy
         The layout object used for the plot.
-
-    Raises
-    ------
-    ValueError
-        If an unsupported quantity is specified.
     """
 
     filename = "linear-wave-1d-" + quantity
     layout_name = "Layout " + quantity
-    title = ""
-    visible_lines = None
-
-    match quantity:
-        case "rho":
-            title = "$\\rho$"
-            visible_lines = ["numeric_rho", "project_rho"]
-        case "E":
-            title = "$E$"
-            visible_lines = ["numeric_E", "project_E"]
-        case "p_z":
-            title = "$p_z$"
-            visible_lines = ["numeric_p_z", "project_p_z"]
-        case "b_x":
-            title = "$B_x$"
-            visible_lines = ["numeric_b_X", "project_b_X"]
-        case "b_y":
-            title = "$B_y$"
-            visible_lines = ["numeric_b_y", "project_b_y"]
-        case _:
-            raise ValueError(f"Unknown quantity: '{quantity}'")
+    title = plot_properties.quantity_label(quantity)
+    visible_lines = [
+        plot_properties.quantity_name(quantity, "numeric_"),
+        plot_properties.quantity_name(quantity, "project_"),
+    ]
 
     layout, line_chart_view = plot.plot_line_chart_view(
         solution,
@@ -323,28 +303,15 @@ def plot_quantity_2d(
     -------
     layout : paraview.servermanager.ViewLayoutProxy
         The layout object used for the plot.
-
-    Raises
-    ------
-    ValueError
-        If an unsupported quantity is specified.
     """
 
     filename = "blast-wave-" + quantity
     layout_name = "2D Plot " + quantity
-    legend_title = ""
-
-    match quantity:
-        case "rho":
-            legend_title = "$\\rho$"
-        case "E":
-            legend_title = "$E$"
-        case _:
-            raise ValueError(f"Unknown quantity: '{quantity}'")
+    legend_title = plot_properties.quantity_label(quantity)
 
     layout, render_view = plot.plot_render_view_2d(
         solution,
-        quantity,
+        plot_properties.quantity_name(quantity),
         layout_name=layout_name,
         legend_title=legend_title,
         value_range=[0.08 / 2.0, 6.5 / 2.0],
