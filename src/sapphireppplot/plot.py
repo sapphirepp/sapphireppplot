@@ -164,27 +164,7 @@ def plot_render_view_2d(
     solution_display.DisableLighting = 1
     solution_display.Diffuse = 1.0
 
-    # ------------------
-    # Show DataAxesGrid
-    # ------------------
-
-    solution_display.DataAxesGrid.GridAxesVisibility = 1
-    solution_display.DataAxesGrid.XTitle = "$x$"
-    solution_display.DataAxesGrid.YTitle = "$y$  "
-    # Only show Axes Min-X//Y/Z
-    solution_display.DataAxesGrid.AxesToLabel = 7
-    # solution_display.DataAxesGrid.FacesToRender = 7
-    # Set default font size: 24 for title, 18 for label
-    solution_display.DataAxesGrid.XTitleFontSize = 24
-    solution_display.DataAxesGrid.YTitleFontSize = 24
-    solution_display.DataAxesGrid.XLabelFontSize = 18
-    solution_display.DataAxesGrid.YLabelFontSize = 18
-    # Use gray color for label for good visibility in both light and dark mode
-    solution_display.DataAxesGrid.XTitleColor = [0.5, 0.5, 0.5]
-    solution_display.DataAxesGrid.YTitleColor = [0.5, 0.5, 0.5]
-    solution_display.DataAxesGrid.XLabelColor = [0.5, 0.5, 0.5]
-    solution_display.DataAxesGrid.YLabelColor = [0.5, 0.5, 0.5]
-    solution_display.DataAxesGrid.GridColor = [0.5, 0.5, 0.5]
+    plot_properties.show_data_grid(solution_display)
 
     # update the view to ensure updated data information
     render_view.Update()
@@ -194,18 +174,16 @@ def plot_render_view_2d(
     # ----------------------
 
     # set scalar coloring
-    ps.ColorBy(solution_display, ("POINTS", quantity))
+    ps.ColorBy(solution_display, (plot_properties.data_type, quantity))
 
     # show color bar/color legend
     solution_display.SetScalarBarVisibility(render_view, True)
 
-    # get color transfer function/color map for 'rho'
+    # get color transfer function/color map
     transfer_color = ps.GetColorTransferFunction(quantity)
-
-    # get opacity transfer function/opacity map for 'rho'
+    # get opacity transfer function/opacity map
     transfer_opacity = ps.GetOpacityTransferFunction(quantity)
-
-    # get 2D transfer function for 'rho'
+    # get 2D transfer function
     transfer_function = ps.GetTransferFunction2D(quantity)
 
     # Rescale transfer function
@@ -216,9 +194,7 @@ def plot_render_view_2d(
             value_range[0], value_range[1], 0.0, 1.0
         )
 
-    # Apply a preset using its name. Note this may not work as expected when presets have duplicate names.
-    transfer_color.ApplyPreset("Viridis (matplotlib)", True)
-    # transfer_color.ApplyPreset("Cool to Warm", True)
+    transfer_color.ApplyPreset(plot_properties.color_map, True)
 
     # get color legend/bar for f_000LUT in view render_view
     color_bar = ps.GetScalarBar(transfer_color, render_view)
