@@ -9,13 +9,11 @@ from sapphireppplot.plot_properties import PlotProperties
 
 def plot_line_chart_view(
     solution: paraview.servermanager.SourceProxy,
-    layout_name: str = "LineChartView",
+    layout: paraview.servermanager.ViewLayoutProxy,
     title: str = "",
     visible_lines: Optional[list[str]] = None,
     plot_properties: PlotProperties = PlotProperties(),
-) -> tuple[
-    paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
-]:
+) -> paraview.servermanager.Proxy:
     """
     Creates and configures a line chart view
     for visualizing data from a given solution in ParaView.
@@ -24,8 +22,8 @@ def plot_line_chart_view(
     ----------
     solution : paraview.servermanager.SourceProxy
         The data source to visualize, typically a ParaView data object.
-    layout_name : str, optional
-        Name of the layout to create for the chart.
+    layout : paraview.servermanager.ViewLayoutProxy
+        ParaView layout to use for the plot.
     title : str, optional
         Title for the left axis of the chart.
     visible_lines : list[str], optional
@@ -35,14 +33,9 @@ def plot_line_chart_view(
 
     Returns
     -------
-    layout : paraview.servermanager.LayoutProxy
-        The layout object containing the configured chart view.
     line_chart_view : paraview.servermanager.XYChartViewProxy
         The configured XY chart view.
     """
-
-    # create new layout object
-    layout = ps.CreateLayout(name=layout_name)
 
     # Create a new 'Line Chart View'
     line_chart_view = ps.CreateView("XYChartView")
@@ -79,19 +72,17 @@ def plot_line_chart_view(
     if visible_lines:
         solution_display.SeriesVisibility = visible_lines
 
-    return layout, line_chart_view
+    return line_chart_view
 
 
 def plot_render_view_2d(
     solution: paraview.servermanager.SourceProxy,
+    layout: paraview.servermanager.ViewLayoutProxy,
     quantity: str,
-    layout_name: str = "2D RenderView",
     legend_title: str = "",
     value_range: Optional[list[float]] = None,
     plot_properties: PlotProperties = PlotProperties(),
-) -> tuple[
-    paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
-]:
+) -> paraview.servermanager.Proxy:
     """
     Creates and configures a 2D render view
     for visualizing data from a given solution in ParaView.
@@ -100,10 +91,10 @@ def plot_render_view_2d(
     ----------
     solution : paraview.servermanager.SourceProxy
         The data source to visualize, typically a ParaView data object.
+    layout : paraview.servermanager.ViewLayoutProxy
+        ParaView layout to use for the plot.
     quantity : str
         Name of the quantity to plot.
-    layout_name : str, optional
-        Name of the layout to create for the view.
     legend_title : str, optional
         Title for the color bar legend.
     value_range : list[float], optional
@@ -114,14 +105,9 @@ def plot_render_view_2d(
 
     Returns
     -------
-    layout : paraview.servermanager.LayoutProxy
-        The layout object containing the configured render view.
     render_view : paraview.servermanager.RenderViewProxy
         The configured 2D render view.
     """
-
-    # create new layout object
-    layout = ps.CreateLayout(name=layout_name)
 
     # Create a new 'Line Chart View'
     render_view = ps.CreateView("RenderView")
@@ -213,7 +199,7 @@ def plot_render_view_2d(
     color_bar.ScalarBarLength = 0.25
     color_bar.Position = [0.65, 0.1]
 
-    return layout, render_view
+    return render_view
 
 
 def save_screenshot(
