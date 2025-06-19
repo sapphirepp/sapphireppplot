@@ -16,22 +16,50 @@ class PlotProperties:
         Names of the series to load and show.
     data_type : str
         Specifies if solution has DG (`POINTS`) or VE (`CELLS`) data.
+
+    preview_size_1d : list[float]
+        Preview window size in 1D.
+    preview_size_2d : list[float]
+        Preview window size in 2D.
+
     labels : dict[str, str]
         Labels for the series quantities in the chart.
     line_colors : dict[str, list[str]]
         Line colors for the series quantities in the LineChartView.
     line_styles : dict[str, str]
         Line styles for the series quantities in the LineChartView.
+
+    text_color : list[float]
+        The text color for labels and legends.
+
     color_map : str
         Select a color map for
+    color_bar_position : str | list[float]
+        Color bar postion.
+        Either descriptive string or coordinates.
+    color_bar_length : float
+        Size of the color bar.
+        Set to `0` to hide the color bar.
     """
 
     series_names: Optional[list[str]] = None
     data_type: str = "POINTS"
+
+    preview_size_1d: list[float] = field(default_factory=lambda: [1280, 720])
+    preview_size_2d: list[float] = field(default_factory=lambda: [1024, 1024])
+
     labels: dict[str, str] = field(default_factory=dict)
     line_colors: dict[str, list[str]] = field(default_factory=dict)
     line_styles: dict[str, str] = field(default_factory=dict)
+
+    text_color: list[float] = field(default_factory=lambda: [0.5, 0.5, 0.5])
+
     color_map: str = "Viridis (matplotlib)"
+    color_bar_position: str | list[float] = field(
+        # default_factory=lambda: [0.65, 0.1]
+        default_factory=lambda: "Lower Right Corner"
+    )
+    color_bar_length: float = 0.25
 
     def set_display_properties_line_chart_view(
         self, solution_display: paraview.servermanager.Proxy
@@ -81,8 +109,43 @@ class PlotProperties:
         solution_display.DataAxesGrid.XLabelFontSize = 18
         solution_display.DataAxesGrid.YLabelFontSize = 18
         # Use gray color for label for good visibility in both light and dark mode
-        solution_display.DataAxesGrid.XTitleColor = [0.5, 0.5, 0.5]
-        solution_display.DataAxesGrid.YTitleColor = [0.5, 0.5, 0.5]
-        solution_display.DataAxesGrid.XLabelColor = [0.5, 0.5, 0.5]
-        solution_display.DataAxesGrid.YLabelColor = [0.5, 0.5, 0.5]
-        solution_display.DataAxesGrid.GridColor = [0.5, 0.5, 0.5]
+        solution_display.DataAxesGrid.XTitleColor = self.text_color
+        solution_display.DataAxesGrid.YTitleColor = self.text_color
+        solution_display.DataAxesGrid.XLabelColor = self.text_color
+        solution_display.DataAxesGrid.YLabelColor = self.text_color
+        solution_display.DataAxesGrid.GridColor = self.text_color
+
+    def configure_color_bar(
+        self, color_bar: paraview.servermanager.Proxy
+    ) -> bool:
+        """
+        Configure the color bar.
+
+        Parameters
+        ----------
+        color_bar : paraview.servermanager.Proxy
+            Color bar.
+
+        Returns
+        -------
+        bool
+            `True` if color bar is visible, `False` otherwise.
+        """
+        color_bar.TitleFontSize = 24
+        color_bar.LabelFontSize = 18
+        color_bar.TitleColor = self.text_color
+        color_bar.LabelColor = self.text_color
+
+        if self.color_bar_length == 0:
+            return False
+
+        # change scalar bar placement
+        match self.color_bar_position:
+            case str():
+                color_bar.WindowLocation = self.color_bar_position
+            case _:
+                color_bar.WindowLocation = "Any Location"
+                color_bar.Position = self.color_bar_position
+        color_bar.ScalarBarLength = self.color_bar_length
+
+        return True

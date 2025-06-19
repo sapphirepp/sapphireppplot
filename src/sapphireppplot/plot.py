@@ -65,9 +65,11 @@ def plot_line_chart_view(
         solution, line_chart_view, "XYChartRepresentation"
     )
     # Enter preview mode
-    layout.PreviewMode = [1280, 720]
+    layout.PreviewMode = plot_properties.preview_size_1d
     # layout/tab size in pixels
-    layout.SetSize(1280, 720)
+    layout.SetSize(
+        plot_properties.preview_size_1d[0], plot_properties.preview_size_1d[1]
+    )
 
     # Properties modified on solution_display
     solution_display.UseIndexForXAxis = 0
@@ -134,9 +136,11 @@ def plot_render_view_2d(
         solution, render_view, "UnstructuredGridRepresentation"
     )
     # Enter preview mode
-    layout.PreviewMode = [1024, 1024]
+    layout.PreviewMode = plot_properties.preview_size_2d
     # layout/tab size in pixels
-    layout.SetSize(1024, 1024)
+    layout.SetSize(
+        plot_properties.preview_size_2d[0], plot_properties.preview_size_2d[1]
+    )
 
     # update the view to ensure updated data information
     render_view.Update()
@@ -196,19 +200,39 @@ def plot_render_view_2d(
 
     # Properties modified on color_bar
     color_bar.Title = legend_title
-    color_bar.TitleFontSize = 24
-    color_bar.LabelFontSize = 18
-    color_bar.TitleColor = [0.5, 0.5, 0.5]
-    color_bar.LabelColor = [0.5, 0.5, 0.5]
-    # color_bar.TitleColor = [1.0, 1.0, 1.0]
-    # color_bar.LabelColor = [1.0, 1.0, 1.0]
-
-    # change scalar bar placement
-    color_bar.WindowLocation = "Any Location"
-    color_bar.ScalarBarLength = 0.25
-    color_bar.Position = [0.65, 0.1]
+    color_bar_visible = plot_properties.configure_color_bar(color_bar)
+    solution_display.SetScalarBarVisibility(render_view, color_bar_visible)
 
     return render_view
+
+
+def display_text(
+    view: paraview.servermanager.Proxy,
+    text: str,
+    location: str | list[float] = "Upper Center",
+    plot_properties: PlotProperties = PlotProperties(),
+) -> paraview.servermanager.Proxy:
+    # create a new 'Text'
+    text_proxy = ps.Text(registrationName="Text")
+    text_proxy.Text = text
+
+    ps.SetActiveSource(text_proxy)
+
+    # show data in view
+    text_display = ps.Show(text_proxy, view, "TextSourceRepresentation")
+
+    # Properties modified on text_display
+    text_display.FontSize = 24
+    text_display.Color = plot_properties.text_color
+    match location:
+        case str():
+            text_display.WindowLocation = location
+        case _:
+            text_display.WindowLocation = "Any Location"
+            text_display.Position = location
+
+    view.Update()
+    return text_proxy
 
 
 def save_screenshot(
