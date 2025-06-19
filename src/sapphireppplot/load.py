@@ -10,6 +10,56 @@ from sapphireppplot.utils import get_results_folder
 from sapphireppplot.plot_properties import PlotProperties
 
 
+def load_solution_vtk(
+    results_folder: str,
+    base_file_name: str = "solution",
+) -> paraview.servermanager.SourceProxy:
+    """
+    Loads a series of .vtu solution files from the specified results folder
+    using ParaView's XMLUnstructuredGridReader.
+
+    Parameters
+    ----------
+    results_folder : str
+        Path to the folder containing solution_*.pvtu files.
+    base_file_name : str, optional
+        Base name of the solutions files.
+
+    Returns
+    -------
+    solution : paraview.servermanager.SourceProxy
+        A ParaView reader object with selected point arrays enabled.
+
+    Raises
+    ------
+    FileNotFoundError
+        If no .pvtu files are found in the `results_folder`.
+
+    Notes
+    -----
+    The 'TimeArray' property is not set.
+    """
+
+    search_pattern = os.path.join(results_folder, base_file_name + "*.vtk")
+    vtk_files = paraview.util.Glob(search_pattern)
+    if not vtk_files:
+        raise FileNotFoundError(
+            f"No .vtk files found matching '{search_pattern}'"
+        )
+    print(f"Load results in '{search_pattern}'")
+
+    # create a new 'Legacy VTK Reader'
+    solution = ps.LegacyVTKReader(
+        registrationName=base_file_name,
+        FileNames=vtk_files,
+    )
+    solution.UpdatePipelineInformation()
+    # if load_arrays:
+    #     solution.PointArrayStatus = load_arrays
+    # solution.TimeArray = "TIME"
+    return solution
+
+
 def load_solution_vtu(
     results_folder: str,
     base_file_name: str = "solution",
@@ -43,7 +93,7 @@ def load_solution_vtu(
     vtu_files = paraview.util.Glob(search_pattern)
     if not vtu_files:
         raise FileNotFoundError(
-            f"No .pvtu files found matching '{search_pattern}'"
+            f"No .vtu files found matching '{search_pattern}'"
         )
     print(f"Load results in '{search_pattern}'")
 
@@ -89,7 +139,7 @@ def load_solution_pvtu(
 
     Notes
     -----
-    - The 'TimeArray' property is set to "None".
+    The 'TimeArray' property is not set.
     """
 
     search_pattern = os.path.join(results_folder, base_file_name + "*.pvtu")
@@ -166,11 +216,52 @@ def load_solution_hdf5_with_xdmf(
     return solution
 
 
+def scale_time_steps(
+    solution: paraview.servermanager.SourceProxy,
+    t_start: float = 0.0,
+    t_end: float = 1.0,
+) -> paraview.servermanager.SourceProxy:
+    """
+    Scales the time step to match the start and end time.
+
+    Parameters
+    ----------
+    solution : paraview.servermanager.SourceProxy
+        Solution without time steps.
+    t_start : float, optional
+        Simulation start time.
+    t_end : float, optional
+        Simulation end time.
+
+    Returns
+    -------
+    solution_temporal_scaled: paraview.servermanager.SourceProxy
+        Solution with scaled time steps.
+    """
+
+    # create a new 'Temporal Shift Scale'
+    solution_temporal_scaled = ps.TemporalShiftScale(
+        registrationName="TemporalShiftScale", Input=solution
+    )
+
+    num = len(solution.GetProperty("TimestepValues"))
+    # Properties modified on solution_temporal_scaled
+    solution_temporal_scaled.Scale = (t_end - t_start) / (num - 1)
+    solution_temporal_scaled.PreShift = 0
+    solution_temporal_scaled.PostShift = t_start
+
+    solution_temporal_scaled.UpdatePipelineInformation()
+
+    return solution_temporal_scaled
+
+
 def load_solution(
     plot_properties: PlotProperties,
     file_format: str = "vtu",
     path_prefix: str = "",
     base_file_name: str = "solution",
+    t_start: float = 0.0,
+    t_end: float = 1.0,
 ) -> tuple[
     str, paraview.servermanager.SourceProxy, paraview.servermanager.Proxy
 ]:
@@ -180,7 +271,8 @@ def load_solution(
     This function performs the following steps:
     1. Retrieves the folder containing simulation results.
     2. Loads the solution data from the files in the results folder.
-    3. Updates the animation scene to the last available time step.
+    3. Adds time step information if necessary.
+    4. Updates the animation scene to the last available time step.
 
     Parameters
     ----------
@@ -192,6 +284,10 @@ def load_solution(
         Prefix for relative path.
     base_file_name : str, optional
         Base name of the solutions files.
+    t_start : float, optional
+        Simulation start time.
+    t_end : float, optional
+        Simulation end time.
 
     Returns
     -------
@@ -211,6 +307,16 @@ def load_solution(
     results_folder = get_results_folder(path_prefix=path_prefix)
 
     match file_format:
+        case "vtk":
+            solution_without_time = load_solution_vtk(
+                results_folder,
+                base_file_name=base_file_name,
+            )
+            solution = scale_time_steps(
+                solution_without_time,
+                t_start=t_start,
+                t_end=t_end,
+            )
         case "vtu":
             solution = load_solution_vtu(
                 results_folder,
@@ -218,10 +324,15 @@ def load_solution(
                 load_arrays=plot_properties.series_names,
             )
         case "pvtu":
-            solution = load_solution_vtu(
+            solution_without_time = load_solution_vtu(
                 results_folder,
                 base_file_name=base_file_name,
                 load_arrays=plot_properties.series_names,
+            )
+            solution = scale_time_steps(
+                solution_without_time,
+                t_start=t_start,
+                t_end=t_end,
             )
         case "hdf5":
             solution = load_solution_hdf5_with_xdmf(
