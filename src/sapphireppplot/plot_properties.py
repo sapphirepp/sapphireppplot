@@ -1,6 +1,6 @@
 """Define PlotProperties class"""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 import paraview.servermanager
 
@@ -16,11 +16,11 @@ class PlotProperties:
         Names of the series to load and show.
     data_type : str
         Specifies if solution has DG (`POINTS`) or VE (`CELLS`) data.
-    labels : Optional[list[str]]
+    labels : dict[str, str]
         Labels for the series quantities in the chart.
-    line_colors : Optional[list[str]]
+    line_colors : dict[str, list[str]]
         Line colors for the series quantities in the LineChartView.
-    line_styles : Optional[list[str]]
+    line_styles : dict[str, str]
         Line styles for the series quantities in the LineChartView.
     color_map : str
         Select a color map for
@@ -28,9 +28,9 @@ class PlotProperties:
 
     series_names: Optional[list[str]] = None
     data_type: str = "POINTS"
-    labels: Optional[list[str]] = None
-    line_colors: Optional[list[str]] = None
-    line_styles: Optional[list[str]] = None
+    labels: dict[str, str] = field(default_factory=dict)
+    line_colors: dict[str, list[str]] = field(default_factory=dict)
+    line_styles: dict[str, str] = field(default_factory=dict)
     color_map: str = "Viridis (matplotlib)"
 
     def set_display_properties_line_chart_view(
@@ -45,11 +45,20 @@ class PlotProperties:
             Solution display
         """
         if self.labels:
-            solution_display.SeriesLabel = self.labels
+            flat_dict = []
+            for key, value in self.labels.items():
+                flat_dict += [key, value]
+            solution_display.SeriesLabel = flat_dict
         if self.line_colors:
-            solution_display.SeriesColor = self.line_colors
+            flat_dict = []
+            for key, value in self.line_colors.items():
+                flat_dict += [key, value[0], value[1], value[2]]
+            solution_display.SeriesColor = flat_dict
         if self.line_styles:
-            solution_display.SeriesLineStyle = self.line_styles
+            flat_dict = []
+            for key, value in self.line_styles.items():
+                flat_dict += [key, value]
+            solution_display.SeriesLineStyle = flat_dict
 
     def show_data_grid(self, solution_display: paraview.servermanager.Proxy):
         """
