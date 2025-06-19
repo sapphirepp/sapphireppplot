@@ -1,6 +1,8 @@
 """Module for MHD specific plotting"""
 
 from dataclasses import dataclass
+from typing import Optional
+import paraview.simple as ps
 import paraview.servermanager
 
 from sapphireppplot.plot_properties import PlotProperties
@@ -229,27 +231,36 @@ class PlotPropertiesMHD(PlotProperties):
         return quantity_labels[quantity]
 
 
-def plot_quantity_1d(
+def plot_quantities_1d(
     solution: paraview.servermanager.SourceProxy,
     results_folder: str,
-    quantity: str,
+    quantities: list[str],
+    name: str,
     plot_properties: PlotPropertiesMHD,
+    value_range: Optional[list[float]] = None,
     do_save_animation=False,
-) -> paraview.servermanager.ViewLayoutProxy:
+) -> tuple[
+    paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
+]:
     """
     Plots and saves a visualization of a specified physical quantity
     from the solution in 1D.
 
     Parameters
     ----------
-    solution: : paraview.servermanager.SourceProxy
+    solution : paraview.servermanager.SourceProxy
         The simulation or computation result containing the data to plot.
     results_folder : str
         Path to the folder where results (images/animations) will be saved.
-    quantity : str
-        The physical quantity to plot.
+    quantities : list[str]
+        List of physical quantity to plot.
+    name : str
+        Name of the layout and image/animation files.
     plot_properties : plot_properties, optional
         Properties for plotting.
+    value_range : list[float], optional
+        Minimal (`value_range[0]`)
+        and maximal (`value_range[1]`) value for the y-axes.
     do_save_animation : bool, optional
         If True, also saves an animation of the plot.
         Defaults to False.
@@ -258,48 +269,70 @@ def plot_quantity_1d(
     -------
     layout : paraview.servermanager.ViewLayoutProxy
         The layout object used for the plot.
+    line_chart_view : paraview.servermanager.XYChartViewProxy
+        The configured XY chart view.
     """
 
-    filename = "linear-wave-1d-" + quantity
-    layout_name = "Layout " + quantity
-    title = plot_properties.quantity_label(quantity)
-    visible_lines = [
-        plot_properties.quantity_name(quantity, "numeric_"),
-        plot_properties.quantity_name(quantity, "project_"),
-    ]
+    # name = "linear-wave-1d-" + quantity
+    title = r"$\mathbf{w}(x)$"
+    if len(quantities) == 1:
+        title = plot_properties.quantity_label(quantities[0])
 
-    layout, line_chart_view = plot.plot_line_chart_view(
+    visible_lines = []
+    for quantity in quantities:
+        if plot_properties.prefix_numeric:
+            visible_lines += [
+                plot_properties.quantity_name(quantity, "numeric_")
+            ]
+        else:
+            visible_lines += [plot_properties.quantity_name(quantity)]
+        if plot_properties.project:
+            visible_lines += [
+                plot_properties.quantity_name(quantity, "project_")
+            ]
+        if plot_properties.interpol:
+            visible_lines += [
+                plot_properties.quantity_name(quantity, "interpol_")
+            ]
+
+    # create new layout object
+    layout = ps.CreateLayout(name)
+    line_chart_view = plot.plot_line_chart_view(
         solution,
-        layout_name=layout_name,
+        layout,
         title=title,
         visible_lines=visible_lines,
+        value_range=value_range,
         plot_properties=plot_properties,
     )
 
-    plot.save_screenshot(layout, results_folder, filename)
+    plot.save_screenshot(layout, results_folder, name)
     if do_save_animation:
-        plot.save_animation(layout, results_folder, filename)
+        plot.save_animation(layout, results_folder, name)
 
     # Exit preview mode
     # layout.PreviewMode = [0, 0]
-    return layout
+    return layout, line_chart_view
 
 
 def plot_quantity_2d(
     solution: paraview.servermanager.SourceProxy,
-    animation_scene: paraview.servermanager.Proxy,
     results_folder: str,
     quantity: str,
+    name: str,
     plot_properties: PlotPropertiesMHD,
+    value_range: Optional[list[float]] = None,
     do_save_animation=False,
-) -> paraview.servermanager.ViewLayoutProxy:
+) -> tuple[
+    paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
+]:
     """
     Plots and saves a visualization of a specified physical quantity
     from the solution in 2D.
 
     Parameters
     ----------
-    solution: : paraview.servermanager.SourceProxy
+    solution : paraview.servermanager.SourceProxy
         The simulation or computation result containing the data to plot.
     results_folder : str
         Path to the folder where results (images/animations) will be saved.
@@ -307,6 +340,9 @@ def plot_quantity_2d(
         The physical quantity to plot.
     plot_properties : plot_properties, optional
         Properties for plotting.
+    value_range : list[float], optional
+        Minimal (`value_range[0]`)
+        and maximal (`value_range[1]`) value for the y-axes.
     do_save_animation : bool, optional
         If True, also saves an animation of the plot.
         Defaults to False.
@@ -315,27 +351,27 @@ def plot_quantity_2d(
     -------
     layout : paraview.servermanager.ViewLayoutProxy
         The layout object used for the plot.
+    render_view : paraview.servermanager.RenderViewProxy
+        The configured 2D render view.
     """
 
-    filename = "blast-wave-" + quantity
-    layout_name = "2D Plot " + quantity
     legend_title = plot_properties.quantity_label(quantity)
 
-    layout, render_view = plot.plot_render_view_2d(
+    # create new layout object
+    layout = ps.CreateLayout(name)
+    render_view = plot.plot_render_view_2d(
         solution,
+        layout,
         plot_properties.quantity_name(quantity),
-        layout_name=layout_name,
         legend_title=legend_title,
-        value_range=[0.08 / 2.0, 6.5 / 2.0],
+        value_range=value_range,
         plot_properties=plot_properties,
     )
 
-    plot.save_screenshot(layout, results_folder, filename)
-    animation_scene.AnimationTime = 0.2
-    plot.save_screenshot(layout, results_folder, filename + "-t02")
+    plot.save_screenshot(layout, results_folder, name)
     if do_save_animation:
-        plot.save_animation(layout, results_folder, filename)
+        plot.save_animation(layout, results_folder, name)
 
     # Exit preview mode
     # layout.PreviewMode = [0, 0]
-    return layout
+    return layout, render_view

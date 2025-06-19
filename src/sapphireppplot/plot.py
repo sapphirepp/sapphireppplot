@@ -12,6 +12,7 @@ def plot_line_chart_view(
     layout: paraview.servermanager.ViewLayoutProxy,
     title: str = "",
     visible_lines: Optional[list[str]] = None,
+    value_range: Optional[list[float]] = None,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
@@ -28,6 +29,9 @@ def plot_line_chart_view(
         Title for the left axis of the chart.
     visible_lines : list[str], optional
         List of series names to display in the chart.
+    value_range : list[float], optional
+        Minimal (`value_range[0]`)
+        and maximal (`value_range[1]`) value for the y-axes.
     plot_properties : PlotProperties, optional
         Properties for plotting like the labels.
 
@@ -71,6 +75,11 @@ def plot_line_chart_view(
     plot_properties.set_display_properties_line_chart_view(solution_display)
     if visible_lines:
         solution_display.SeriesVisibility = visible_lines
+
+    if value_range:
+        line_chart_view.LeftAxisUseCustomRange = 1
+        line_chart_view.LeftAxisRangeMinimum = value_range[0]
+        line_chart_view.LeftAxisRangeMaximum = value_range[1]
 
     return line_chart_view
 
