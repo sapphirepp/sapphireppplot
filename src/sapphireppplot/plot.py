@@ -354,6 +354,7 @@ def save_animation(
         filename=file_path,
         viewOrLayout=view_or_layout,
         location=ps.vtkPVSession.DATA_SERVER,
-        TransparentBackground=1,
+        # For animations it is better to not have transparent background
+        TransparentBackground=0,
         FrameStride=1,
     )
