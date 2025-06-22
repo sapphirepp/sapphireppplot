@@ -1,0 +1,101 @@
+"""Transform the solution, e.g. by PlotOverLine or Calculator"""
+
+from typing import Optional
+import os
+import paraview.simple as ps
+import paraview.servermanager
+from sapphireppplot.plot_properties import PlotProperties
+
+
+def plot_over_line(
+    solution: paraview.servermanager.SourceProxy,
+    direction: str = "x",
+    offset: Optional[list[float]] = None,
+    results_folder: str = "",
+    filename: Optional[str] = None,
+    plot_properties: PlotProperties = PlotProperties(),
+) -> paraview.servermanager.SourceProxy:
+    """
+    Creates and configures a line chart view
+    for visualizing data from a given solution in ParaView.
+
+    Parameters
+    ----------
+    solution : paraview.servermanager.SourceProxy
+        The data source.
+    direction : str
+        Direction of the line.
+    offset : list[float], optional
+        Offset of the line.
+    results_folder : str
+        The directory path where the data will be saved as `.csv`.
+    filename : str
+        The base name for the saved data file (without extension).
+        If no filename is given, the data is not saved.
+    plot_properties : PlotProperties, optional
+        Properties of the solution, like the sampling pattern.
+
+    Returns
+    -------
+    plot_over_line_source : paraview.servermanager.SourceProxy
+        The PlotOverLine source.
+    """
+    # create a new 'Plot Over Line'
+    plot_over_line_source = ps.PlotOverLine(
+        registrationName="PlotOverLine-" + direction, Input=solution
+    )
+
+    # Get the bounds in x
+    # Fetch data information from the solution
+    solution_data = paraview.servermanager.Fetch(solution)
+    # Get bounds of the data
+    solution_bounds = solution_data.GetBounds()
+    if offset is None:
+        offset = [0.0, 0.0, 0.0]
+    match direction:
+        case "x":
+            # Extract min_x and max_x from the solution_bounds
+            min_x = solution_bounds[0]
+            max_x = solution_bounds[1]
+
+            # Properties modified on plot_over_line_source
+            plot_over_line_source.Point1 = [min_x, offset[1], offset[2]]
+            plot_over_line_source.Point2 = [max_x, offset[1], offset[2]]
+        case _:
+            raise ValueError(f"Unknown direction {direction}")
+
+    # Change SamplingPattern
+    match plot_properties.sampling_pattern:
+        case "uniform":
+            plot_over_line_source.SamplingPattern = "Sample Uniformly"
+            if plot_properties.sampling_resolution:
+                plot_over_line_source.Resolution = (
+                    plot_properties.sampling_resolution
+                )
+        case "center":
+            plot_over_line_source.SamplingPattern = "Sample At Segment Centers"
+        case "boundary":
+            plot_over_line_source.SamplingPattern = "Sample At Cell Boundaries"
+        case _:
+            raise ValueError(
+                f"Unknown sampling pattern {plot_properties.sampling_pattern}"
+            )
+
+    # Save data if a file is given
+    if filename:
+        file_path = os.path.join(results_folder, filename + ".csv")
+        print(f"Save data '{file_path}'")
+
+        ps.SaveData(
+            filename=file_path,
+            proxy=plot_over_line_source,
+            location=ps.vtkPVSession.DATA_SERVER,
+            ChooseArraysToWrite=(
+                1 if plot_properties.series_names is not None else 0
+            ),
+            PointDataArrays=plot_properties.series_names,
+            Precision=5,
+            UseScientificNotation=1,
+        )
+
+    return plot_over_line_source

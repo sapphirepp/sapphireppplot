@@ -43,6 +43,12 @@ class PlotProperties:
     color_bar_length : float
         Size of the color bar.
         Set to `0` to hide the color bar.
+
+    sampling_pattern : str
+        Sampling pattern used for plot_over_line.
+    sampling_resolution : int, optional
+        Sampling resolution used for plot_over_line.
+        Only used for uniform sampling.
     """
 
     series_names: Optional[list[str]] = None
@@ -67,6 +73,9 @@ class PlotProperties:
         default_factory=lambda: "Lower Right Corner"
     )
     color_bar_length: float = 0.25
+
+    sampling_pattern: str = "center"
+    sampling_resolution: Optional[int] = None
 
     def set_display_properties_line_chart_view(
         self, solution_display: paraview.servermanager.Proxy
