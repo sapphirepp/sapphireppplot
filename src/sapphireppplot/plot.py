@@ -10,9 +10,12 @@ from sapphireppplot.plot_properties import PlotProperties
 def plot_line_chart_view(
     solution: paraview.servermanager.SourceProxy,
     layout: paraview.servermanager.ViewLayoutProxy,
-    title: str = "",
+    x_label: str = r"$x$",
+    y_label: str = "",
+    x_array_name: str = "Points_X",
     visible_lines: Optional[list[str]] = None,
     value_range: Optional[list[float]] = None,
+    log_y_scale: bool = False,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
@@ -25,13 +28,19 @@ def plot_line_chart_view(
         The data source to visualize, typically a ParaView data object.
     layout : paraview.servermanager.ViewLayoutProxy
         ParaView layout to use for the plot.
-    title : str, optional
-        Title for the left axis of the chart.
+    x_label : str, optional
+        Label for the bottom axis of the chart.
+    y_label : str, optional
+        Label for the left axis of the chart.
+    x_array_name : str, optional
+        Name of the array ot use as x-axes.
     visible_lines : list[str], optional
         List of series names to display in the chart.
     value_range : list[float], optional
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the y-axes.
+    log_y_scale : bool, optional
+        Use a logarithmic y-scale?
     plot_properties : PlotProperties, optional
         Properties for plotting like the labels.
 
@@ -43,8 +52,8 @@ def plot_line_chart_view(
 
     # Create a new 'Line Chart View'
     line_chart_view = ps.CreateView("XYChartView")
-    line_chart_view.BottomAxisTitle = "$x$"
-    line_chart_view.LeftAxisTitle = title
+    line_chart_view.BottomAxisTitle = x_label
+    line_chart_view.LeftAxisTitle = y_label
     line_chart_view.ChartTitleFontSize = 30
     line_chart_view.LeftAxisTitleFontSize = 24
     line_chart_view.BottomAxisTitleFontSize = 24
@@ -73,7 +82,7 @@ def plot_line_chart_view(
 
     # Properties modified on solution_display
     solution_display.UseIndexForXAxis = 0
-    solution_display.XArrayName = "Points_X"
+    solution_display.XArrayName = x_array_name
     plot_properties.set_display_properties_line_chart_view(solution_display)
     if visible_lines:
         solution_display.SeriesVisibility = visible_lines
@@ -82,6 +91,8 @@ def plot_line_chart_view(
         line_chart_view.LeftAxisUseCustomRange = 1
         line_chart_view.LeftAxisRangeMinimum = value_range[0]
         line_chart_view.LeftAxisRangeMaximum = value_range[1]
+    if log_y_scale:
+        line_chart_view.LeftAxisLogScale = 1
 
     return line_chart_view
 

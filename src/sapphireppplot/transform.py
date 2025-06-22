@@ -61,6 +61,16 @@ def plot_over_line(
             # Properties modified on plot_over_line_source
             plot_over_line_source.Point1 = [min_x, offset[1], offset[2]]
             plot_over_line_source.Point2 = [max_x, offset[1], offset[2]]
+        case "y":
+            min_y = solution_bounds[2]
+            max_y = solution_bounds[3]
+            plot_over_line_source.Point1 = [offset[0], min_y, offset[2]]
+            plot_over_line_source.Point2 = [offset[0], max_y, offset[2]]
+        case "z":
+            min_z = solution_bounds[4]
+            max_z = solution_bounds[5]
+            plot_over_line_source.Point1 = [offset[0], offset[1], min_z]
+            plot_over_line_source.Point2 = [offset[0], offset[1], max_z]
         case _:
             raise ValueError(f"Unknown direction {direction}")
 

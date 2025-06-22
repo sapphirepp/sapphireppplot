@@ -50,9 +50,9 @@ def plot_quantities_1d(
     line_chart_view : paraview.servermanager.XYChartViewProxy
         The configured XY chart view.
     """
-    title = r"$\mathbf{w}(x)$"
+    y_label = r"$\mathbf{w}(x)$"
     if len(quantities) == 1:
-        title = plot_properties.quantity_label(quantities[0])
+        y_label = plot_properties.quantity_label(quantities[0])
 
     visible_lines = []
     for quantity in quantities:
@@ -76,7 +76,7 @@ def plot_quantities_1d(
     line_chart_view = plot.plot_line_chart_view(
         solution,
         layout,
-        title=title,
+        y_label=y_label,
         visible_lines=visible_lines,
         value_range=value_range,
         plot_properties=plot_properties,
@@ -150,7 +150,7 @@ def plot_split_view_1d(
         plot_properties.line_colors[key] = ["0", "0", "0"]
 
     for i, quantity in enumerate(quantities):
-        title = plot_properties.quantity_label(quantity)
+        y_label = plot_properties.quantity_label(quantity)
 
         visible_lines = []
         if plot_properties.prefix_numeric:
@@ -178,7 +178,7 @@ def plot_split_view_1d(
         line_chart_view = plot.plot_line_chart_view(
             solution,
             layout,
-            title=title,
+            y_label=y_label,
             visible_lines=visible_lines,
             value_range=value_range,
             plot_properties=plot_properties,
