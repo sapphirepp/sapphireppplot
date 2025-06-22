@@ -324,7 +324,7 @@ def load_solution(
                 load_arrays=plot_properties.series_names,
             )
         case "pvtu":
-            solution_without_time = load_solution_vtu(
+            solution_without_time = load_solution_pvtu(
                 results_folder,
                 base_file_name=base_file_name,
                 load_arrays=plot_properties.series_names,
