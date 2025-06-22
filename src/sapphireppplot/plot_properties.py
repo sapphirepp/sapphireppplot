@@ -22,6 +22,9 @@ class PlotProperties:
     preview_size_2d : list[float]
         Preview window size in 2D.
 
+    text_color : list[float]
+        The text color for labels and legends.
+
     labels : dict[str, str]
         Labels for the series quantities in the chart.
     line_colors : dict[str, list[str]]
@@ -29,8 +32,8 @@ class PlotProperties:
     line_styles : dict[str, str]
         Line styles for the series quantities in the LineChartView.
 
-    text_color : list[float]
-        The text color for labels and legends.
+    grid_labels : list[str]
+        Labels of the x,y and z axes for 2D/3D plots.
 
     color_map : str
         Select a color map for
@@ -48,11 +51,15 @@ class PlotProperties:
     preview_size_1d: list[float] = field(default_factory=lambda: [1280, 720])
     preview_size_2d: list[float] = field(default_factory=lambda: [1024, 1024])
 
+    text_color: list[float] = field(default_factory=lambda: [0.5, 0.5, 0.5])
+
     labels: dict[str, str] = field(default_factory=dict)
     line_colors: dict[str, list[str]] = field(default_factory=dict)
     line_styles: dict[str, str] = field(default_factory=dict)
 
-    text_color: list[float] = field(default_factory=lambda: [0.5, 0.5, 0.5])
+    grid_labels: list[str] = field(
+        default_factory=lambda: [r"$x$", r"$y$", r"$z$"]
+    )
 
     color_map: str = "Viridis (matplotlib)"
     color_bar_position: str | list[float] = field(
@@ -98,8 +105,8 @@ class PlotProperties:
             Solution display
         """
         solution_display.DataAxesGrid.GridAxesVisibility = 1
-        solution_display.DataAxesGrid.XTitle = "$x$"
-        solution_display.DataAxesGrid.YTitle = "$y$  "
+        solution_display.DataAxesGrid.XTitle = self.grid_labels[0]
+        solution_display.DataAxesGrid.YTitle = self.grid_labels[1] + "  "
         # Only show Axes Min-X//Y/Z
         solution_display.DataAxesGrid.AxesToLabel = 7
         # solution_display.DataAxesGrid.FacesToRender = 7

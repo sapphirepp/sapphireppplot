@@ -92,6 +92,7 @@ def plot_render_view_2d(
     quantity: str,
     legend_title: str = "",
     value_range: Optional[list[float]] = None,
+    log_scale: bool = False,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
@@ -111,6 +112,8 @@ def plot_render_view_2d(
     value_range : list[float], optional
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the color bar.
+    log_scale : bool, optional
+        Use a logarithmic color scale?
     plot_properties : PlotProperties, optional
         Properties for plotting like the labels.
 
@@ -192,6 +195,11 @@ def plot_render_view_2d(
         transfer_function.RescaleTransferFunction(
             value_range[0], value_range[1], 0.0, 1.0
         )
+
+    # convert to log space
+    if log_scale:
+        transfer_color.MapControlPointsToLogSpace()
+        transfer_color.UseLogScale = 1
 
     transfer_color.ApplyPreset(plot_properties.color_map, True)
 
