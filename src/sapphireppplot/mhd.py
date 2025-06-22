@@ -307,7 +307,7 @@ def plot_quantities_1d(
         List of physical quantity to plot.
     name : str
         Name of the layout and image/animation files.
-    plot_properties : plot_properties, optional
+    plot_properties : PlotPropertiesMHD
         Properties for plotting.
     value_range : list[float], optional
         Minimal (`value_range[0]`)
@@ -387,7 +387,7 @@ def plot_split_view_1d(
         List of physical quantity to plot.
     name : str
         Name of the layout and image/animation files.
-    plot_properties : plot_properties, optional
+    plot_properties : PlotPropertiesMHD
         Properties for plotting.
     labels : Optional[list[str]], optional
         Labels for the numeric and projected/interpolated solution.
@@ -490,7 +490,7 @@ def plot_quantity_2d(
         Path to the folder where results (images/animations) will be saved.
     quantity : str
         The physical quantity to plot.
-    plot_properties : plot_properties, optional
+    plot_properties : PlotPropertiesMHD
         Properties for plotting.
     value_range : list[float], optional
         Minimal (`value_range[0]`)
