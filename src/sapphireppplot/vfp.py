@@ -201,8 +201,8 @@ def plot_f_lms_over_x(
         The PlotOverLine source.
     layout : paraview.servermanager.ViewLayoutProxy
         The layout object used for the plot.
-    render_view : paraview.servermanager.RenderViewProxy
-        The configured 2D render view.
+    line_chart_view : paraview.servermanager.XYChartViewProxy
+        The configured XY chart view.
     """
     if lms_indices is None:
         lms_indices = [[0, 0, 0]]
@@ -297,8 +297,8 @@ def plot_f_lms_over_p(
         The PlotOverLine source.
     layout : paraview.servermanager.ViewLayoutProxy
         The layout object used for the plot.
-    render_view : paraview.servermanager.RenderViewProxy
-        The configured 2D render view.
+    line_chart_view : paraview.servermanager.XYChartViewProxy
+        The configured XY chart view.
     """
     if lms_indices is None:
         lms_indices = [[0, 0, 0]]
