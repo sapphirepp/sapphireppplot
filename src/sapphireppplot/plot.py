@@ -322,6 +322,7 @@ def save_screenshot(
     view_or_layout: paraview.servermanager.ViewLayoutProxy,
     results_folder: str,
     filename: str,
+    transparent_background: bool = True,
 ):
     """
     Saves a screenshot of the given line chart view as 'png'.
@@ -334,6 +335,9 @@ def save_screenshot(
         The directory path where the screenshot will be saved.
     filename : str
         The base name for the screenshot file (without extension).
+    transparent_background : bool, optional
+        Use a transparent background?
+        Defaults to `True`.
     """
     file_path = os.path.join(results_folder, filename + ".png")
     print(f"Save screenshot '{file_path}")
@@ -341,7 +345,7 @@ def save_screenshot(
         filename=file_path,
         viewOrLayout=view_or_layout,
         location=ps.vtkPVSession.DATA_SERVER,
-        TransparentBackground=1,
+        TransparentBackground=transparent_background,
     )
 
 
@@ -349,6 +353,7 @@ def save_animation(
     view_or_layout: paraview.servermanager.ViewLayoutProxy,
     results_folder: str,
     filename: str,
+    transparent_background: bool = False,
 ):
     """
     Saves an animation of the given line chart view as series of 'png'.
@@ -361,6 +366,12 @@ def save_animation(
         The directory path where the screenshot will be saved.
     filename : str
         The base name for the screenshot file (without extension).
+    transparent_background : bool, optional
+        Use a transparent background?
+        Defaults to `False`.
+        For animations it is recommended not to use a transparent background.
+        Many formats like `.mp4` do not support it, resulting in artefacts.
+        For `.gif` using a transparent background is possible.
     """
     file_path = os.path.join(results_folder, filename + ".png")
     print(f"Save animation '{file_path}")
@@ -369,6 +380,6 @@ def save_animation(
         viewOrLayout=view_or_layout,
         location=ps.vtkPVSession.DATA_SERVER,
         # For animations it is better to not have transparent background
-        TransparentBackground=0,
+        TransparentBackground=transparent_background,
         FrameStride=1,
     )
