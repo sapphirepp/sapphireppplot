@@ -219,6 +219,8 @@ def plot_quantity_2d(
         The physical quantity to plot.
     plot_properties : PlotPropertiesMHD
         Properties for plotting.
+    name : str
+        Name of the layout and image/animation files.
     value_range : list[float], optional
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the y-axes.

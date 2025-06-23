@@ -43,7 +43,7 @@ def get_results_folder(path_prefix: str = "") -> str:
         results_folder = sys.argv[_results_folder_argv]
         _results_folder_argv += 1
     if not results_folder:
-        results_folder = input(f"Path to results folder ({path_prefix}): ")
+        results_folder = input(f"Path to results folder \n({path_prefix}): ")
     results_folder = os.path.expandvars(results_folder)
     results_folder = os.path.expanduser(results_folder)
     if path_prefix and not os.path.isabs(results_folder):
