@@ -1,11 +1,86 @@
 """Module for VFP specific plotting"""
 
 from typing import Optional
+import copy
 import paraview.simple as ps
 import paraview.servermanager
 
 from sapphireppplot.plot_properties_vfp import PlotPropertiesVFP
-from sapphireppplot import plot
+from sapphireppplot import plot, transform
+
+
+def scale_distribution_function(
+    solution: paraview.servermanager.SourceProxy,
+    plot_properties_in: PlotPropertiesVFP,
+    lms_indices: Optional[list[list[int]]] = None,
+    spectral_index: float = 4.0,
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVFP]:
+    """
+    Scales the distribution function to the desired spectral index $s$.
+    This will create a number of calculator objects,
+    each scaling one specific lms_index.
+
+    Parameters
+    ----------
+    solution : paraview.servermanager.SourceProxy
+        The the data to scale.
+    plot_properties_in : PlotPropertiesVFP
+        Properties of the source.
+    lms_indices : list[list[int]], optional
+        The list of indices `[[l_1,m_1,s_1], [l_2,m_2,s_2]]` to scale.
+        Only these indices will be active in the new solution.
+    spectral_index : float, optional
+        Spectral index to scale the distributions function f.
+
+    Returns
+    -------
+    solution_psd : paraview.servermanager.SourceProxy
+        The scaled distribution function `p^s f_lms` for lms_indices.
+    plot_properties : PlotPropertiesVFP
+        Solution properties for the scaled distribution function.
+    """
+    if lms_indices is None:
+        lms_indices = [[0, 0, 0]]
+    plot_properties = copy.deepcopy(plot_properties_in)
+    plot_properties.scale_by_spectral_index(spectral_index, lms_indices)
+
+    assert plot_properties.momentum is True, "Can only scale p-dependent data"
+
+    coord_p = ""
+    match plot_properties.dim_ps:
+        case 1:
+            coord_p = "coordsX"
+        case 2:
+            coord_p = "coordsY"
+        case 3:
+            coord_p = "coordsZ"
+        case _:
+            assert False
+    if plot_properties.logarithmic_p:
+        coord_p = f"exp({coord_p})"
+
+    solution_psd = solution
+    for lms_index in lms_indices:
+        name_old = plot_properties_in.f_lms_name(lms_index)
+        name_new = plot_properties.f_lms_name(lms_index)
+
+        # Add a new 'Calculator' to the pipeline
+        solution_psd = ps.Calculator(
+            registrationName=name_new, Input=solution_psd
+        )
+
+        # Properties modified on solution_psd
+        solution_psd.ResultArrayName = name_new
+        solution_psd.Function = f"{coord_p}^{spectral_index} * {name_old}"
+
+        if plot_properties.line_colors:
+            plot_properties.line_colors[name_new] = plot_properties.line_colors[
+                name_old
+            ]
+
+    # solution_psd.PointArrays = plot_properties.series_names
+
+    return solution_psd, plot_properties
 
 
 def plot_f_lms_2d(
