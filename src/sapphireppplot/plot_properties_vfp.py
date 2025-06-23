@@ -148,13 +148,15 @@ class PlotPropertiesVFP(PlotProperties):
 
         return f"{tmp_name_f}_{lms_index[0]}{lms_index[1]}{lms_index[2]}"
 
-    def f_lms_label(self, lms_index: list[int], annotation: str = "") -> str:
+    def f_lms_label(
+        self, lms_index: list[int] | list[str], annotation: str = ""
+    ) -> str:
         """
         Look up of label for lms_index.
 
         Parameters
         ----------
-        lms_index : list[int]
+        lms_index : list[int] | list[str]
             The index `[l,m,s]`.
         annotation : str, optional
             Postfix annotation of quantity.
