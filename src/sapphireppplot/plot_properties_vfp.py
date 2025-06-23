@@ -1,7 +1,6 @@
 """Module for VFP specific plotting"""
 
 from dataclasses import dataclass
-import numpy as np
 
 from sapphireppplot.plot_properties import PlotProperties
 
@@ -91,7 +90,7 @@ class PlotPropertiesVFP(PlotProperties):
                 )
                 self.line_styles[f_lms_name] = line_style
 
-    def create_lms_indices(self, expansion_order: int) -> np.ndarray:
+    def create_lms_indices(self, expansion_order: int) -> list[list[int]]:
         """
         Create a mapping between the system index $i$ and the
         spherical harmonic indices $(l,m,s)$.
@@ -103,19 +102,17 @@ class PlotPropertiesVFP(PlotProperties):
 
         Returns
         -------
-        lms_indices : np.ndarray
+        lms_indices : list[list[int]]
             Mapping `lms_indices[i] = [l,m,s]`.
         """
         system_size = (expansion_order + 1) ** 2
-        lms_indices = np.empty((system_size, 3), dtype=int)
+        lms_indices = []
 
         l = 0
         m = 0
-        for i in range(system_size):
-            lms_indices[i][0] = l
-            lms_indices[i][1] = abs(m)
-            # lms_indices[i][2] = m <= 0 ? 0 : 1;
-            lms_indices[i][2] = 0 if m <= 0 else 1
+        for _ in range(system_size):
+            s = 0 if m <= 0 else 1
+            lms_indices += [[l, abs(m), s]]
 
             m += 1
             if m > l:

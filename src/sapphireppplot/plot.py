@@ -54,12 +54,7 @@ def plot_line_chart_view(
     line_chart_view = ps.CreateView("XYChartView")
     line_chart_view.BottomAxisTitle = x_label
     line_chart_view.LeftAxisTitle = y_label
-    line_chart_view.ChartTitleFontSize = 30
-    line_chart_view.LeftAxisTitleFontSize = 24
-    line_chart_view.BottomAxisTitleFontSize = 24
-    line_chart_view.LegendFontSize = 18
-    line_chart_view.LeftAxisLabelFontSize = 18
-    line_chart_view.BottomAxisLabelFontSize = 18
+    plot_properties.configure_line_chart_view_axes(line_chart_view)
 
     # assign view to a particular cell in the layout
     ps.AssignViewToLayout(view=line_chart_view, layout=layout, hint=0)
@@ -83,7 +78,7 @@ def plot_line_chart_view(
     # Properties modified on solution_display
     solution_display.UseIndexForXAxis = 0
     solution_display.XArrayName = x_array_name
-    plot_properties.set_display_properties_line_chart_view(solution_display)
+    plot_properties.configure_line_chart_view_display(solution_display)
     if visible_lines:
         solution_display.SeriesVisibility = visible_lines
 
@@ -261,7 +256,7 @@ def display_text(
     text_display = ps.Show(text_proxy, view, "TextSourceRepresentation")
 
     # Properties modified on text_display
-    text_display.FontSize = 24
+    text_display.FontSize = plot_properties.title_size
     text_display.Color = plot_properties.text_color
     match location:
         case str():
@@ -310,7 +305,7 @@ def display_time(
     time_display = ps.Show(annotate_time, view, "TextSourceRepresentation")
 
     # Properties modified on time_display
-    time_display.FontSize = 18
+    time_display.FontSize = plot_properties.label_size
     time_display.Color = plot_properties.text_color
     match location:
         case str():

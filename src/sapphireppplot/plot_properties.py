@@ -24,6 +24,12 @@ class PlotProperties:
 
     text_color : list[float]
         The text color for labels and legends.
+    label_size : int
+        Font size for label text.
+    title_size : int
+        Font size for legend and axes titles.
+    chart_title_size : int
+        Font size for legend labels.
 
     labels : dict[str, str]
         Labels for the series quantities in the chart.
@@ -58,6 +64,9 @@ class PlotProperties:
     preview_size_2d: list[float] = field(default_factory=lambda: [1024, 1024])
 
     text_color: list[float] = field(default_factory=lambda: [0.5, 0.5, 0.5])
+    label_size: int = 18
+    title_size: int = 24
+    chart_title_size = 30
 
     labels: dict[str, str] = field(default_factory=dict)
     line_colors: dict[str, list[str]] = field(default_factory=dict)
@@ -77,11 +86,29 @@ class PlotProperties:
     sampling_pattern: str = "center"
     sampling_resolution: Optional[int] = None
 
-    def set_display_properties_line_chart_view(
+    def configure_line_chart_view_axes(
+        self, line_chart_view: paraview.servermanager.Proxy
+    ):
+        """
+        Configures the axes of a LineChartView.
+
+        Parameters
+        ----------
+        line_chart_view : paraview.servermanager.Proxy
+            ParaView LineChartView object.
+        """
+        line_chart_view.ChartTitleFontSize = self.chart_title_size
+        line_chart_view.LeftAxisTitleFontSize = self.title_size
+        line_chart_view.BottomAxisTitleFontSize = self.title_size
+        line_chart_view.LegendFontSize = self.label_size
+        line_chart_view.LeftAxisLabelFontSize = self.label_size
+        line_chart_view.BottomAxisLabelFontSize = self.label_size
+
+    def configure_line_chart_view_display(
         self, solution_display: paraview.servermanager.Proxy
     ):
         """
-        Set display properties for a LineChartView.
+        Configures the display properties for a LineChartView.
 
         Parameters
         ----------
@@ -119,11 +146,11 @@ class PlotProperties:
         # Only show Axes Min-X//Y/Z
         solution_display.DataAxesGrid.AxesToLabel = 7
         # solution_display.DataAxesGrid.FacesToRender = 7
-        # Set default font size: 24 for title, 18 for label
-        solution_display.DataAxesGrid.XTitleFontSize = 24
-        solution_display.DataAxesGrid.YTitleFontSize = 24
-        solution_display.DataAxesGrid.XLabelFontSize = 18
-        solution_display.DataAxesGrid.YLabelFontSize = 18
+        # Set default font size
+        solution_display.DataAxesGrid.XTitleFontSize = self.title_size
+        solution_display.DataAxesGrid.YTitleFontSize = self.title_size
+        solution_display.DataAxesGrid.XLabelFontSize = self.label_size
+        solution_display.DataAxesGrid.YLabelFontSize = self.label_size
         # Use gray color for label for good visibility in both light and dark mode
         solution_display.DataAxesGrid.XTitleColor = self.text_color
         solution_display.DataAxesGrid.YTitleColor = self.text_color
@@ -147,8 +174,8 @@ class PlotProperties:
         bool
             `True` if color bar is visible, `False` otherwise.
         """
-        color_bar.TitleFontSize = 24
-        color_bar.LabelFontSize = 18
+        color_bar.TitleFontSize = self.title_size
+        color_bar.LabelFontSize = self.label_size
         color_bar.TitleColor = self.text_color
         color_bar.LabelColor = self.text_color
 
