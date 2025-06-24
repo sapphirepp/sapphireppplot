@@ -14,6 +14,8 @@ class PlotProperties:
     ----------
     series_names : Optional[list[str]]
         Names of the series to load and show.
+    labels : dict[str, str]
+        Labels for the series quantities in the chart.
     data_type : str
         Specifies if solution has DG (`POINTS`) or VE (`CELLS`) data.
 
@@ -31,8 +33,6 @@ class PlotProperties:
     chart_title_size : int
         Font size for legend labels.
 
-    labels : dict[str, str]
-        Labels for the series quantities in the chart.
     line_colors : dict[str, list[str]]
         Line colors for the series quantities in the LineChartView.
     line_styles : dict[str, str]
@@ -58,6 +58,7 @@ class PlotProperties:
     """
 
     series_names: Optional[list[str]] = None
+    labels: dict[str, str] = field(default_factory=dict)
     data_type: str = "POINTS"
 
     preview_size_1d: list[float] = field(default_factory=lambda: [1280, 720])
@@ -68,7 +69,6 @@ class PlotProperties:
     title_size: int = 24
     chart_title_size = 30
 
-    labels: dict[str, str] = field(default_factory=dict)
     line_colors: dict[str, list[str]] = field(default_factory=dict)
     line_styles: dict[str, str] = field(default_factory=dict)
 

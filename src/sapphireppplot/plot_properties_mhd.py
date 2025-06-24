@@ -231,7 +231,13 @@ class PlotPropertiesMHD(PlotProperties):
             quantity_names["b_z"] = "b_z"
             quantity_names["u_z"] = "u_z"
 
-        return prefix + quantity_names[quantity]
+        if quantity in quantity_names:
+            return prefix + quantity_names[quantity]
+
+        if self.series_names and quantity in self.series_names:
+            return quantity
+
+        raise ValueError(f"Unknown quantity '{quantity}'!")
 
     def quantity_label(self, quantity: str, annotation: str = "") -> str:
         """
@@ -274,4 +280,10 @@ class PlotPropertiesMHD(PlotProperties):
             "subdomian": "Subdomain",
         }
 
-        return quantity_labels[quantity]
+        if quantity in quantity_labels:
+            return quantity_labels[quantity]
+
+        if quantity in self.labels:
+            return self.labels[quantity]
+
+        raise ValueError(f"Unknown quantity '{quantity}'!")
