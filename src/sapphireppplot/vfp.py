@@ -157,7 +157,7 @@ def plot_f_lms_over_x(
     name: str,
     plot_properties: PlotPropertiesVFP,
     lms_indices: Optional[list[list[int]]] = None,
-    direction: str = "x",
+    direction: str | list[list[float]] = "x",
     offset: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
     log_y_scale: bool = False,
@@ -182,7 +182,7 @@ def plot_f_lms_over_x(
         Properties for plotting.
     lms_indices : list[list[int]], optional
         The list of indices `[[l_1,m_1,s_1], [l_2,m_2,s_2]]` to plot.
-    direction : str
+    direction : str | list[list[float]]
         Direction of the line.
     offset : list[float], optional
         Offset of the line.

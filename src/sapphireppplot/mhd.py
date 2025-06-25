@@ -264,7 +264,7 @@ def plot_quantities_over_x(
     quantities: list[str],
     name: str,
     plot_properties: PlotPropertiesMHD,
-    direction: str = "x",
+    direction: str | list[list[float]] = "x",
     offset: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
     log_y_scale: bool = False,
@@ -289,7 +289,7 @@ def plot_quantities_over_x(
         Name of the layout and image/animation files.
     plot_properties : PlotPropertiesMHD
         Properties for plotting.
-    direction : str
+    direction : str | list[list[float]]
         Direction of the line.
     offset : list[float], optional
         Offset of the line.

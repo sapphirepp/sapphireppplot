@@ -9,7 +9,7 @@ from sapphireppplot.plot_properties import PlotProperties
 
 def plot_over_line(
     solution: paraview.servermanager.SourceProxy,
-    direction: str = "x",
+    direction: str | list[list[float]] = "x",
     offset: Optional[list[float]] = None,
     results_folder: str = "",
     filename: Optional[str] = None,
@@ -23,8 +23,9 @@ def plot_over_line(
     ----------
     solution : paraview.servermanager.SourceProxy
         The data source.
-    direction : str
+    direction : str | list[list[float]]
         Direction of the line.
+        Either "x", "y", "z" or a list with start and end points.
     offset : list[float], optional
         Offset of the line.
     results_folder : str
@@ -42,7 +43,7 @@ def plot_over_line(
     """
     # create a new 'Plot Over Line'
     plot_over_line_source = ps.PlotOverLine(
-        registrationName="PlotOverLine-" + direction, Input=solution
+        registrationName="PlotOverLine", Input=solution
     )
 
     # Get the bounds in x
@@ -53,6 +54,9 @@ def plot_over_line(
     if offset is None:
         offset = [0.0, 0.0, 0.0]
     match direction:
+        case list():
+            plot_over_line_source.Point1 = direction[0]
+            plot_over_line_source.Point2 = direction[1]
         case "x":
             # Extract min_x and max_x from the solution_bounds
             min_x = solution_bounds[0]
