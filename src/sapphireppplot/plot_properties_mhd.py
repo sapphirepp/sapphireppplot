@@ -103,58 +103,11 @@ class PlotPropertiesMHD(PlotProperties):
                     line_style
                 )
 
-            new_colors = {
-                self.quantity_name("rho", prefix): [
-                    "0.3000076413154602",
-                    "0.6899977326393127",
-                    "0.2899976968765259",
-                ],
-                self.quantity_name("E", prefix): [
-                    "0.22000457346439362",
-                    "0.4899977147579193",
-                    "0.7199969291687012",
-                ],
-                self.quantity_name("p_x", prefix): [
-                    "0.6000000238418579",
-                    "0.31000229716300964",
-                    "0.6399939060211182",
-                ],
-                self.quantity_name("p_y", prefix): ["0", "0", "0"],
-                self.quantity_name("p_z", prefix): [
-                    "0.22000457346439362",
-                    "0.4899977147579193",
-                    "0.7199969291687012",
-                ],
-                self.quantity_name("b_x", prefix): [
-                    "0.3000076413154602",
-                    "0.6899977326393127",
-                    "0.2899976968765259",
-                ],
-                self.quantity_name("b_y", prefix): ["0", "0", "0"],
-                self.quantity_name("b_z", prefix): ["0", "0", "0"],
-                self.quantity_name("P", prefix): [
-                    "0.22000457346439362",
-                    "0.4899977147579193",
-                    "0.7199969291687012",
-                ],
-                self.quantity_name("u_x", prefix): [
-                    "0.6000000238418579",
-                    "0.31000229716300964",
-                    "0.6399939060211182",
-                ],
-                self.quantity_name("u_y", prefix): ["0", "0", "0"],
-                self.quantity_name("u_z", prefix): [
-                    "0.22000457346439362",
-                    "0.4899977147579193",
-                    "0.7199969291687012",
-                ],
-                self.quantity_name("psi", prefix): ["0", "0", "0"],
-            }
-            self.line_colors.update(new_colors)
-
         if self.show_indicators:
             indicators = [
                 "magnetic_divergence",
+                "magnetic_divergence_cells",
+                "magnetic_divergence_faces",
                 "shock_indicator",
                 "positivity_limiter",
                 "subdomian",
@@ -165,22 +118,6 @@ class PlotPropertiesMHD(PlotProperties):
                     quantity
                 )
                 self.line_styles[self.quantity_name(quantity)] = "1"
-
-            new_colors = {
-                "magnetic_divergence": [
-                    "0.3000076413154602",
-                    "0.6899977326393127",
-                    "0.2899976968765259",
-                ],
-                "shock_indicator": [
-                    "0.6500037908554077",
-                    "0.34000152349472046",
-                    "0.1600061058998108",
-                ],
-                "positivity_limiter": ["0", "0", "0"],
-                "subdomian": ["0", "0", "0"],
-            }
-            self.line_colors.update(new_colors)
 
     def quantity_name(self, quantity: str, prefix: str = "") -> str:
         """
@@ -200,6 +137,8 @@ class PlotPropertiesMHD(PlotProperties):
         """
         indicators = [
             "magnetic_divergence",
+            "magnetic_divergence_cells",
+            "magnetic_divergence_faces",
             "shock_indicator",
             "positivity_limiter",
             "subdomian",
@@ -275,6 +214,8 @@ class PlotPropertiesMHD(PlotProperties):
             "u_z": r"$_{z" + tmp_postfix_2 + r"}$",
             "psi": r"$\psi" + tmp_postfix_1 + "r$",
             "magnetic_divergence": r"$\nabla \cdot \mathbf{B}$",
+            "magnetic_divergence_cells": r"$\nabla \cdot \mathbf{B} \mid_{\mathrm{Cell}}$",
+            "magnetic_divergence_faces": r"$\nabla \cdot \mathbf{B} \mid_{\mathrm{Face}}$",
             "shock_indicator": "Shock Indicator",
             "positivity_limiter": "Pos. Limiter",
             "subdomian": "Subdomain",
