@@ -223,6 +223,27 @@ def plot_f_lms_over_x(
                 plot_properties.f_lms_name(lms_index, "interpol_")
             ]
 
+    x_array_name = ""
+    x_label = ""
+    match direction:
+        case list():
+            x_array_name = ""
+            x_label = r"$d$"
+        case "x":
+            x_array_name = "Points_X"
+            x_label = r"$x$"
+        case "y":
+            x_array_name = "Points_Y"
+            x_label = r"$y$"
+        case "z":
+            x_array_name = "Points_Z"
+            x_label = r"$z$"
+        case "d":
+            x_array_name = "arc_length"
+            x_label = r"$d$"
+        case _:
+            raise ValueError(f"Unknown direction {direction}")
+
     plot_over_line_x = transform.plot_over_line(
         solution,
         direction=direction,
@@ -236,7 +257,9 @@ def plot_f_lms_over_x(
     line_chart_view = plot.plot_line_chart_view(
         plot_over_line_x,
         layout,
+        x_label=x_label,
         y_label=y_label,
+        x_array_name=x_array_name,
         visible_lines=visible_lines,
         value_range=value_range,
         log_y_scale=log_y_scale,

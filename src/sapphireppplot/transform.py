@@ -25,7 +25,7 @@ def plot_over_line(
         The data source.
     direction : str | list[list[float]]
         Direction of the line.
-        Either "x", "y", "z" or a list with start and end points.
+        Either "x", "y", "z", "d" or a list with start and end points.
     offset : list[float], optional
         Offset of the line.
     results_folder : str
@@ -75,6 +75,15 @@ def plot_over_line(
             max_z = solution_bounds[5]
             plot_over_line_source.Point1 = [offset[0], offset[1], min_z]
             plot_over_line_source.Point2 = [offset[0], offset[1], max_z]
+        case "d":
+            min_x = solution_bounds[0]
+            max_x = solution_bounds[1]
+            min_y = solution_bounds[2]
+            max_y = solution_bounds[3]
+            min_z = solution_bounds[4]
+            max_z = solution_bounds[5]
+            plot_over_line_source.Point1 = [min_x, min_y, min_z]
+            plot_over_line_source.Point2 = [max_x, max_y, max_z]
         case _:
             raise ValueError(f"Unknown direction {direction}")
 
@@ -100,6 +109,12 @@ def plot_over_line(
         file_path = os.path.join(results_folder, filename + ".csv")
         print(f"Save data '{file_path}'")
 
+        series_names = []
+        if plot_properties.series_names:
+            series_names += plot_properties.series_names
+        if direction == list() or direction == "d":
+            series_names += ["arc_length"]
+
         ps.SaveData(
             filename=file_path,
             proxy=plot_over_line_source,
@@ -107,7 +122,7 @@ def plot_over_line(
             ChooseArraysToWrite=(
                 1 if plot_properties.series_names is not None else 0
             ),
-            PointDataArrays=plot_properties.series_names,
+            PointDataArrays=series_names,
             Precision=5,
             UseScientificNotation=1,
         )
