@@ -1,4 +1,4 @@
-"""Module for VFP specific plotting"""
+"""Define PlotPropertiesVFP class"""
 
 from dataclasses import dataclass
 from typing import Optional

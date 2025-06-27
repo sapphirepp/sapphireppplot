@@ -1,4 +1,4 @@
-"""Module for MHD specific plotting"""
+"""Define PlotPropertiesMHD class"""
 
 from dataclasses import dataclass
 
