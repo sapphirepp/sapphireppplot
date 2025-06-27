@@ -91,6 +91,7 @@ def plot_f_lms_2d(
     lms_index: Optional[list[int]] = None,
     value_range: Optional[list[float]] = None,
     log_scale: bool = True,
+    show_time: bool = False,
     do_save_animation: bool = False,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
@@ -116,6 +117,8 @@ def plot_f_lms_2d(
         and maximal (`value_range[1]`) value for the y-axes.
     log_scale : bool, optional
         Use a logarithmic color scale?
+    show_time : bool, optional
+        Display the simulation time in the render view.
     do_save_animation : bool, optional
         If True, also saves an animation of the plot.
         Defaults to False.
@@ -143,6 +146,9 @@ def plot_f_lms_2d(
         log_scale=log_scale,
         plot_properties=plot_properties,
     )
+
+    if show_time:
+        plot.display_time(render_view, plot_properties=plot_properties)
 
     plot.save_screenshot(layout, results_folder, name)
     if do_save_animation:

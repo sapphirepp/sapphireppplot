@@ -201,7 +201,8 @@ def plot_quantity_2d(
     name: str,
     plot_properties: PlotPropertiesMHD,
     value_range: Optional[list[float]] = None,
-    do_save_animation=False,
+    show_time: bool = False,
+    do_save_animation: bool = False,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -224,6 +225,8 @@ def plot_quantity_2d(
     value_range : list[float], optional
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the y-axes.
+    show_time : bool, optional
+        Display the simulation time in the render view.
     do_save_animation : bool, optional
         If True, also saves an animation of the plot.
         Defaults to False.
@@ -248,6 +251,9 @@ def plot_quantity_2d(
         value_range=value_range,
         plot_properties=plot_properties,
     )
+
+    if show_time:
+        plot.display_time(render_view, plot_properties=plot_properties)
 
     plot.save_screenshot(layout, results_folder, name)
     if do_save_animation:
