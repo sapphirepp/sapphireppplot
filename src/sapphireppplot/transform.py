@@ -91,12 +91,17 @@ def plot_over_line(
         case "uniform":
             plot_over_line_source.SamplingPattern = "Sample Uniformly"
             if plot_properties.sampling_resolution:
-                plot_over_line_source.Resolution = (
-                    plot_properties.sampling_resolution)
+                plot_over_line_source.Resolution = plot_properties.sampling_resolution
         case "center":
             plot_over_line_source.SamplingPattern = "Sample At Segment Centers"
+            if plot_properties.sampling_resolution:
+                plot_over_line_source.ComputeTolerance = False
+                plot_over_line_source.Tolerance = plot_properties.sampling_resolution
         case "boundary":
             plot_over_line_source.SamplingPattern = "Sample At Cell Boundaries"
+            if plot_properties.sampling_resolution:
+                plot_over_line_source.ComputeTolerance = False
+                plot_over_line_source.Tolerance = plot_properties.sampling_resolution
         case _:
             raise ValueError(
                 f"Unknown sampling pattern {plot_properties.sampling_pattern}")

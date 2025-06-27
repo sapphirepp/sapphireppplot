@@ -2,6 +2,7 @@
 
 from typing import Optional
 import numpy as np
+import paraview.simple as ps
 import paraview.servermanager
 from paraview.vtk.util import numpy_support
 
@@ -34,9 +35,9 @@ def to_numpy_1d(
     x_values : np.ndarray
         The x vales as `np.ndarray`.
     data : np.ndarray
-        2D array `data[i][j]` with the data from the solution.
-        The first index `i` corresponds to `array_names[i]`,
-        the second index corresponds to the `x_array[j]`.
+        2D array `data[c][i]` with the data from the solution.
+        The first index `c` corresponds to `array_names[c]`,
+        the second index corresponds to the `x_array[i]`.
     """
     # Fetch the data from the solution
     solution_data = paraview.servermanager.Fetch(solution)
@@ -67,3 +68,71 @@ def to_numpy_1d(
         data[i] = array[mask]
 
     return x_values, data
+
+
+def to_numpy_2d(
+    solution: paraview.servermanager.SourceProxy,
+    array_names: list[str],
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Convert 2D data to a numpy array with the data evaluated at the cell centers.
+
+    Parameters
+    ----------
+    solution : paraview.servermanager.SourceProxy
+        ParaView solution data.
+    array_names : list[str]
+        List of array names that should be extracted.
+
+    Returns
+    -------
+    points : np.ndarray
+        The x/y/z-values of the points organized in a 2D grid:
+        `points[i][j] = [x, y, z]`.
+        Sorted so that `x` corresponds to `i` and `y` to `j`.
+    data : np.ndarray
+        3D array `data[c][i][j]` with the data from the solution.
+        The first index `c` corresponds to `array_names[c]`,
+        the second index and third corresponds to `points[i][j]`.
+    """
+    # create a new 'Cell Centers'
+    cell_centers = ps.CellCenters(registrationName="CellCenters",
+                                  Input=solution)
+
+    # Fetch the data from the cell_centers object
+    cell_center_data = paraview.servermanager.Fetch(cell_centers)
+
+    # Get the point array
+    points_vtk = cell_center_data.GetPoints()
+    # Convert points to numpy array
+    points = numpy_support.vtk_to_numpy(points_vtk.GetData())
+
+    # Sort arrays according to x,y,z coordinate
+    sorted_indices = np.lexsort((points[:, 2], points[:, 1], points[:, 0]))
+    points = points[sorted_indices]
+
+    # create a new 'Point Data to Cell Data'
+    cell_values = ps.PointDatatoCellData(
+        registrationName="PointDatatoCellData", Input=solution)
+
+    # Fetch the data from the cell_values object
+    cell_values_data = paraview.servermanager.Fetch(cell_values)
+
+    data = np.empty((len(array_names), points.shape[0]))
+
+    for i, array_name in enumerate(array_names):
+        # Get the data array
+        array_vtk = cell_values_data.GetCellData().GetArray(array_name)
+        # Convert data to numpy array
+        array = numpy_support.vtk_to_numpy(array_vtk)
+        # Filter out masked data
+        data[i] = array[sorted_indices]
+
+    # Reshape arrays to 2D arrays (assume square grid)
+    size = int(np.sqrt(points.shape[0]))
+    size_x = size
+    size_y = size
+    points = points.reshape((size_x, size_y, 3))
+    data = data.reshape((len(array_names), size_x, size_y))
+
+    return points, data

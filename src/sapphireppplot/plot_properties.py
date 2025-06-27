@@ -52,9 +52,10 @@ class PlotProperties:
 
     sampling_pattern : str
         Sampling pattern used for plot_over_line.
-    sampling_resolution : int, optional
+    sampling_resolution : int | float, optional
         Sampling resolution used for plot_over_line.
-        Only used for uniform sampling.
+        Number of points for uniform sampling,
+        `Tolerance` for center and boundary.
     """
 
     series_names: Optional[list[str]] = None
@@ -82,7 +83,7 @@ class PlotProperties:
     color_bar_length: float = 0.25
 
     sampling_pattern: str = "center"
-    sampling_resolution: Optional[int] = None
+    sampling_resolution: Optional[int | float] = None
 
     def configure_line_chart_view_axes(
             self, line_chart_view: paraview.servermanager.Proxy):
