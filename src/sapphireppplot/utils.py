@@ -3,7 +3,6 @@
 import sys
 import os
 
-
 _results_folder_argv: int = 1
 """
 Global variable to keep track which argv to use for get_results_folder.

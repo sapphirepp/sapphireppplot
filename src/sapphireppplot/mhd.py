@@ -17,9 +17,8 @@ def plot_quantities_1d(
     plot_properties: PlotPropertiesMHD,
     value_range: Optional[list[float]] = None,
     save_animation=False,
-) -> tuple[
-    paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
-]:
+) -> tuple[paraview.servermanager.ViewLayoutProxy,
+           paraview.servermanager.Proxy]:
     """
     Plots and saves a visualization of a specified physical quantity
     from the solution in 1D.
@@ -169,7 +168,8 @@ def plot_split_view_1d(
             plot_properties.labels = {
                 plot_properties.quantity_name(quantity, "numeric_"): labels[0],
                 plot_properties.quantity_name(quantity, "project_"): labels[1],
-                plot_properties.quantity_name(quantity, "interpol_"): labels[1],
+                plot_properties.quantity_name(quantity, "interpol_"):
+                labels[1],
             }
 
         # The subplots seem to work without the `hint` parameter?!
@@ -201,9 +201,8 @@ def plot_quantity_2d(
     value_range: Optional[list[float]] = None,
     show_time: bool = False,
     save_animation: bool = False,
-) -> tuple[
-    paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
-]:
+) -> tuple[paraview.servermanager.ViewLayoutProxy,
+           paraview.servermanager.Proxy]:
     """
     Plots and saves a visualization of a specified physical quantity
     from the solution in 2D.
@@ -273,9 +272,9 @@ def plot_quantities_over_x(
     log_y_scale: bool = False,
     save_animation: bool = False,
 ) -> tuple[
-    paraview.servermanager.SourceProxy,
-    paraview.servermanager.ViewLayoutProxy,
-    paraview.servermanager.Proxy,
+        paraview.servermanager.SourceProxy,
+        paraview.servermanager.ViewLayoutProxy,
+        paraview.servermanager.Proxy,
 ]:
     """
     Takes a slice along a spatial dimension of the solution and plots it.

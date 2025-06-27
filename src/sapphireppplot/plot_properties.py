@@ -73,22 +73,19 @@ class PlotProperties:
     line_styles: dict[str, str] = field(default_factory=dict)
 
     grid_labels: list[str] = field(
-        default_factory=lambda: [r"$x$", r"$y$", r"$z$"]
-    )
+        default_factory=lambda: [r"$x$", r"$y$", r"$z$"])
 
     color_map: str = "Viridis (matplotlib)"
     color_bar_position: str | list[float] = field(
         # default_factory=lambda: [0.65, 0.1]
-        default_factory=lambda: "Lower Right Corner"
-    )
+        default_factory=lambda: "Lower Right Corner")
     color_bar_length: float = 0.25
 
     sampling_pattern: str = "center"
     sampling_resolution: Optional[int] = None
 
     def configure_line_chart_view_axes(
-        self, line_chart_view: paraview.servermanager.Proxy
-    ):
+            self, line_chart_view: paraview.servermanager.Proxy):
         """
         Configures the axes of a LineChartView.
 
@@ -105,8 +102,7 @@ class PlotProperties:
         line_chart_view.BottomAxisLabelFontSize = self.label_size
 
     def configure_line_chart_view_display(
-        self, solution_display: paraview.servermanager.Proxy
-    ):
+            self, solution_display: paraview.servermanager.Proxy):
         """
         Configures the display properties for a LineChartView.
 
@@ -158,9 +154,8 @@ class PlotProperties:
         solution_display.DataAxesGrid.YLabelColor = self.text_color
         solution_display.DataAxesGrid.GridColor = self.text_color
 
-    def configure_color_bar(
-        self, color_bar: paraview.servermanager.Proxy
-    ) -> bool:
+    def configure_color_bar(self,
+                            color_bar: paraview.servermanager.Proxy) -> bool:
         """
         Configure the color bar.
 

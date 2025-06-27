@@ -44,8 +44,7 @@ def load_solution_vtk(
     vtk_files = paraview.util.Glob(search_pattern)
     if not vtk_files:
         raise FileNotFoundError(
-            f"No .vtk files found matching '{search_pattern}'"
-        )
+            f"No .vtk files found matching '{search_pattern}'")
     print(f"Load results in '{search_pattern}'")
 
     # create a new 'Legacy VTK Reader'
@@ -93,8 +92,7 @@ def load_solution_vtu(
     vtu_files = paraview.util.Glob(search_pattern)
     if not vtu_files:
         raise FileNotFoundError(
-            f"No .vtu files found matching '{search_pattern}'"
-        )
+            f"No .vtu files found matching '{search_pattern}'")
     print(f"Load results in '{search_pattern}'")
 
     # create a new 'XML Unstructured Grid Reader'
@@ -146,8 +144,7 @@ def load_solution_pvtu(
     pvtu_files = paraview.util.Glob(search_pattern)
     if not pvtu_files:
         raise FileNotFoundError(
-            f"No .pvtu files found matching '{search_pattern}'"
-        )
+            f"No .pvtu files found matching '{search_pattern}'")
     print(f"Load results in '{search_pattern}'")
 
     # create a new 'XML Partitioned Unstructured Grid Reader'
@@ -200,8 +197,7 @@ def load_solution_hdf5_with_xdmf(
     xdmf_file = paraview.util.Glob(search_pattern)
     if not xdmf_file:
         raise FileNotFoundError(
-            f"No .xdmf file found matching '{search_pattern}'"
-        )
+            f"No .xdmf file found matching '{search_pattern}'")
     print(f"Load results in '{search_pattern}'")
 
     # create a new 'Xdmf3 Reader S'
@@ -241,8 +237,7 @@ def scale_time_steps(
 
     # create a new 'Temporal Shift Scale'
     solution_temporal_scaled = ps.TemporalShiftScale(
-        registrationName="TemporalShiftScale", Input=solution
-    )
+        registrationName="TemporalShiftScale", Input=solution)
 
     num = len(solution.GetProperty("TimestepValues"))
     # Properties modified on solution_temporal_scaled
@@ -262,9 +257,8 @@ def load_solution(
     base_file_name: str = "solution",
     t_start: float = 0.0,
     t_end: float = 1.0,
-) -> tuple[
-    str, paraview.servermanager.SourceProxy, paraview.servermanager.Proxy
-]:
+) -> tuple[str, paraview.servermanager.SourceProxy,
+           paraview.servermanager.Proxy]:
     """
     Simplified loading of the solution independent of file format.
 

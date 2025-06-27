@@ -42,9 +42,8 @@ def plot_over_line(
         The PlotOverLine source.
     """
     # create a new 'Plot Over Line'
-    plot_over_line_source = ps.PlotOverLine(
-        registrationName="PlotOverLine", Input=solution
-    )
+    plot_over_line_source = ps.PlotOverLine(registrationName="PlotOverLine",
+                                            Input=solution)
 
     # Get the bounds in x
     # Fetch data information from the solution
@@ -93,16 +92,14 @@ def plot_over_line(
             plot_over_line_source.SamplingPattern = "Sample Uniformly"
             if plot_properties.sampling_resolution:
                 plot_over_line_source.Resolution = (
-                    plot_properties.sampling_resolution
-                )
+                    plot_properties.sampling_resolution)
         case "center":
             plot_over_line_source.SamplingPattern = "Sample At Segment Centers"
         case "boundary":
             plot_over_line_source.SamplingPattern = "Sample At Cell Boundaries"
         case _:
             raise ValueError(
-                f"Unknown sampling pattern {plot_properties.sampling_pattern}"
-            )
+                f"Unknown sampling pattern {plot_properties.sampling_pattern}")
 
     # Save data if a file is given
     if filename:
@@ -119,9 +116,8 @@ def plot_over_line(
             filename=file_path,
             proxy=plot_over_line_source,
             location=ps.vtkPVSession.DATA_SERVER,
-            ChooseArraysToWrite=(
-                1 if plot_properties.series_names is not None else 0
-            ),
+            ChooseArraysToWrite=(1 if plot_properties.series_names is not None
+                                 else 0),
             PointDataArrays=series_names,
             Precision=5,
             UseScientificNotation=1,
