@@ -92,7 +92,7 @@ def plot_f_lms_2d(
     value_range: Optional[list[float]] = None,
     log_scale: bool = True,
     show_time: bool = False,
-    do_save_animation: bool = False,
+    save_animation: bool = False,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -119,9 +119,8 @@ def plot_f_lms_2d(
         Use a logarithmic color scale?
     show_time : bool, optional
         Display the simulation time in the render view.
-    do_save_animation : bool, optional
-        If True, also saves an animation of the plot.
-        Defaults to False.
+    save_animation : bool, optional
+        Save an animation of the plot.
 
     Returns
     -------
@@ -151,7 +150,7 @@ def plot_f_lms_2d(
         plot.display_time(render_view, plot_properties=plot_properties)
 
     plot.save_screenshot(layout, results_folder, name)
-    if do_save_animation:
+    if save_animation:
         plot.save_animation(layout, results_folder, name)
 
     return layout, render_view
@@ -167,7 +166,7 @@ def plot_f_lms_over_x(
     offset: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
     log_y_scale: bool = False,
-    do_save_animation: bool = False,
+    save_animation: bool = False,
 ) -> tuple[
     paraview.servermanager.SourceProxy,
     paraview.servermanager.ViewLayoutProxy,
@@ -197,9 +196,8 @@ def plot_f_lms_over_x(
         and maximal (`value_range[1]`) value for the y-axes.
     log_y_scale : bool, optional
         Use a logarithmic y-scale?
-    do_save_animation : bool, optional
-        If True, also saves an animation of the plot.
-        Defaults to False.
+    save_animation : bool, optional
+        Save an animation of the plot.
 
     Returns
     -------
@@ -273,7 +271,7 @@ def plot_f_lms_over_x(
     )
 
     plot.save_screenshot(layout, results_folder, name)
-    if do_save_animation:
+    if save_animation:
         plot.save_animation(layout, results_folder, name)
 
     return plot_over_line_x, layout, line_chart_view
@@ -288,7 +286,7 @@ def plot_f_lms_over_p(
     offset: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
     log_y_scale: bool = True,
-    do_save_animation: bool = False,
+    save_animation: bool = False,
 ) -> tuple[
     paraview.servermanager.SourceProxy,
     paraview.servermanager.ViewLayoutProxy,
@@ -316,9 +314,8 @@ def plot_f_lms_over_p(
         and maximal (`value_range[1]`) value for the y-axes.
     log_y_scale : bool, optional
         Use a logarithmic y-scale?
-    do_save_animation : bool, optional
-        If True, also saves an animation of the plot.
-        Defaults to False.
+    save_animation : bool, optional
+        Save an animation of the plot.
 
     Returns
     -------
@@ -389,7 +386,7 @@ def plot_f_lms_over_p(
     )
 
     plot.save_screenshot(layout, results_folder, name)
-    if do_save_animation:
+    if save_animation:
         plot.save_animation(layout, results_folder, name)
 
     return plot_over_line_p, layout, line_chart_view

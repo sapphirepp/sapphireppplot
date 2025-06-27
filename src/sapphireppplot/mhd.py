@@ -16,7 +16,7 @@ def plot_quantities_1d(
     name: str,
     plot_properties: PlotPropertiesMHD,
     value_range: Optional[list[float]] = None,
-    do_save_animation=False,
+    save_animation=False,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -39,9 +39,8 @@ def plot_quantities_1d(
     value_range : list[float], optional
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the y-axes.
-    do_save_animation : bool, optional
-        If True, also saves an animation of the plot.
-        Defaults to False.
+    save_animation : bool, optional
+        Save an animation of the plot.
 
     Returns
     -------
@@ -83,7 +82,7 @@ def plot_quantities_1d(
     )
 
     plot.save_screenshot(layout, results_folder, name)
-    if do_save_animation:
+    if save_animation:
         plot.save_animation(layout, results_folder, name)
 
     # Exit preview mode
@@ -99,7 +98,7 @@ def plot_split_view_1d(
     plot_properties_in: PlotPropertiesMHD,
     labels: Optional[list[str]] = None,
     value_range: Optional[list[float]] = None,
-    do_save_animation=False,
+    save_animation=False,
 ) -> paraview.servermanager.ViewLayoutProxy:
     """
     Creates a split plot of with one quantity per line chart plot.
@@ -121,9 +120,8 @@ def plot_split_view_1d(
     value_range : list[float], optional
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the y-axes.
-    do_save_animation : bool, optional
-        If True, also saves an animation of the plot.
-        Defaults to False.
+    save_animation : bool, optional
+        Save an animation of the plot.
 
     Returns
     -------
@@ -188,7 +186,7 @@ def plot_split_view_1d(
             line_chart_view.ShowLegend = 1
 
     plot.save_screenshot(layout, results_folder, name)
-    if do_save_animation:
+    if save_animation:
         plot.save_animation(layout, results_folder, name)
 
     return layout
@@ -202,7 +200,7 @@ def plot_quantity_2d(
     plot_properties: PlotPropertiesMHD,
     value_range: Optional[list[float]] = None,
     show_time: bool = False,
-    do_save_animation: bool = False,
+    save_animation: bool = False,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -227,9 +225,8 @@ def plot_quantity_2d(
         and maximal (`value_range[1]`) value for the y-axes.
     show_time : bool, optional
         Display the simulation time in the render view.
-    do_save_animation : bool, optional
-        If True, also saves an animation of the plot.
-        Defaults to False.
+    save_animation : bool, optional
+        Save an animation of the plot.
 
     Returns
     -------
@@ -256,7 +253,7 @@ def plot_quantity_2d(
         plot.display_time(render_view, plot_properties=plot_properties)
 
     plot.save_screenshot(layout, results_folder, name)
-    if do_save_animation:
+    if save_animation:
         plot.save_animation(layout, results_folder, name)
 
     # Exit preview mode
@@ -274,7 +271,7 @@ def plot_quantities_over_x(
     offset: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
     log_y_scale: bool = False,
-    do_save_animation: bool = False,
+    save_animation: bool = False,
 ) -> tuple[
     paraview.servermanager.SourceProxy,
     paraview.servermanager.ViewLayoutProxy,
@@ -304,9 +301,8 @@ def plot_quantities_over_x(
         and maximal (`value_range[1]`) value for the y-axes.
     log_y_scale : bool, optional
         Use a logarithmic y-scale?
-    do_save_animation : bool, optional
-        If True, also saves an animation of the plot.
-        Defaults to False.
+    save_animation : bool, optional
+        Save an animation of the plot.
 
     Returns
     -------
@@ -383,7 +379,7 @@ def plot_quantities_over_x(
     )
 
     plot.save_screenshot(layout, results_folder, name)
-    if do_save_animation:
+    if save_animation:
         plot.save_animation(layout, results_folder, name)
 
     return plot_over_line_x, layout, line_chart_view
