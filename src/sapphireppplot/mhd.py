@@ -199,6 +199,7 @@ def plot_quantity_2d(
     name: str,
     plot_properties: PlotPropertiesMHD,
     value_range: Optional[list[float]] = None,
+    log_scale: bool = False,
     show_time: bool = False,
     save_animation: bool = False,
 ) -> tuple[paraview.servermanager.ViewLayoutProxy,
@@ -222,6 +223,8 @@ def plot_quantity_2d(
     value_range : list[float], optional
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the y-axes.
+    log_scale : bool, optional
+        Use a logarithmic color scale?
     show_time : bool, optional
         Display the simulation time in the render view.
     save_animation : bool, optional
@@ -245,6 +248,7 @@ def plot_quantity_2d(
         plot_properties.quantity_name(quantity),
         legend_title=legend_title,
         value_range=value_range,
+        log_scale=log_scale,
         plot_properties=plot_properties,
     )
 
