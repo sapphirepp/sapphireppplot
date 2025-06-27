@@ -16,7 +16,7 @@ def plot_quantities_1d(
     name: str,
     plot_properties: PlotPropertiesMHD,
     value_range: Optional[list[float]] = None,
-    save_animation=False,
+    save_animation: bool = False,
 ) -> tuple[paraview.servermanager.ViewLayoutProxy,
            paraview.servermanager.Proxy]:
     """
@@ -97,7 +97,7 @@ def plot_split_view_1d(
     plot_properties_in: PlotPropertiesMHD,
     labels: Optional[list[str]] = None,
     value_range: Optional[list[float]] = None,
-    save_animation=False,
+    save_animation: bool = False,
 ) -> paraview.servermanager.ViewLayoutProxy:
     """
     Creates a split plot of with one quantity per line chart plot.
