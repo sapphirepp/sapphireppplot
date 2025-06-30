@@ -2,11 +2,128 @@
 
 from typing import Optional
 import copy
+import math
 import paraview.simple as ps
 import paraview.servermanager
 
 from sapphireppplot.plot_properties_mhd import PlotPropertiesMHD
 from sapphireppplot import plot, transform
+
+
+def compute_magnetic_pressure(
+    solution: paraview.servermanager.SourceProxy,
+    plot_properties_in: PlotPropertiesMHD,
+    gamma: float = 5.0 / 3.0,
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
+    """
+    Computes the magnetic pressure for the solution.
+
+    Parameters
+    ----------
+    solution : paraview.servermanager.SourceProxy
+        The the source data.
+    plot_properties_in : PlotPropertiesVFP
+        Properties of the source.
+    gamma : float, optional
+        The adiabatic index.
+
+    Returns
+    -------
+    calculator : paraview.servermanager.SourceProxy
+        Solution with magnetic pressure.
+    plot_properties : PlotPropertiesVFP
+        Solution properties for the including the magnetic pressure.
+    """
+    plot_properties = copy.deepcopy(plot_properties_in)
+
+    # Add a new 'Calculator' to the pipeline
+    calculator = ps.Calculator(registrationName="P_B", Input=solution)
+
+    # Properties modified on calculator
+    calculator.ResultArrayName = "P_B"
+    calculator.Function = f"({gamma}-1) * (b_X^2 + b_Y^2)/2"
+
+    if plot_properties.series_names:
+        plot_properties.series_names += ["P_B"]
+    plot_properties.labels["P_B"] = r"$P_B$"
+    if plot_properties.line_styles:
+        plot_properties.line_styles["P_B"] = "1"
+    if plot_properties.line_colors:
+        plot_properties.line_colors["P_B"] = ["0", "0", "0"]
+
+    return calculator, plot_properties
+
+
+def compute_log_magnetic_divergence(
+    solution: paraview.servermanager.SourceProxy,
+    plot_properties_in: PlotPropertiesMHD,
+    divergence_type: str = "total"
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
+    """
+    Computes the normalized logarithmic magnetic divergence for the solution.
+
+    Parameters
+    ----------
+    solution : paraview.servermanager.SourceProxy
+        The the source data.
+    plot_properties_in : PlotPropertiesVFP
+        Properties of the source.
+    divergence_type : str, optional
+        ."total", "cells" or "faces" divergence.
+
+    Returns
+    -------
+    calculator : paraview.servermanager.SourceProxy
+        Solution with normalized log magnetic divergence.
+    plot_properties : PlotPropertiesVFP
+        Solution properties for the including the log magnetic divergence.
+    """
+    plot_properties = copy.deepcopy(plot_properties_in)
+
+    # Fetch data information from the solution
+    solution_data = paraview.servermanager.Fetch(solution)
+    # Get number of cells
+    n_cells = solution_data.GetNumberOfCells()
+    n_cells_x = math.sqrt(n_cells)
+
+    solution_bounds = solution_data.GetBounds()
+    dx = (solution_bounds[1] - solution_bounds[0]) / n_cells_x
+
+    name = "log_magnetic_divergence"
+    quantity_in = "magnetic_divergence"
+    label = r"\log_{10} (\mid \nabla \cdot B \mid / \mid B \mid \Delta x)"
+    label_postfix = ""
+
+    match divergence_type:
+        case "total":
+            pass
+        case "cells":
+            name += "_cells"
+            quantity_in += "_cells"
+            label_postfix = r"\mid_{\mathrm{Cell}}"
+        case "faces":
+            name += "_faces"
+            quantity_in += "_faces"
+            label_postfix = r"\mid_{\mathrm{Face}}"
+        case _:
+            raise ValueError(f"Unknown case {type}.")
+
+    # Add a new 'Calculator' to the pipeline
+    calculator = ps.Calculator(registrationName=name, Input=solution)
+
+    # Properties modified on calculator
+    calculator.ResultArrayName = name
+    calculator.Function = f"log10(abs({quantity_in}) / sqrt(b_X^2 + b_Y^2) * {dx})"
+
+    if plot_properties.series_names:
+        plot_properties.series_names += [name]
+    plot_properties.labels[name] = f"${label} {label_postfix}$"
+    if plot_properties.line_styles:
+        plot_properties.line_styles[name] = "1"
+    if plot_properties.line_colors:
+        plot_properties.line_colors[name] = ["0", "0", "0"]
+
+    return calculator, plot_properties
 
 
 def plot_quantities_1d(
