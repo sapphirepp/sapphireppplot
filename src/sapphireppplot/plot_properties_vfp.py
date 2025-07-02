@@ -92,7 +92,8 @@ class PlotPropertiesVFP(PlotProperties):
                 f_lms_name = self.f_lms_name(lms_index, prefix)
                 self.series_names += [f_lms_name]
                 self.labels[f_lms_name] = self.f_lms_label(
-                    lms_index, label_postfix)
+                    lms_index, label_postfix
+                )
                 self.line_styles[f_lms_name] = line_style
 
     def create_lms_indices(self, expansion_order: int) -> list[list[int]]:
@@ -110,7 +111,7 @@ class PlotPropertiesVFP(PlotProperties):
         lms_indices : list[list[int]]
             Mapping `lms_indices[i] = [l,m,s]`.
         """
-        system_size = (expansion_order + 1)**2
+        system_size = (expansion_order + 1) ** 2
         lms_indices = []
 
         l = 0
@@ -147,9 +148,9 @@ class PlotPropertiesVFP(PlotProperties):
 
         return f"{tmp_name_f}_{lms_index[0]}{lms_index[1]}{lms_index[2]}"
 
-    def f_lms_label(self,
-                    lms_index: list[int] | list[str],
-                    annotation: str = "") -> str:
+    def f_lms_label(
+        self, lms_index: list[int] | list[str], annotation: str = ""
+    ) -> str:
         """
         Look up of label for lms_index.
 
@@ -174,8 +175,9 @@ class PlotPropertiesVFP(PlotProperties):
 
         return f"${tmp_name_f}_{{ {lms_index[0]} {lms_index[1]} {lms_index[2]} {tmp_postfix} }}$"
 
-    def scale_by_spectral_index(self, spectral_index: float,
-                                lms_indices: list[list[int]]):
+    def scale_by_spectral_index(
+        self, spectral_index: float, lms_indices: list[list[int]]
+    ):
         """
         Scale set the properties to a scaled distribution function
         with spectral index $s$.
@@ -214,7 +216,8 @@ class PlotPropertiesVFP(PlotProperties):
                 f_lms_name = self.f_lms_name(lms_index, prefix)
                 self.series_names += [f_lms_name]
                 self.labels[f_lms_name] = self.f_lms_label(
-                    lms_index, label_postfix)
+                    lms_index, label_postfix
+                )
                 self.line_styles[f_lms_name] = line_style
                 # if self.line_colors:
                 #     self.line_colors[f_lms_name] = self.line_colors[

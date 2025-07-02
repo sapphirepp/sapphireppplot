@@ -65,13 +65,15 @@ def plot_line_chart_view(
     ps.SetActiveSource(solution)
 
     # show data in view
-    solution_display = ps.Show(solution, line_chart_view,
-                               "XYChartRepresentation")
+    solution_display = ps.Show(
+        solution, line_chart_view, "XYChartRepresentation"
+    )
     # Enter preview mode
     layout.PreviewMode = plot_properties.preview_size_1d
     # layout/tab size in pixels
-    layout.SetSize(plot_properties.preview_size_1d[0],
-                   plot_properties.preview_size_1d[1])
+    layout.SetSize(
+        plot_properties.preview_size_1d[0], plot_properties.preview_size_1d[1]
+    )
 
     # Properties modified on solution_display
     solution_display.UseIndexForXAxis = 0
@@ -139,13 +141,15 @@ def plot_render_view_2d(
     ps.SetActiveSource(solution)
 
     # show data in view
-    solution_display = ps.Show(solution, render_view,
-                               "UnstructuredGridRepresentation")
+    solution_display = ps.Show(
+        solution, render_view, "UnstructuredGridRepresentation"
+    )
     # Enter preview mode
     layout.PreviewMode = plot_properties.preview_size_2d
     # layout/tab size in pixels
-    layout.SetSize(plot_properties.preview_size_2d[0],
-                   plot_properties.preview_size_2d[1])
+    layout.SetSize(
+        plot_properties.preview_size_2d[0], plot_properties.preview_size_2d[1]
+    )
 
     # update the view to ensure updated data information
     render_view.Update()
@@ -196,10 +200,10 @@ def plot_render_view_2d(
     # Rescale transfer function
     if value_range:
         transfer_color.RescaleTransferFunction(value_range[0], value_range[1])
-        transfer_opacity.RescaleTransferFunction(value_range[0],
-                                                 value_range[1])
-        transfer_function.RescaleTransferFunction(value_range[0],
-                                                  value_range[1], 0.0, 1.0)
+        transfer_opacity.RescaleTransferFunction(value_range[0], value_range[1])
+        transfer_function.RescaleTransferFunction(
+            value_range[0], value_range[1], 0.0, 1.0
+        )
 
     # convert to log space
     if log_scale:

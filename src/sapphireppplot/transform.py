@@ -44,8 +44,9 @@ def plot_over_line(
         The PlotOverLine source.
     """
     # create a new 'Plot Over Line'
-    plot_over_line_source = ps.PlotOverLine(registrationName="PlotOverLine",
-                                            Input=solution)
+    plot_over_line_source = ps.PlotOverLine(
+        registrationName="PlotOverLine", Input=solution
+    )
 
     # Get the bounds in x
     # Fetch data information from the solution
@@ -93,20 +94,27 @@ def plot_over_line(
         case "uniform":
             plot_over_line_source.SamplingPattern = "Sample Uniformly"
             if plot_properties.sampling_resolution:
-                plot_over_line_source.Resolution = plot_properties.sampling_resolution
+                plot_over_line_source.Resolution = (
+                    plot_properties.sampling_resolution
+                )
         case "center":
             plot_over_line_source.SamplingPattern = "Sample At Segment Centers"
             if plot_properties.sampling_resolution:
                 plot_over_line_source.ComputeTolerance = False
-                plot_over_line_source.Tolerance = plot_properties.sampling_resolution
+                plot_over_line_source.Tolerance = (
+                    plot_properties.sampling_resolution
+                )
         case "boundary":
             plot_over_line_source.SamplingPattern = "Sample At Cell Boundaries"
             if plot_properties.sampling_resolution:
                 plot_over_line_source.ComputeTolerance = False
-                plot_over_line_source.Tolerance = plot_properties.sampling_resolution
+                plot_over_line_source.Tolerance = (
+                    plot_properties.sampling_resolution
+                )
         case _:
             raise ValueError(
-                f"Unknown sampling pattern {plot_properties.sampling_pattern}")
+                f"Unknown sampling pattern {plot_properties.sampling_pattern}"
+            )
 
     # Save data if a file is given
     if filename:
@@ -123,8 +131,9 @@ def plot_over_line(
             filename=file_path,
             proxy=plot_over_line_source,
             location=ps.vtkPVSession.DATA_SERVER,
-            ChooseArraysToWrite=(1 if plot_properties.series_names is not None
-                                 else 0),
+            ChooseArraysToWrite=(
+                1 if plot_properties.series_names is not None else 0
+            ),
             PointDataArrays=series_names,
             Precision=5,
             UseScientificNotation=1,
@@ -173,7 +182,9 @@ def clip_area(
     # Use small epsilon in z to capture cells inside box
     clipped_solution.ClipType.Position = [min_x, min_y, -_epsilon_d]
     clipped_solution.ClipType.Length = [
-        max_x - min_x, max_y - min_y, 2 * _epsilon_d
+        max_x - min_x,
+        max_y - min_y,
+        2 * _epsilon_d,
     ]
 
     ps.HideInteractiveWidgets(proxy=clipped_solution.ClipType)

@@ -81,12 +81,14 @@ class PlotProperties:
     line_styles: dict[str, str] = field(default_factory=dict)
 
     grid_labels: list[str] = field(
-        default_factory=lambda: [r"$x$", r"$y$", r"$z$"])
+        default_factory=lambda: [r"$x$", r"$y$", r"$z$"]
+    )
 
     color_map: str = "Viridis (matplotlib)"
     color_bar_position: str | list[float] = field(
         # default_factory=lambda: [0.65, 0.1]
-        default_factory=lambda: "Lower Right Corner")
+        default_factory=lambda: "Lower Right Corner"
+    )
     color_bar_length: float = 0.25
 
     scale_x: float = 1.0
@@ -97,7 +99,8 @@ class PlotProperties:
     sampling_resolution: Optional[int | float] = None
 
     def configure_line_chart_view_axes(
-            self, line_chart_view: paraview.servermanager.Proxy):
+        self, line_chart_view: paraview.servermanager.Proxy
+    ):
         """
         Configures the axes of a LineChartView.
 
@@ -114,7 +117,8 @@ class PlotProperties:
         line_chart_view.BottomAxisLabelFontSize = self.label_size
 
     def configure_line_chart_view_display(
-            self, solution_display: paraview.servermanager.Proxy):
+        self, solution_display: paraview.servermanager.Proxy
+    ):
         """
         Configures the display properties for a LineChartView.
 
@@ -171,14 +175,17 @@ class PlotProperties:
         render_view.AxesGrid.XLabelColor = self.text_color
         render_view.AxesGrid.YLabelColor = self.text_color
         render_view.AxesGrid.GridColor = self.text_color
-        #scale axes
+        # scale axes
         solution_display.Scale = [self.scale_x, self.scale_y, self.scale_z]
         render_view.AxesGrid.DataScale = [
-            self.scale_x, self.scale_y, self.scale_z
+            self.scale_x,
+            self.scale_y,
+            self.scale_z,
         ]
 
-    def configure_color_bar(self,
-                            color_bar: paraview.servermanager.Proxy) -> bool:
+    def configure_color_bar(
+        self, color_bar: paraview.servermanager.Proxy
+    ) -> bool:
         """
         Configure the color bar.
 

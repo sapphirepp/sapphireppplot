@@ -65,16 +65,18 @@ def scale_distribution_function(
         name_new = plot_properties.f_lms_name(lms_index)
 
         # Add a new 'Calculator' to the pipeline
-        solution_psd = ps.Calculator(registrationName=name_new,
-                                     Input=solution_psd)
+        solution_psd = ps.Calculator(
+            registrationName=name_new, Input=solution_psd
+        )
 
         # Properties modified on solution_psd
         solution_psd.ResultArrayName = name_new
         solution_psd.Function = f"{coord_p}^{spectral_index} * {name_old}"
 
         if plot_properties.line_colors:
-            plot_properties.line_colors[
-                name_new] = plot_properties.line_colors[name_old]
+            plot_properties.line_colors[name_new] = plot_properties.line_colors[
+                name_old
+            ]
 
     # solution_psd.PointArrays = plot_properties.series_names
 
@@ -91,8 +93,9 @@ def plot_f_lms_2d(
     log_scale: bool = True,
     show_time: bool = False,
     save_animation: bool = False,
-) -> tuple[paraview.servermanager.ViewLayoutProxy,
-           paraview.servermanager.Proxy]:
+) -> tuple[
+    paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
+]:
     """
     Plots and saves a visualization of the specified f_lms
     from the solution in 2D.
@@ -165,9 +168,9 @@ def plot_f_lms_over_x(
     log_y_scale: bool = False,
     save_animation: bool = False,
 ) -> tuple[
-        paraview.servermanager.SourceProxy,
-        paraview.servermanager.ViewLayoutProxy,
-        paraview.servermanager.Proxy,
+    paraview.servermanager.SourceProxy,
+    paraview.servermanager.ViewLayoutProxy,
+    paraview.servermanager.Proxy,
 ]:
     """
     Takes a slice along a spatial dimension of the solution and plots it.
@@ -214,15 +217,11 @@ def plot_f_lms_over_x(
     visible_lines = []
     for lms_index in lms_indices:
         if plot_properties.prefix_numeric:
-            visible_lines += [
-                plot_properties.f_lms_name(lms_index, "numeric_")
-            ]
+            visible_lines += [plot_properties.f_lms_name(lms_index, "numeric_")]
         else:
             visible_lines += [plot_properties.f_lms_name(lms_index)]
         if plot_properties.project:
-            visible_lines += [
-                plot_properties.f_lms_name(lms_index, "project_")
-            ]
+            visible_lines += [plot_properties.f_lms_name(lms_index, "project_")]
         if plot_properties.interpol:
             visible_lines += [
                 plot_properties.f_lms_name(lms_index, "interpol_")
@@ -289,9 +288,9 @@ def plot_f_lms_over_p(
     log_y_scale: bool = True,
     save_animation: bool = False,
 ) -> tuple[
-        paraview.servermanager.SourceProxy,
-        paraview.servermanager.ViewLayoutProxy,
-        paraview.servermanager.Proxy,
+    paraview.servermanager.SourceProxy,
+    paraview.servermanager.ViewLayoutProxy,
+    paraview.servermanager.Proxy,
 ]:
     """
     Takes a slice along the p direction of the solution and plots it.
@@ -336,15 +335,11 @@ def plot_f_lms_over_p(
     visible_lines = []
     for lms_index in lms_indices:
         if plot_properties.prefix_numeric:
-            visible_lines += [
-                plot_properties.f_lms_name(lms_index, "numeric_")
-            ]
+            visible_lines += [plot_properties.f_lms_name(lms_index, "numeric_")]
         else:
             visible_lines += [plot_properties.f_lms_name(lms_index)]
         if plot_properties.project:
-            visible_lines += [
-                plot_properties.f_lms_name(lms_index, "project_")
-            ]
+            visible_lines += [plot_properties.f_lms_name(lms_index, "project_")]
         if plot_properties.interpol:
             visible_lines += [
                 plot_properties.f_lms_name(lms_index, "interpol_")

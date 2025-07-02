@@ -31,10 +31,10 @@ def compute_magnetic_divergence(
     plot_properties = copy.deepcopy(plot_properties_in)
 
     # create a new 'Gradient'
-    gradient = ps.Gradient(registrationName='Gradient', Input=solution)
+    gradient = ps.Gradient(registrationName="Gradient", Input=solution)
 
     # Properties modified on gradient
-    gradient.ScalarArray = ['CELLS', 'Bcc']
+    gradient.ScalarArray = ["CELLS", "Bcc"]
     gradient.ComputeGradient = 0
     gradient.ComputeDivergence = 1
     gradient.DivergenceArrayName = "magnetic_divergence"

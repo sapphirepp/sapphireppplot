@@ -96,11 +96,12 @@ class PlotPropertiesMHD(PlotProperties):
                 ]
 
             for quantity in quantities:
-                self.labels[self.quantity_name(quantity,
-                                               prefix)] = (self.quantity_label(
-                                                   quantity, label_postfix))
-                self.line_styles[self.quantity_name(quantity,
-                                                    prefix)] = (line_style)
+                self.labels[self.quantity_name(quantity, prefix)] = (
+                    self.quantity_label(quantity, label_postfix)
+                )
+                self.line_styles[self.quantity_name(quantity, prefix)] = (
+                    line_style
+                )
 
         if self.show_indicators:
             indicators = [
@@ -113,8 +114,9 @@ class PlotPropertiesMHD(PlotProperties):
             ]
             self.series_names += indicators
             for quantity in indicators:
-                self.labels[self.quantity_name(
-                    quantity)] = self.quantity_label(quantity)
+                self.labels[self.quantity_name(quantity)] = self.quantity_label(
+                    quantity
+                )
                 self.line_styles[self.quantity_name(quantity)] = "1"
 
     def quantity_name(self, quantity: str, prefix: str = "") -> str:
@@ -212,10 +214,8 @@ class PlotPropertiesMHD(PlotProperties):
             "u_z": r"$_{z" + tmp_postfix_2 + r"}$",
             "psi": r"$\psi" + tmp_postfix_1 + "r$",
             "magnetic_divergence": r"$\nabla \cdot \mathbf{B}$",
-            "magnetic_divergence_cells":
-            r"$\nabla \cdot \mathbf{B} \mid_{\mathrm{Cell}}$",
-            "magnetic_divergence_faces":
-            r"$\nabla \cdot \mathbf{B} \mid_{\mathrm{Face}}$",
+            "magnetic_divergence_cells": r"$\nabla \cdot \mathbf{B} \mid_{\mathrm{Cell}}$",
+            "magnetic_divergence_faces": r"$\nabla \cdot \mathbf{B} \mid_{\mathrm{Face}}$",
             "shock_indicator": "Shock Indicator",
             "positivity_limiter": "Pos. Limiter",
             "subdomian": "Subdomain",

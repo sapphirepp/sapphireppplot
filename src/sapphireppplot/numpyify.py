@@ -96,8 +96,9 @@ def to_numpy_2d(
         the second index and third corresponds to `points[i][j]`.
     """
     # create a new 'Cell Centers'
-    cell_centers = ps.CellCenters(registrationName="CellCenters",
-                                  Input=solution)
+    cell_centers = ps.CellCenters(
+        registrationName="CellCenters", Input=solution
+    )
 
     # Fetch the data from the cell_centers object
     cell_center_data = paraview.servermanager.Fetch(cell_centers)
@@ -113,7 +114,8 @@ def to_numpy_2d(
 
     # create a new 'Point Data to Cell Data'
     cell_values = ps.PointDatatoCellData(
-        registrationName="PointDatatoCellData", Input=solution)
+        registrationName="PointDatatoCellData", Input=solution
+    )
 
     # Fetch the data from the cell_values object
     cell_values_data = paraview.servermanager.Fetch(cell_values)
