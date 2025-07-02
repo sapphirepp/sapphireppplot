@@ -6,6 +6,8 @@ import paraview.simple as ps
 import paraview.servermanager
 from sapphireppplot.plot_properties import PlotProperties
 
+_epsilon_d: float = 1e-10
+
 
 def plot_over_line(
     solution: paraview.servermanager.SourceProxy,
@@ -129,3 +131,51 @@ def plot_over_line(
         )
 
     return plot_over_line_source
+
+
+def clip_area(
+    solution: paraview.servermanager.SourceProxy,
+    min_x: float = -10,
+    max_x: float = 10,
+    plot_properties: PlotProperties = PlotProperties(),
+) -> paraview.servermanager.SourceProxy:
+    """
+    Creates and configures a line chart view
+    for visualizing data from a given solution in ParaView.
+
+    Parameters
+    ----------
+    solution : paraview.servermanager.SourceProxy
+        The data source.
+    min_x : float, optional
+        Start clip at min_x,
+    min_x : float, optional
+        End clip at max_x.
+    plot_properties : PlotProperties, optional
+        Properties of the solution, like the sampling pattern.
+
+    Returns
+    -------
+    clipped_solution : paraview.servermanager.SourceProxy
+        The clipped source.
+    """
+
+    clipped_solution = ps.Clip(registrationName="Clip", Input=solution)
+
+    clipped_solution.ClipType = "Box"
+    clipped_solution.Crinkleclip = 1
+
+    solution_data = paraview.servermanager.Fetch(solution)
+    bounds = solution_data.GetBounds()
+    min_y = bounds[2]
+    max_y = bounds[3]
+
+    # Use small epsilon in z to capture cells inside box
+    clipped_solution.ClipType.Position = [min_x, min_y, -_epsilon_d]
+    clipped_solution.ClipType.Length = [
+        max_x - min_x, max_y - min_y, 2 * _epsilon_d
+    ]
+
+    ps.HideInteractiveWidgets(proxy=clipped_solution.ClipType)
+
+    return clipped_solution
