@@ -168,7 +168,7 @@ def plot_render_view_2d(
     solution_display.DisableLighting = 1
     solution_display.Diffuse = 1.0
 
-    plot_properties.show_data_grid(solution_display)
+    plot_properties.show_grid_2d(render_view, solution_display)
 
     # update the view to ensure updated data information
     render_view.Update()
@@ -252,7 +252,7 @@ def display_text(
     text_display = ps.Show(text_proxy, view, "TextSourceRepresentation")
 
     # Properties modified on text_display
-    text_display.FontSize = plot_properties.title_size
+    text_display.FontSize = plot_properties.text_size
     text_display.Color = plot_properties.text_color
     match location:
         case str():

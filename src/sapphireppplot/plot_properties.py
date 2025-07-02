@@ -28,10 +28,10 @@ class PlotProperties:
         The text color for labels and legends.
     label_size : int
         Font size for label text.
+    text_size : int
+        Font size for text, e.g. legend and axes titles.
     title_size : int
-        Font size for legend and axes titles.
-    chart_title_size : int
-        Font size for legend labels.
+        Font size for chart titles.
 
     line_colors : dict[str, list[str]]
         Line colors for the series quantities in the LineChartView.
@@ -67,8 +67,8 @@ class PlotProperties:
 
     text_color: list[float] = field(default_factory=lambda: [0.5, 0.5, 0.5])
     label_size: int = 18
-    title_size: int = 24
-    chart_title_size = 30
+    text_size: int = 24
+    title_size = 30
 
     line_colors: dict[str, list[str]] = field(default_factory=dict)
     line_styles: dict[str, str] = field(default_factory=dict)
@@ -95,9 +95,9 @@ class PlotProperties:
         line_chart_view : paraview.servermanager.Proxy
             ParaView LineChartView object.
         """
-        line_chart_view.ChartTitleFontSize = self.chart_title_size
-        line_chart_view.LeftAxisTitleFontSize = self.title_size
-        line_chart_view.BottomAxisTitleFontSize = self.title_size
+        line_chart_view.ChartTitleFontSize = self.title_size
+        line_chart_view.LeftAxisTitleFontSize = self.text_size
+        line_chart_view.BottomAxisTitleFontSize = self.text_size
         line_chart_view.LegendFontSize = self.label_size
         line_chart_view.LeftAxisLabelFontSize = self.label_size
         line_chart_view.BottomAxisLabelFontSize = self.label_size
@@ -128,32 +128,38 @@ class PlotProperties:
                 flat_dict += [key, value]
             solution_display.SeriesLineStyle = flat_dict
 
-    def show_data_grid(self, solution_display: paraview.servermanager.Proxy):
+    def show_grid_2d(
+        self,
+        render_view: paraview.servermanager.Proxy,
+        solution_display: paraview.servermanager.Proxy,
+    ):
         """
-        Set display properties to show the data_grid.
+        Set display properties to show the grid in 2d.
 
         Parameters
         ----------
+        render_view : paraview.servermanager.Proxy
+            Render view.
         solution_display : paraview.servermanager.Proxy
-            Solution display
+            Solution display.
         """
-        solution_display.DataAxesGrid.GridAxesVisibility = 1
-        solution_display.DataAxesGrid.XTitle = self.grid_labels[0]
-        solution_display.DataAxesGrid.YTitle = self.grid_labels[1] + "  "
+        render_view.AxesGrid.Visibility = 1
+        render_view.AxesGrid.XTitle = self.grid_labels[0]
+        render_view.AxesGrid.YTitle = self.grid_labels[1] + "  "
         # Only show Axes Min-X//Y/Z
-        solution_display.DataAxesGrid.AxesToLabel = 7
-        # solution_display.DataAxesGrid.FacesToRender = 7
+        render_view.AxesGrid.AxesToLabel = 7
+        # render_view.AxesGrid.FacesToRender = 7
         # Set default font size
-        solution_display.DataAxesGrid.XTitleFontSize = self.title_size
-        solution_display.DataAxesGrid.YTitleFontSize = self.title_size
-        solution_display.DataAxesGrid.XLabelFontSize = self.label_size
-        solution_display.DataAxesGrid.YLabelFontSize = self.label_size
+        render_view.AxesGrid.XTitleFontSize = self.text_size
+        render_view.AxesGrid.YTitleFontSize = self.text_size
+        render_view.AxesGrid.XLabelFontSize = self.label_size
+        render_view.AxesGrid.YLabelFontSize = self.label_size
         # Use gray color for label for good visibility in both light and dark mode
-        solution_display.DataAxesGrid.XTitleColor = self.text_color
-        solution_display.DataAxesGrid.YTitleColor = self.text_color
-        solution_display.DataAxesGrid.XLabelColor = self.text_color
-        solution_display.DataAxesGrid.YLabelColor = self.text_color
-        solution_display.DataAxesGrid.GridColor = self.text_color
+        render_view.AxesGrid.XTitleColor = self.text_color
+        render_view.AxesGrid.YTitleColor = self.text_color
+        render_view.AxesGrid.XLabelColor = self.text_color
+        render_view.AxesGrid.YLabelColor = self.text_color
+        render_view.AxesGrid.GridColor = self.text_color
 
     def configure_color_bar(self,
                             color_bar: paraview.servermanager.Proxy) -> bool:
@@ -170,7 +176,7 @@ class PlotProperties:
         bool
             `True` if color bar is visible, `False` otherwise.
         """
-        color_bar.TitleFontSize = self.title_size
+        color_bar.TitleFontSize = self.text_size
         color_bar.LabelFontSize = self.label_size
         color_bar.TitleColor = self.text_color
         color_bar.LabelColor = self.text_color
