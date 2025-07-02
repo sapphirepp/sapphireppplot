@@ -54,13 +54,13 @@ def compute_magnetic_pressure(
     return calculator, plot_properties
 
 
-def compute_log_magnetic_divergence(
+def compute_normalized_magnetic_divergence(
     solution: paraview.servermanager.SourceProxy,
     plot_properties_in: PlotPropertiesMHD,
     divergence_type: str = "total"
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
     """
-    Computes the normalized logarithmic magnetic divergence for the solution.
+    Computes the normalized magnetic divergence for the solution.
 
     Parameters
     ----------
@@ -74,7 +74,7 @@ def compute_log_magnetic_divergence(
     Returns
     -------
     calculator : paraview.servermanager.SourceProxy
-        Solution with normalized log magnetic divergence.
+        Solution with normalized magnetic divergence.
     plot_properties : PlotPropertiesVFP
         Solution properties for the including the log magnetic divergence.
     """
@@ -89,9 +89,9 @@ def compute_log_magnetic_divergence(
     solution_bounds = solution_data.GetBounds()
     dx = (solution_bounds[1] - solution_bounds[0]) / n_cells_x
 
-    name = "log_magnetic_divergence"
+    name = "normalized_magnetic_divergence"
     quantity_in = "magnetic_divergence"
-    label = r"\log_{10} (\mid \nabla \cdot B \mid / \mid B \mid \Delta x)"
+    label = r"\mid \nabla \cdot B \mid / \mid B \mid \Delta x"
     label_postfix = ""
 
     match divergence_type:
@@ -113,7 +113,7 @@ def compute_log_magnetic_divergence(
 
     # Properties modified on calculator
     calculator.ResultArrayName = name
-    calculator.Function = f"log10(abs({quantity_in}) / sqrt(b_X^2 + b_Y^2) * {dx})"
+    calculator.Function = f"abs({quantity_in}) / sqrt(b_X^2 + b_Y^2) * {dx}"
 
     if plot_properties.series_names:
         plot_properties.series_names += [name]
