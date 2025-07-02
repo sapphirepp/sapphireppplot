@@ -50,6 +50,13 @@ class PlotProperties:
         Size of the color bar.
         Set to `0` to hide the color bar.
 
+    scale_x : float
+        Scaling factor for x-axes.
+    scale_y : float
+        Scaling factor for y-axes.
+    scale_z : float
+        Scaling factor for z-axes.
+
     sampling_pattern : str
         Sampling pattern used for plot_over_line.
     sampling_resolution : int | float, optional
@@ -81,6 +88,10 @@ class PlotProperties:
         # default_factory=lambda: [0.65, 0.1]
         default_factory=lambda: "Lower Right Corner")
     color_bar_length: float = 0.25
+
+    scale_x: float = 1.0
+    scale_y: float = 1.0
+    scale_z: float = 1.0
 
     sampling_pattern: str = "center"
     sampling_resolution: Optional[int | float] = None
@@ -160,6 +171,11 @@ class PlotProperties:
         render_view.AxesGrid.XLabelColor = self.text_color
         render_view.AxesGrid.YLabelColor = self.text_color
         render_view.AxesGrid.GridColor = self.text_color
+        #scale axes
+        solution_display.Scale = [self.scale_x, self.scale_y, self.scale_z]
+        render_view.AxesGrid.DataScale = [
+            self.scale_x, self.scale_y, self.scale_z
+        ]
 
     def configure_color_bar(self,
                             color_bar: paraview.servermanager.Proxy) -> bool:

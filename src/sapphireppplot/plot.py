@@ -170,6 +170,9 @@ def plot_render_view_2d(
 
     plot_properties.show_grid_2d(render_view, solution_display)
 
+    # reset view to fit data
+    render_view.ResetCamera(False, 0.9)
+
     # update the view to ensure updated data information
     render_view.Update()
 
