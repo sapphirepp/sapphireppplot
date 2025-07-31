@@ -2,6 +2,10 @@
 
 import sys
 import os
+from typing import Dict, Union
+
+ParamDict = Dict[str, Union[str, "ParamDict"]]
+
 
 _results_folder_argv: int = 1
 """
@@ -50,3 +54,43 @@ def get_results_folder(path_prefix: str = "") -> str:
 
     print(f"Using results in '{results_folder}'")
     return results_folder
+
+
+def prm_to_dict(prm_lines: list[str]) -> ParamDict:
+    """
+    Convert parameter file to a dict.
+
+    Parameters
+    ----------
+    prm_lines : list[str]
+        List of line in the parameter file.
+
+    Returns
+    -------
+    ParamDict
+        Dictionary representing the parameter file structure.
+        Values are always given as strings.
+        Subsections are given as dicts.
+    """
+
+    prm_dict: ParamDict = {}
+
+    while prm_lines:
+        line = prm_lines.pop(0)
+        # Remove comments
+        line = line.split("#", maxsplit=1)[0].strip()
+        if not line:
+            continue
+
+        if line.startswith("set "):
+            key_value = line.removeprefix("set").split("=")
+            prm_dict[key_value[0].strip()] = key_value[1].strip()
+        elif line.startswith("subsection "):
+            subsection = line.removeprefix("subsection ")
+            prm_dict[subsection] = prm_to_dict(prm_lines)
+        elif line == "end":
+            return prm_dict
+        else:
+            print(f"Unknown line: {line}")
+
+    return prm_dict
