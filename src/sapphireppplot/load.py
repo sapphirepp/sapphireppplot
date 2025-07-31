@@ -10,6 +10,62 @@ from sapphireppplot.utils import get_results_folder
 from sapphireppplot.plot_properties import PlotProperties
 
 
+def read_parameter_file(
+    results_folder: str, file_name: str = "log.prm"
+) -> list[str]:
+    """
+    Read the contents of a .prm parameter file.
+
+    This function utiles the ParaView CSV reader
+    to allow reading parameter files on a remote data server.
+    It can also be used to read any text file.
+
+    Parameters
+    ----------
+    results_folder : str
+        Path to the folder containing parameter file.
+    file_name : str, optional
+        File name of the parameter file including file extension.
+        By default "log.prm".
+
+    Returns
+    -------
+    list[str]
+        List of lines of in the parameter file.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the parameter file is found in the `results_folder`.
+    """
+
+    search_pattern = os.path.join(results_folder, file_name)
+    prm_file = paraview.util.Glob(search_pattern)
+    if not prm_file:
+        raise FileNotFoundError(f"No file found matching '{search_pattern}'")
+    print(f"Read file '{search_pattern}'")
+
+    # Use a CSVReader in order to read the text file
+    prm_reader = ps.CSVReader(
+        registrationName=file_name,
+        FileName=prm_file,
+        DetectNumericColumns=0,
+        UseStringDelimiter=0,
+        HaveHeaders=0,
+        FieldDelimiterCharacters="",
+    )
+
+    prm_data = paraview.servermanager.Fetch(prm_reader)
+    col = prm_data.GetColumn(0)
+
+    prm_lines: list[str] = [""] * col.GetNumberOfValues()
+    for i in range(col.GetNumberOfValues()):
+        prm_lines[i] = col.GetValue(i)
+
+    ps.Delete(prm_reader)
+    return prm_lines
+
+
 def load_solution_vtk(
     results_folder: str,
     base_file_name: str = "solution",
