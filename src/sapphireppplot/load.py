@@ -6,7 +6,7 @@ import paraview.simple as ps
 import paraview.servermanager
 import paraview.util
 
-from sapphireppplot.utils import get_results_folder
+from sapphireppplot.utils import get_results_folder, prm_to_dict, ParamDict
 from sapphireppplot.plot_properties import PlotProperties
 
 
@@ -318,8 +318,12 @@ def load_solution(
     base_file_name: str = "solution",
     t_start: float = 0.0,
     t_end: float = 1.0,
+    parameter_file_name: str = "log.prm",
 ) -> tuple[
-    str, paraview.servermanager.SourceProxy, paraview.servermanager.Proxy
+    str,
+    ParamDict,
+    paraview.servermanager.SourceProxy,
+    paraview.servermanager.Proxy,
 ]:
     """
     Simplified loading of the solution independent of file format.
@@ -344,11 +348,15 @@ def load_solution(
         Simulation start time.
     t_end : float, optional
         Simulation end time.
+    parameter_file_name : str, optional
+        File name of the parameter file including file extension.
 
     Returns
     -------
     results_folder : str
         The path to the results folder.
+    prm : ParamDict
+        Dictionary of the parameters.
     solution : paraview.servermanager.SourceProxy
         A ParaView reader object with selected point arrays enabled.
     animation_scene : paraview.servermanager.Proxy
@@ -361,6 +369,19 @@ def load_solution(
     """
 
     results_folder = get_results_folder(path_prefix=path_prefix)
+
+    prm: ParamDict = {}
+    if parameter_file_name:
+        try:
+            prm_file = read_parameter_file(
+                results_folder, file_name=parameter_file_name
+            )
+            prm = prm_to_dict(prm_file)
+        except FileNotFoundError:
+            print(
+                f"Parameter file `{parameter_file_name}` not found. "
+                "Parameter dict is empty."
+            )
 
     match file_format:
         case "vtk":
@@ -403,4 +424,4 @@ def load_solution(
     animation_scene.UpdateAnimationUsingDataTimeSteps()
     animation_scene.GoToLast()
 
-    return results_folder, solution, animation_scene
+    return results_folder, prm, solution, animation_scene
