@@ -132,15 +132,12 @@ def plot_f_lms_2d(
     if lms_index is None:
         lms_index = [0, 0, 0]
 
-    legend_title = plot_properties.f_lms_label(lms_index)
-
     # create new layout object
     layout = ps.CreateLayout(name)
     render_view = plot.plot_render_view_2d(
         solution,
         layout,
         plot_properties.f_lms_name(lms_index),
-        legend_title=legend_title,
         value_range=value_range,
         log_scale=log_scale,
         plot_properties=plot_properties,

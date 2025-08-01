@@ -356,15 +356,12 @@ def plot_quantity_2d(
         The configured 2D render view.
     """
 
-    legend_title = plot_properties.quantity_label(quantity)
-
     # create new layout object
     layout = ps.CreateLayout(name)
     render_view = plot.plot_render_view_2d(
         solution,
         layout,
         plot_properties.quantity_name(quantity),
-        legend_title=legend_title,
         value_range=value_range,
         log_scale=log_scale,
         plot_properties=plot_properties,

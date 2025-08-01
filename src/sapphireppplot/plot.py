@@ -96,7 +96,6 @@ def plot_render_view_2d(
     solution: paraview.servermanager.SourceProxy,
     layout: paraview.servermanager.ViewLayoutProxy,
     quantity: str,
-    legend_title: str = "",
     value_range: Optional[list[float]] = None,
     log_scale: bool = False,
     plot_properties: PlotProperties = PlotProperties(),
@@ -113,8 +112,6 @@ def plot_render_view_2d(
         ParaView layout to use for the plot.
     quantity : str
         Name of the quantity to plot.
-    legend_title : str, optional
-        Title for the color bar legend.
     value_range : list[float], optional
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the color bar.
@@ -216,7 +213,10 @@ def plot_render_view_2d(
     color_bar = ps.GetScalarBar(transfer_color, render_view)
 
     # Properties modified on color_bar
-    color_bar.Title = legend_title
+    if plot_properties.labels[quantity]:
+        color_bar.Title = plot_properties.labels[quantity]
+    else:
+        color_bar.Title = quantity
     color_bar_visible = plot_properties.configure_color_bar(color_bar)
     solution_display.SetScalarBarVisibility(render_view, color_bar_visible)
 
