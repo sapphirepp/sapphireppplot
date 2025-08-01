@@ -29,6 +29,9 @@ class PlotPropertiesVFP(PlotProperties):
     _spectral_index : float, optional
         If set, the distribution function is scaled by this index in ParaView.
 
+    debug_input_functions : bool
+        Show user defined input functions.
+
     prefix_numeric : bool
         Use numeric prefix for results.
     project : bool
@@ -45,6 +48,8 @@ class PlotPropertiesVFP(PlotProperties):
     dim_cs: int = 1
     logarithmic_p: bool = True
     expansion_order: int = 1
+
+    debug_input_functions: bool = False
 
     prefix_numeric: bool = False
     project: bool = False
@@ -96,6 +101,9 @@ class PlotPropertiesVFP(PlotProperties):
                 )
                 self.line_styles[f_lms_name] = line_style
 
+        if self.debug_input_functions:
+            self._add_debug_input_functions(lms_indices)
+
     def create_lms_indices(self, expansion_order: int) -> list[list[int]]:
         """
         Create a mapping between the system index $i$ and the
@@ -126,7 +134,12 @@ class PlotPropertiesVFP(PlotProperties):
                 m = -l
         return lms_indices
 
-    def f_lms_name(self, lms_index: list[int], prefix: str = "") -> str:
+    def f_lms_name(
+        self,
+        lms_index: list[int],
+        prefix: str = "",
+        base_name: Optional[str] = None,
+    ) -> str:
         """
         Look up of ParaView series names for specific lms_index.
 
@@ -136,20 +149,29 @@ class PlotPropertiesVFP(PlotProperties):
             The index `[l,m,s]`.
         prefix : str, optional
             Prefix.
+        base_name : str, optional
+            Base name for variable.
+            Defaults to "f" or "p^s f".
 
         Returns
         -------
         quantity_name : str
             The ParaView Series name for the lms_index.
         """
-        tmp_name_f = prefix + "f"
-        if self._spectral_index:
-            tmp_name_f = "p^s f"
+        if not base_name:
+            base_name = "f"
+            if self._spectral_index:
+                base_name = "p^s f"
 
-        return f"{tmp_name_f}_{lms_index[0]}{lms_index[1]}{lms_index[2]}"
+        return (
+            prefix + f"{base_name}_{lms_index[0]}{lms_index[1]}{lms_index[2]}"
+        )
 
     def f_lms_label(
-        self, lms_index: list[int] | list[str], annotation: str = ""
+        self,
+        lms_index: list[int] | list[str],
+        annotation: str = "",
+        variable_name: Optional[str] = None,
     ) -> str:
         """
         Look up of label for lms_index.
@@ -160,20 +182,92 @@ class PlotPropertiesVFP(PlotProperties):
             The index `[l,m,s]`.
         annotation : str, optional
             Postfix annotation of quantity.
+        variable_name : str, optional
+            Name of the variable.
+            Defaults to "f" or "p^s f".
 
         Returns
         -------
         quantity_label : str
             The label for the lms_index.
         """
+        if not variable_name:
+            variable_name = "f"
+            if self._spectral_index:
+                variable_name = f"p^{{ {self._spectral_index:g} }} f"
+
         tmp_postfix = ""
         if annotation:
             tmp_postfix = " ," + annotation
-        tmp_name_f = "f"
-        if self._spectral_index:
-            tmp_name_f = f"p^{{ {self._spectral_index:g} }} f"
 
-        return f"${tmp_name_f}_{{ {lms_index[0]} {lms_index[1]} {lms_index[2]} {tmp_postfix} }}$"
+        return f"${variable_name}_{{ {lms_index[0]} {lms_index[1]} {lms_index[2]} {tmp_postfix} }}$"
+
+    def _add_debug_input_functions(
+        self,
+        lms_indices: list[list[int]],
+        prefix: str = "func_",
+        line_style: str = "1",
+    ):
+        """
+        Add the debug input functions to plot properties.
+
+        Parameters
+        ----------
+        lms_indices : list[list[int]]
+            The lms_indices to activate for the source.
+        prefix : str, optional
+            Prefix.
+        line_style : str, optional
+            Line styles for the series quantities in the LineChartView.
+        """
+        vec_component_names = ["x", "y", "z"]
+
+        if self.series_names:
+            self.series_names += [prefix + "nu"]
+        self.labels[prefix + "nu"] = r"$\nu$"
+        self.line_styles[prefix + "nu"] = line_style
+
+        for lms_index in lms_indices:
+            s_lms_name = self.f_lms_name(lms_index, prefix, base_name="S")
+            if self.series_names:
+                self.series_names += [s_lms_name]
+            self.labels[s_lms_name] = self.f_lms_label(
+                lms_index, variable_name="S"
+            )
+            self.line_styles[s_lms_name] = line_style
+
+        for vec_comp in vec_component_names:
+            if self.series_names:
+                self.series_names += [prefix + "B_" + vec_comp]
+            self.labels[prefix + "B_" + vec_comp] = f"$B_{vec_comp}$"
+            self.line_styles[prefix + "B_" + vec_comp] = line_style
+
+        for vec_comp in vec_component_names:
+            if self.series_names:
+                self.series_names += [prefix + "u_" + vec_comp]
+            self.labels[prefix + "u_" + vec_comp] = f"$u_{vec_comp}$"
+            self.line_styles[prefix + "u_" + vec_comp] = line_style
+        if self.series_names:
+            self.series_names += [prefix + "div_u"]
+        self.labels[prefix + "div_u"] = r"$\nabla \cdot u$"
+        self.line_styles[prefix + "div_u"] = line_style
+        for vec_comp in vec_component_names:
+            if self.series_names:
+                self.series_names += [prefix + "DT_u_" + vec_comp]
+            self.labels[prefix + "DT_u_" + vec_comp] = f"$D u_{vec_comp} / Dt$"
+            self.line_styles[prefix + "DT_u_" + vec_comp] = line_style
+        for vec_comp_i in vec_component_names:
+            for vec_comp_j in vec_component_names:
+                if self.series_names:
+                    self.series_names += [
+                        prefix + f"du{vec_comp_i}_d{vec_comp_j}"
+                    ]
+                self.labels[prefix + f"du{vec_comp_i}_d{vec_comp_j}"] = (
+                    f"$d u_{vec_comp_i} / d{vec_comp_j}$"
+                )
+                self.line_styles[prefix + f"du{vec_comp_i}_d{vec_comp_j}"] = (
+                    line_style
+                )
 
     def scale_by_spectral_index(
         self, spectral_index: float, lms_indices: list[list[int]]
@@ -223,3 +317,6 @@ class PlotPropertiesVFP(PlotProperties):
                 #     self.line_colors[f_lms_name] = self.line_colors[
                 #         f_lms_name_old
                 #     ]
+
+        if self.debug_input_functions:
+            self._add_debug_input_functions(lms_indices)
