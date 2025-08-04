@@ -13,7 +13,9 @@ Global variable to keep track which argv to use for get_results_folder.
 """
 
 
-def get_results_folder(path_prefix: str = "") -> str:
+def get_results_folder(
+    path_prefix: str = "", message: str = "Input path to results folder"
+) -> str:
     """
     Prompts the user to specify the path to a results folder.
 
@@ -29,6 +31,8 @@ def get_results_folder(path_prefix: str = "") -> str:
         are evaluated on the executing machine.
         Avoid relative path if you are connected to a data server
         with client-side execution.
+    message : str, optional
+        Message to be prompted for input.
 
     Returns
     -------
@@ -46,7 +50,7 @@ def get_results_folder(path_prefix: str = "") -> str:
         results_folder = sys.argv[_results_folder_argv]
         _results_folder_argv += 1
     if not results_folder:
-        results_folder = input(f"Path to results folder \n({path_prefix}): ")
+        results_folder = input(f"{message} \n({path_prefix}): ")
     results_folder = os.path.expandvars(results_folder)
     results_folder = os.path.expanduser(results_folder)
     if path_prefix and not os.path.isabs(results_folder):
