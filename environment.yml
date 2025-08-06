@@ -1,0 +1,6 @@
+name: sapplot
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - paraview=5.13.3
