@@ -16,50 +16,77 @@ We refer to the [Sapphire++ Tutorial](https://sapphirepp.org/latest/paraview-pyt
 for an introduction.
 
 This package requires [ParaView](https://www.paraview.org/)
-and [pvpython](https://docs.paraview.org/en/latest/UsersGuide/introduction.html#getting-started-with-pvpython)
+and [paraview.simple](https://docs.paraview.org/en/latest/UsersGuide/introduction.html#getting-started-with-pvpython)
 to be installed.
 
 We recommanded to install ParaView Python is using
-[conda](https://docs.conda.io/)/[conda-forge](https://conda-forge.org/):
+[conda](https://docs.conda.io/)/[conda-forge](https://conda-forge.org/)/[Miniforge](https://github.com/conda-forge/miniforge):
 
-```shell
-conda create --name ParaView python=3.13
-conda activate ParaView
-conda install paraview
-```
+0. Install [Miniforge](https://github.com/conda-forge/miniforge#install):
+
+   If you don't have a `conda` (or similar) installation,
+   you can use the following script to install a minimal `conda` version:
+
+   ```shell
+   wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+   bash Miniforge3-$(uname)-$(uname -m).sh
+   ```
+  
+   Then activate `conda` using:
+
+   ```shell
+   source ~/miniforge3/bin/activate
+   ```
+  
+1. Clone the repository:
+
+   ```shell
+   git clone https://github.com/sapphirepp/sapphireppplot.git
+   cd sapphireppplot
+   ```
+
+2. Create `sapplot` conda environment with ParaView and other prerequisites installed:
+
+   ```shell
+   conda env create -f environment.yml
+   conda activate sapplot
+   ```
+
+3. Install `sapphireppplot`:
+
+   ```shell
+   pip install -e '.[dev]'
+   ```
 
 This ensures that the Python environments are linked correctly,
 so the scripts work both from the terminal using
 `python`, `pvpython` or `pvbatch`
 and inside the ParaView GUI as scripts and macros.
 
+If you want to use the package inside the ParaView GUI,
+make sure to use the ParaView installation in the `conda` environment:
+
+```shell
+source ~/miniforge3/bin/activate
+conda activate sapplot
+paraview &
+```
+
 > [!NOTE]
-> If you install ParaView on a remote server,
+> If you use ParaView on a remote server,
 > you might want to install the
-> [`egl` version](https://www.paraview.org/paraview-docs/latest/cxx/Offscreen.html).
-> To specify the build version use
+> [`egl` version](https://www.paraview.org/paraview-docs/v5.13.3/cxx/Offscreen.html):
+>
+> ```shell
+> conda install paraview=5.13.3=\*_egl
+> ```
+>
+> Or manually specify a build version found
+> [here](https://anaconda.org/conda-forge/paraview/files):
 >
 > ```shell
 > conda install paraview=5.13.3=pyXXXX_XX_egl
 > ```
->
-> A list of all builds can be found at the
-> [conda webpage](https://anaconda.org/conda-forge/paraview/files).
-
-Now you can install this `sapphireppplot` package using `pip`:
-
-```shell
-git clone https://github.com/floschulze/sapphireppplot
-pip install -e sapphireppplot
-```
-
-If you want to use the package inside the ParaView GUI,
-make sure to use the correct ParaView installation that comes with `conda`:
-
-```shell
-conda activate ParaView
-paraview &
-```
 
 ## Further resources
 
