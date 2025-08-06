@@ -1,0 +1,43 @@
+name: Test using Miniconda
+
+on:
+  push:
+
+jobs:
+  tests:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          channels: conda-forge
+          conda-remove-defaults: "true"
+          python-version: 3.13
+          activate-environment: sapplot
+          environment-file: environment.yml
+
+      - name: Install sapplot
+        shell: bash -el {0}
+        run: |
+          pip install -e '.[test]'
+
+      - name: list env info
+        shell: bash -el {0}
+        run: |
+          conda info
+          conda list
+
+      - name: Check formatting with black
+        shell: bash -el {0}
+        run: |
+          black . --diff --check
+
+      - name: flake8
+        shell: bash -el {0}
+        run: |
+          echo "Run flake8"
+          flake8 .
