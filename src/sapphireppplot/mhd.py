@@ -7,7 +7,92 @@ import paraview.simple as ps
 import paraview.servermanager
 
 from sapphireppplot.plot_properties_mhd import PlotPropertiesMHD
-from sapphireppplot import pvplot, transform
+from sapphireppplot.utils import ParamDict
+from sapphireppplot import utils, pvload, pvplot, transform
+
+
+def load_solution(
+    plot_properties: PlotPropertiesMHD,
+    path_prefix: str = "",
+) -> tuple[
+    str,
+    ParamDict,
+    paraview.servermanager.SourceProxy,
+    paraview.servermanager.Proxy,
+]:
+    """
+    Load solution for MHD module.
+
+    This function performs the following steps:
+    1. Retrieves the folder containing simulation results.
+    2. Loads the parameter file.
+    3. Loads the solution data from the files in the results folder.
+    4. Adds time step information if necessary.
+    5. Updates the animation scene to the last available time step.
+
+    Parameters
+    ----------
+    plot_properties : PlotProperties
+        Properties of the solution to load.
+
+    Returns
+    -------
+    results_folder : str
+        The path to the results folder.
+    prm : ParamDict
+        Dictionary of the parameters.
+    solution : paraview.servermanager.SourceProxy
+        A ParaView reader object with selected point arrays enabled.
+    animation_scene : paraview.servermanager.Proxy
+        The ParaView AnimationScene.
+
+    Raises
+    ------
+    ValueError
+        If no matching files are found.
+    """
+    results_folder = utils.get_results_folder(path_prefix=path_prefix)
+
+    prm_file = pvload.read_parameter_file(results_folder)
+    prm = utils.prm_to_dict(prm_file)
+
+    file_format = prm["Output"]["Format"]
+    base_file_name = prm["Output"]["Base file name"]
+    t_start = 0.0
+    t_end = float(prm["MHD"]["Time stepping"]["Final time"])
+
+    match file_format:
+        case "vtu":
+            solution = pvload.load_solution_vtu(
+                results_folder,
+                base_file_name=base_file_name,
+                load_arrays=plot_properties.series_names,
+            )
+        case "pvtu":
+            solution_without_time = pvload.load_solution_pvtu(
+                results_folder,
+                base_file_name=base_file_name,
+                load_arrays=plot_properties.series_names,
+            )
+            solution = pvload.scale_time_steps(
+                solution_without_time,
+                t_start=t_start,
+                t_end=t_end,
+            )
+        case "hdf5":
+            solution = pvload.load_solution_hdf5_with_xdmf(
+                results_folder,
+                base_file_name=base_file_name,
+                load_arrays=plot_properties.series_names,
+            )
+        case _:
+            raise ValueError(f"Unknown file_format: '{file_format}'")
+
+    animation_scene = ps.GetAnimationScene()
+    animation_scene.UpdateAnimationUsingDataTimeSteps()
+    animation_scene.GoToLast()
+
+    return results_folder, prm, solution, animation_scene
 
 
 def compute_magnetic_pressure(

@@ -5,6 +5,79 @@ import paraview.simple as ps
 import paraview.servermanager
 
 from sapphireppplot.plot_properties_athena import PlotPropertiesAthena
+from sapphireppplot.utils import ParamDict
+from sapphireppplot import utils, pvload
+
+
+def load_solution(
+    plot_properties: PlotPropertiesAthena,  # noqa: U100
+    path_prefix: str = "",
+    base_file_name: str = "solution",
+    t_start: float = 0.0,
+    t_end: float = 1.0,
+) -> tuple[
+    str,
+    ParamDict,
+    paraview.servermanager.SourceProxy,
+    paraview.servermanager.Proxy,
+]:
+    """
+    Load athena++ solution.
+
+    This function performs the following steps:
+    1. Retrieves the folder containing simulation results.
+    2. Loads the solution data from the files in the results folder.
+    3. Adds time step information if necessary.
+    4. Updates the animation scene to the last available time step.
+
+    Parameters
+    ----------
+    plot_properties : PlotPropertiesAthena
+        Properties of the solution to load.
+    path_prefix : str, optional
+        Prefix for relative path.
+    base_file_name : str, optional
+        Base name of the solutions files.
+    t_start : float, optional
+        Simulation start time.
+    t_end : float, optional
+        Simulation end time.
+
+    Returns
+    -------
+    results_folder : str
+        The path to the results folder.
+    prm : ParamDict
+        Dictionary of the parameters.
+    solution : paraview.servermanager.SourceProxy
+        A ParaView reader object with selected point arrays enabled.
+    animation_scene : paraview.servermanager.Proxy
+        The ParaView AnimationScene.
+
+    Raises
+    ------
+    ValueError
+        If no matching files are found.
+    """
+    results_folder = utils.get_results_folder(path_prefix=path_prefix)
+
+    prm: ParamDict = {}
+
+    solution_without_time = pvload.load_solution_vtk(
+        results_folder,
+        base_file_name=base_file_name,
+    )
+    solution = pvload.scale_time_steps(
+        solution_without_time,
+        t_start=t_start,
+        t_end=t_end,
+    )
+
+    animation_scene = ps.GetAnimationScene()
+    animation_scene.UpdateAnimationUsingDataTimeSteps()
+    animation_scene.GoToLast()
+
+    return results_folder, prm, solution, animation_scene
 
 
 def compute_magnetic_divergence(
