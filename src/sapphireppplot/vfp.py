@@ -35,7 +35,7 @@ def scale_distribution_function(
 
     Returns
     -------
-    solution_psd : paraview.servermanager.SourceProxy
+    solution_scaled : paraview.servermanager.SourceProxy
         The scaled distribution function `p^s f_lms` for lms_indices.
     plot_properties : PlotPropertiesVFP
         Solution properties for the scaled distribution function.
@@ -60,28 +60,28 @@ def scale_distribution_function(
     if plot_properties.logarithmic_p:
         coord_p = f"exp({coord_p})"
 
-    solution_psd = solution
+    solution_scaled = solution
     for lms_index in lms_indices:
         name_old = plot_properties_in.f_lms_name(lms_index)
         name_new = plot_properties.f_lms_name(lms_index)
 
         # Add a new 'Calculator' to the pipeline
-        solution_psd = ps.Calculator(
-            registrationName=name_new, Input=solution_psd
+        solution_scaled = ps.Calculator(
+            registrationName=name_new, Input=solution_scaled
         )
 
-        # Properties modified on solution_psd
-        solution_psd.ResultArrayName = name_new
-        solution_psd.Function = f"{coord_p}^{spectral_index} * {name_old}"
+        # Properties modified on solution_scaled
+        solution_scaled.ResultArrayName = name_new
+        solution_scaled.Function = f"{coord_p}^{spectral_index} * {name_old}"
 
         if plot_properties.line_colors:
             plot_properties.line_colors[name_new] = plot_properties.line_colors[
                 name_old
             ]
 
-    # solution_psd.PointArrays = plot_properties.series_names
+    # solution_scaled.PointArrays = plot_properties.series_names
 
-    return solution_psd, plot_properties
+    return solution_scaled, plot_properties
 
 
 def plot_f_lms_2d(

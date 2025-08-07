@@ -205,7 +205,7 @@ def plot_render_view_2d(
 
     transfer_color.ApplyPreset(plot_properties.color_map, True)
 
-    # get color legend/bar for f_000LUT in view render_view
+    # get color bar
     color_bar = ps.GetScalarBar(transfer_color, render_view)
 
     # Properties modified on color_bar

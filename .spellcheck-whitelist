@@ -1,0 +1,52 @@
+sapphireppplot
+vfp
+mhd
+utils
+
+# Shorthands
+lms
+vec
+prm
+Param
+tmp
+num
+coord
+1d
+2d
+3d
+dx
+
+# ParaView
+paraview
+servermanager
+util
+vtk
+vtu
+pvtu
+hdf5
+xdmf
+Xdmf3
+PointArrays
+Point1
+Point2
+Rescale
+Crinkleclip
+AxesGrid
+FacesToRender
+Datato
+Function2
+
+# Python
+pylint
+numpy
+ndarray
+dtype
+lexsort
+sqrt
+removeprefix
+expandvars
+isabs
+maxsplit
+
+# Words
+postfix
