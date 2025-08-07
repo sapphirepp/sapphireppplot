@@ -1,4 +1,4 @@
-"""Define PlotProperties class"""
+"""Define PlotProperties class."""
 
 from dataclasses import dataclass, field
 from typing import Optional
@@ -102,7 +102,7 @@ class PlotProperties:
         self, line_chart_view: paraview.servermanager.Proxy
     ):
         """
-        Configures the axes of a LineChartView.
+        Configure axes of a LineChartView.
 
         Parameters
         ----------
@@ -120,7 +120,7 @@ class PlotProperties:
         self, solution_display: paraview.servermanager.Proxy
     ):
         """
-        Configures the display properties for a LineChartView.
+        Configure display properties for a LineChartView.
 
         Parameters
         ----------

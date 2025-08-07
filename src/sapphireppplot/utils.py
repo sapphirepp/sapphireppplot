@@ -38,7 +38,7 @@ def get_results_folder(
     -------
     results_folder : str
         The path to the results folder.
-    #"""
+    """
     global _results_folder_argv  # pylint: disable=global-statement
 
     path_prefix = os.path.expandvars(path_prefix)
@@ -76,7 +76,6 @@ def prm_to_dict(prm_lines: list[str]) -> ParamDict:
         Values are always given as strings.
         Subsections are given as dicts.
     """
-
     prm_dict: ParamDict = {}
 
     while prm_lines:

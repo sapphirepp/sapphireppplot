@@ -1,4 +1,4 @@
-"""Define PlotPropertiesAthena class"""
+"""Define PlotPropertiesAthena class."""
 
 from dataclasses import dataclass
 from typing import override

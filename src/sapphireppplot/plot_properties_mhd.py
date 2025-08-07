@@ -1,4 +1,4 @@
-"""Define PlotPropertiesMHD class"""
+"""Define PlotPropertiesMHD class."""
 
 from dataclasses import dataclass
 

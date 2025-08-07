@@ -1,4 +1,4 @@
-"""Show plots using ParaView"""
+"""Create plots using ParaView."""
 
 from typing import Optional
 import os
@@ -19,8 +19,7 @@ def plot_line_chart_view(
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
-    Creates and configures a line chart view
-    for visualizing data from a given solution in ParaView.
+    Create and configure line chart view in ParaView.
 
     Parameters
     ----------
@@ -49,7 +48,6 @@ def plot_line_chart_view(
     line_chart_view : paraview.servermanager.XYChartViewProxy
         The configured XY chart view.
     """
-
     # Create a new 'Line Chart View'
     line_chart_view = ps.CreateView("XYChartView")
     line_chart_view.BottomAxisTitle = x_label
@@ -101,8 +99,7 @@ def plot_render_view_2d(
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
-    Creates and configures a 2D render view
-    for visualizing data from a given solution in ParaView.
+    Create and configure 2D render view in ParaView.
 
     Parameters
     ----------
@@ -125,7 +122,6 @@ def plot_render_view_2d(
     render_view : paraview.servermanager.RenderViewProxy
         The configured 2D render view.
     """
-
     # Create a new 'Line Chart View'
     render_view = ps.CreateView("RenderView")
 
@@ -328,7 +324,7 @@ def save_screenshot(
     transparent_background: bool = True,
 ):
     """
-    Saves a screenshot of the given line chart view as 'png'.
+    Save screenshot of the given line chart view as `png`.
 
     Parameters
     ----------
@@ -359,7 +355,7 @@ def save_animation(
     transparent_background: bool = False,
 ):
     """
-    Saves an animation of the given line chart view as series of 'png'.
+    Save animation of the given line chart view as series of `.png` files.
 
     Parameters
     ----------

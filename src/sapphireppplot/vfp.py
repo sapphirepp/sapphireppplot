@@ -1,4 +1,4 @@
-"""Module for VFP specific plotting"""
+"""Module for VFP specific plotting."""
 
 from typing import Optional
 import copy
@@ -17,6 +17,7 @@ def scale_distribution_function(
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVFP]:
     """
     Scales the distribution function to the desired spectral index $s$.
+
     This will create a number of calculator objects,
     each scaling one specific lms_index.
 
@@ -97,8 +98,7 @@ def plot_f_lms_2d(
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
     """
-    Plots and saves a visualization of the specified f_lms
-    from the solution in 2D.
+    Plot and save visualization of the specified f_lms in 2D.
 
     Parameters
     ----------
@@ -170,7 +170,7 @@ def plot_f_lms_over_x(
     paraview.servermanager.Proxy,
 ]:
     """
-    Takes a slice along a spatial dimension of the solution and plots it.
+    Take and plot slice along a spatial dimension of the solution.
 
     Parameters
     ----------
@@ -290,7 +290,7 @@ def plot_f_lms_over_p(
     paraview.servermanager.Proxy,
 ]:
     """
-    Takes a slice along the p direction of the solution and plots it.
+    Take and plot slice along the p direction of the solution.
 
     Parameters
     ----------

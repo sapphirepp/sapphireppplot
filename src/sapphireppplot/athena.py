@@ -1,4 +1,4 @@
-"""Module for Athena++ specific plotting"""
+"""Module for Athena++ specific plotting."""
 
 import copy
 import paraview.simple as ps
@@ -12,7 +12,7 @@ def compute_magnetic_divergence(
     plot_properties_in: PlotPropertiesAthena,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesAthena]:
     """
-    Computes the magnetic divergence of the solution.
+    Compute magnetic divergence of the solution.
 
     Parameters
     ----------

@@ -14,7 +14,7 @@ def read_parameter_file(
     results_folder: str, file_name: str = "log.prm"
 ) -> list[str]:
     """
-    Read the contents of a .prm parameter file.
+    Read contents of a `.prm` parameter file.
 
     This function utiles the ParaView CSV reader
     to allow reading parameter files on a remote data server.
@@ -38,7 +38,6 @@ def read_parameter_file(
     FileNotFoundError
         If the parameter file is found in the `results_folder`.
     """
-
     search_pattern = os.path.join(results_folder, file_name)
     prm_file = paraview.util.Glob(search_pattern)
     if not prm_file:
@@ -71,13 +70,12 @@ def load_solution_vtk(
     base_file_name: str = "solution",
 ) -> paraview.servermanager.SourceProxy:
     """
-    Loads a series of .vtu solution files from the specified results folder
-    using ParaView's XMLUnstructuredGridReader.
+    Load series of `.vtk` solution files.
 
     Parameters
     ----------
     results_folder : str
-        Path to the folder containing solution_*.pvtu files.
+        Path to the folder containing `solution_*.vtk` files.
     base_file_name : str, optional
         Base name of the solutions files.
 
@@ -89,13 +87,12 @@ def load_solution_vtk(
     Raises
     ------
     FileNotFoundError
-        If no .pvtu files are found in the `results_folder`.
+        If no `.vtk` files are found in the `results_folder`.
 
     Notes
     -----
     The 'TimeArray' property is not set.
     """
-
     search_pattern = os.path.join(results_folder, base_file_name + "*.vtk")
     vtk_files = paraview.util.Glob(search_pattern)
     if not vtk_files:
@@ -122,13 +119,12 @@ def load_solution_vtu(
     load_arrays: Optional[list[str]] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
-    Loads a series of .vtu solution files from the specified results folder
-    using ParaView's XMLUnstructuredGridReader.
+    Load series of `.vtu` solution files.
 
     Parameters
     ----------
     results_folder : str
-        Path to the folder containing solution_*.pvtu files.
+        Path to the folder containing `solution_*.vtu` files.
     base_file_name : str, optional
         Base name of the solutions files.
     load_arrays : list[str], optional
@@ -142,9 +138,8 @@ def load_solution_vtu(
     Raises
     ------
     FileNotFoundError
-        If no .pvtu files are found in the `results_folder`.
+        If no `.vtu` files are found in the `results_folder`.
     """
-
     search_pattern = os.path.join(results_folder, base_file_name + "*.vtu")
     vtu_files = paraview.util.Glob(search_pattern)
     if not vtu_files:
@@ -171,13 +166,12 @@ def load_solution_pvtu(
     load_arrays: Optional[list[str]] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
-    Loads a series of .pvtu solution files from the specified results folder
-    using ParaView's XMLPartitionedUnstructuredGridReader.
+    Load series of `.pvtu` solution files.
 
     Parameters
     ----------
     results_folder : str
-        Path to the folder containing *.pvtu files.
+        Path to the folder containing `solution_*.pvtu` files.
     base_file_name : str, optional
         Base name of the solutions files.
     load_arrays : list[str], optional
@@ -191,13 +185,12 @@ def load_solution_pvtu(
     Raises
     ------
     FileNotFoundError
-        If no .pvtu files are found in the `results_folder`.
+        If no `.pvtu` files are found in the `results_folder`.
 
     Notes
     -----
     The 'TimeArray' property is not set.
     """
-
     search_pattern = os.path.join(results_folder, base_file_name + "*.pvtu")
     pvtu_files = paraview.util.Glob(search_pattern)
     if not pvtu_files:
@@ -224,14 +217,12 @@ def load_solution_hdf5_with_xdmf(
     load_arrays: Optional[list[str]] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
-    Loads a series of .hdf5 solution files from a XDMF file
-    in the specified results folder
-    using ParaView's Xdmf3ReaderS.
+    Load series of `.hdf5` solution files from a `.xdmf` file.
 
     Parameters
     ----------
     results_folder : str
-        Path to the folder containing *.pvtu files.
+        Path to the folder containing the `solution.xdmf` file.
     base_file_name : str, optional
         Base name of the solutions files.
     load_arrays : list[str], optional
@@ -245,13 +236,12 @@ def load_solution_hdf5_with_xdmf(
     Raises
     ------
     FileNotFoundError
-        If no  matching .xdmf file found in the `results_folder`.
+        If no  matching `.xdmf` file found in the `results_folder`.
 
     Notes
     -----
     - The 'TimeArray' property is set to "None".
     """
-
     search_pattern = os.path.join(results_folder, base_file_name + ".xdmf")
     xdmf_file = paraview.util.Glob(search_pattern)
     if not xdmf_file:
@@ -278,7 +268,7 @@ def scale_time_steps(
     t_end: float = 1.0,
 ) -> paraview.servermanager.SourceProxy:
     """
-    Scales the time step to match the start and end time.
+    Scale time steps to match start and end time.
 
     Parameters
     ----------
@@ -294,7 +284,6 @@ def scale_time_steps(
     solution_temporal_scaled: paraview.servermanager.SourceProxy
         Solution with scaled time steps.
     """
-
     # create a new 'Temporal Shift Scale'
     solution_temporal_scaled = ps.TemporalShiftScale(
         registrationName="TemporalShiftScale", Input=solution
@@ -367,7 +356,6 @@ def load_solution(
     ValueError
         If no matching files are found.
     """
-
     results_folder = get_results_folder(path_prefix=path_prefix)
 
     prm: ParamDict = {}

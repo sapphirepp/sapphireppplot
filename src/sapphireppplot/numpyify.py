@@ -1,4 +1,4 @@
-"""Convert ParaView data to numpy arrays"""
+"""Convert ParaView data to numpy arrays."""
 
 from typing import Optional
 import numpy as np

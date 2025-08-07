@@ -1,4 +1,4 @@
-"""Define PlotPropertiesVFP class"""
+"""Define PlotPropertiesVFP class."""
 
 from dataclasses import dataclass
 from typing import Optional
@@ -106,8 +106,7 @@ class PlotPropertiesVFP(PlotProperties):
 
     def create_lms_indices(self, expansion_order: int) -> list[list[int]]:
         """
-        Create a mapping between the system index $i$ and the
-        spherical harmonic indices $(l,m,s)$.
+        Create mapping between system index $i$ and spherical harmonic indices $(l,m,s)$.
 
         Parameters
         ----------
@@ -273,8 +272,7 @@ class PlotPropertiesVFP(PlotProperties):
         self, spectral_index: float, lms_indices: list[list[int]]
     ):
         """
-        Scale set the properties to a scaled distribution function
-        with spectral index $s$.
+        Set properties to a scaled distribution function with spectral index $s$.
 
         Parameters
         ----------

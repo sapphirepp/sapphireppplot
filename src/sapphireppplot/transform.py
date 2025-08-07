@@ -1,4 +1,4 @@
-"""Transform the solution, e.g. by PlotOverLine or Calculator"""
+"""Transform the solution, e.g. by PlotOverLine or Calculator."""
 
 from typing import Optional
 import os
@@ -18,8 +18,7 @@ def plot_over_line(
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.SourceProxy:
     """
-    Creates and configures a line chart view
-    for visualizing data from a given solution in ParaView.
+    Create and configure plot over line from solution.
 
     Parameters
     ----------
@@ -149,8 +148,7 @@ def clip_area(
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.SourceProxy:
     """
-    Creates and configures a line chart view
-    for visualizing data from a given solution in ParaView.
+    Clip area from solution.
 
     Parameters
     ----------
@@ -168,7 +166,6 @@ def clip_area(
     clipped_solution : paraview.servermanager.SourceProxy
         The clipped source.
     """
-
     clipped_solution = ps.Clip(registrationName="Clip", Input=solution)
 
     clipped_solution.ClipType = "Box"

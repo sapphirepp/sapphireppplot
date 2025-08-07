@@ -1,4 +1,4 @@
-"""Module for MHD specific plotting"""
+"""Module for MHD specific plotting."""
 
 from typing import Optional
 import copy
@@ -16,7 +16,7 @@ def compute_magnetic_pressure(
     gamma: float = 5.0 / 3.0,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
     """
-    Computes the magnetic pressure for the solution.
+    Compute magnetic pressure for the solution.
 
     Parameters
     ----------
@@ -60,7 +60,7 @@ def compute_normalized_magnetic_divergence(
     divergence_type: str = "total",
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
     """
-    Computes the normalized magnetic divergence for the solution.
+    Compute normalized magnetic divergence for the solution.
 
     Parameters
     ----------
@@ -138,8 +138,7 @@ def plot_quantities_1d(
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
     """
-    Plots and saves a visualization of a specified physical quantity
-    from the solution in 1D.
+    Plot and save a visualization of a specified physical quantity in 1D.
 
     Parameters
     ----------
@@ -218,7 +217,7 @@ def plot_split_view_1d(
     save_animation: bool = False,
 ) -> paraview.servermanager.ViewLayoutProxy:
     """
-    Creates a split plot of with one quantity per line chart plot.
+    Create split plot of with one quantity per line chart plot.
 
     Parameters
     ----------
@@ -323,8 +322,7 @@ def plot_quantity_2d(
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
     """
-    Plots and saves a visualization of a specified physical quantity
-    from the solution in 2D.
+    Plot and save visualization of specified physical quantity in 2D.
 
     Parameters
     ----------
@@ -355,7 +353,6 @@ def plot_quantity_2d(
     render_view : paraview.servermanager.RenderViewProxy
         The configured 2D render view.
     """
-
     # create new layout object
     layout = ps.CreateLayout(name)
     render_view = plot.plot_render_view_2d(
@@ -396,7 +393,7 @@ def plot_quantities_over_x(
     paraview.servermanager.Proxy,
 ]:
     """
-    Takes a slice along a spatial dimension of the solution and plots it.
+    Take and plot slice along a spatial dimension of the solution.
 
     Parameters
     ----------
@@ -431,7 +428,6 @@ def plot_quantities_over_x(
     line_chart_view : paraview.servermanager.XYChartViewProxy
         The configured XY chart view.
     """
-
     y_label = r"$\mathbf{w}(x)$"
     if len(quantities) == 1:
         y_label = plot_properties.quantity_label(quantities[0])
