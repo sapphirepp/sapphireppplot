@@ -58,7 +58,7 @@ class PlotPropertiesVFP(PlotProperties):
 
     _spectral_index: Optional[float] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.dim_ps = self.dimension
         self.dim_cs = self.dimension - self.momentum
 
@@ -206,7 +206,7 @@ class PlotPropertiesVFP(PlotProperties):
         lms_indices: list[list[int]],
         prefix: str = "func_",
         line_style: str = "1",
-    ):
+    ) -> None:
         """
         Add the debug input functions to plot properties.
 
@@ -270,7 +270,7 @@ class PlotPropertiesVFP(PlotProperties):
 
     def scale_by_spectral_index(
         self, spectral_index: float, lms_indices: list[list[int]]
-    ):
+    ) -> None:
         """
         Set properties to a scaled distribution function with spectral index $s$.
 

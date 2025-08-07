@@ -12,7 +12,7 @@ class PlotPropertiesAthena(PlotPropertiesMHD):
     Specialized plot properties for Athena plots.
     """
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.data_type = "CELLS"
 
         self.series_names = [

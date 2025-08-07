@@ -33,7 +33,7 @@ class PlotPropertiesMHD(PlotProperties):
     annotation_project_interpol: str = "ana"
     show_indicators: bool = False
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.series_names = []
         self.labels = {}
         self.colors = {}

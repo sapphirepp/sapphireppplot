@@ -322,7 +322,7 @@ def save_screenshot(
     results_folder: str,
     filename: str,
     transparent_background: bool = True,
-):
+) -> None:
     """
     Save screenshot of the given line chart view as `png`.
 
@@ -353,7 +353,7 @@ def save_animation(
     results_folder: str,
     filename: str,
     transparent_background: bool = False,
-):
+) -> None:
     """
     Save animation of the given line chart view as series of `.png` files.
 

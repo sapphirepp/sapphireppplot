@@ -100,7 +100,7 @@ class PlotProperties:
 
     def configure_line_chart_view_axes(
         self, line_chart_view: paraview.servermanager.Proxy
-    ):
+    ) -> None:
         """
         Configure axes of a LineChartView.
 
@@ -118,7 +118,7 @@ class PlotProperties:
 
     def configure_line_chart_view_display(
         self, solution_display: paraview.servermanager.Proxy
-    ):
+    ) -> None:
         """
         Configure display properties for a LineChartView.
 
@@ -147,7 +147,7 @@ class PlotProperties:
         self,
         render_view: paraview.servermanager.Proxy,
         solution_display: paraview.servermanager.Proxy,
-    ):
+    ) -> None:
         """
         Set display properties to show the grid in 2d.
 
