@@ -145,7 +145,7 @@ def clip_area(
     solution: paraview.servermanager.SourceProxy,
     min_x: float = -10,
     max_x: float = 10,
-    plot_properties: PlotProperties = PlotProperties(),
+    plot_properties: PlotProperties = PlotProperties(),  # noqa: U100
 ) -> paraview.servermanager.SourceProxy:
     """
     Clip area from solution.
