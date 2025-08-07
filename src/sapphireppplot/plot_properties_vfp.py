@@ -122,7 +122,7 @@ class PlotPropertiesVFP(PlotProperties):
         system_size = (expansion_order + 1) ** 2
         lms_indices = []
 
-        l = 0
+        l = 0  # noqa: E741
         m = 0
         for _ in range(system_size):
             s = 0 if m <= 0 else 1
