@@ -2,6 +2,8 @@ sapphireppplot
 vfp
 mhd
 utils
+pvplot
+pvload
 
 # Shorthands
 lms

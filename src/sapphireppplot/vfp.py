@@ -6,7 +6,7 @@ import paraview.simple as ps
 import paraview.servermanager
 
 from sapphireppplot.plot_properties_vfp import PlotPropertiesVFP
-from sapphireppplot import plot, transform
+from sapphireppplot import pvplot, transform
 
 
 def scale_distribution_function(
@@ -134,7 +134,7 @@ def plot_f_lms_2d(
 
     # create new layout object
     layout = ps.CreateLayout(name)
-    render_view = plot.plot_render_view_2d(
+    render_view = pvplot.plot_render_view_2d(
         solution,
         layout,
         plot_properties.f_lms_name(lms_index),
@@ -144,11 +144,11 @@ def plot_f_lms_2d(
     )
 
     if show_time:
-        plot.display_time(render_view, plot_properties=plot_properties)
+        pvplot.display_time(render_view, plot_properties=plot_properties)
 
-    plot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name)
     if save_animation:
-        plot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name)
 
     return layout, render_view
 
@@ -255,7 +255,7 @@ def plot_f_lms_over_x(
     )
 
     layout = ps.CreateLayout(name)
-    line_chart_view = plot.plot_line_chart_view(
+    line_chart_view = pvplot.plot_line_chart_view(
         plot_over_line_x,
         layout,
         x_label=x_label,
@@ -267,9 +267,9 @@ def plot_f_lms_over_x(
         plot_properties=plot_properties,
     )
 
-    plot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name)
     if save_animation:
-        plot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name)
 
     return plot_over_line_x, layout, line_chart_view
 
@@ -370,7 +370,7 @@ def plot_f_lms_over_p(
     )
 
     layout = ps.CreateLayout(name)
-    line_chart_view = plot.plot_line_chart_view(
+    line_chart_view = pvplot.plot_line_chart_view(
         plot_over_line_p,
         layout,
         x_label=x_label,
@@ -382,8 +382,8 @@ def plot_f_lms_over_p(
         plot_properties=plot_properties,
     )
 
-    plot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name)
     if save_animation:
-        plot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name)
 
     return plot_over_line_p, layout, line_chart_view

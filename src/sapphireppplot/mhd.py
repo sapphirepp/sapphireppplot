@@ -7,7 +7,7 @@ import paraview.simple as ps
 import paraview.servermanager
 
 from sapphireppplot.plot_properties_mhd import PlotPropertiesMHD
-from sapphireppplot import plot, transform
+from sapphireppplot import pvplot, transform
 
 
 def compute_magnetic_pressure(
@@ -188,7 +188,7 @@ def plot_quantities_1d(
 
     # create new layout object
     layout = ps.CreateLayout(name)
-    line_chart_view = plot.plot_line_chart_view(
+    line_chart_view = pvplot.plot_line_chart_view(
         solution,
         layout,
         y_label=y_label,
@@ -197,9 +197,9 @@ def plot_quantities_1d(
         plot_properties=plot_properties,
     )
 
-    plot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name)
     if save_animation:
-        plot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name)
 
     # Exit preview mode
     # layout.PreviewMode = [0, 0]
@@ -289,7 +289,7 @@ def plot_split_view_1d(
             }
 
         # The subplots seem to work without the `hint` parameter?!
-        line_chart_view = plot.plot_line_chart_view(
+        line_chart_view = pvplot.plot_line_chart_view(
             solution,
             layout,
             y_label=y_label,
@@ -301,9 +301,9 @@ def plot_split_view_1d(
         if i == 0 and labels:
             line_chart_view.ShowLegend = 1
 
-    plot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name)
     if save_animation:
-        plot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name)
 
     return layout
 
@@ -355,7 +355,7 @@ def plot_quantity_2d(
     """
     # create new layout object
     layout = ps.CreateLayout(name)
-    render_view = plot.plot_render_view_2d(
+    render_view = pvplot.plot_render_view_2d(
         solution,
         layout,
         plot_properties.quantity_name(quantity),
@@ -365,11 +365,11 @@ def plot_quantity_2d(
     )
 
     if show_time:
-        plot.display_time(render_view, plot_properties=plot_properties)
+        pvplot.display_time(render_view, plot_properties=plot_properties)
 
-    plot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name)
     if save_animation:
-        plot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name)
 
     # Exit preview mode
     # layout.PreviewMode = [0, 0]
@@ -480,7 +480,7 @@ def plot_quantities_over_x(
     )
 
     layout = ps.CreateLayout(name)
-    line_chart_view = plot.plot_line_chart_view(
+    line_chart_view = pvplot.plot_line_chart_view(
         plot_over_line_x,
         layout,
         x_label=x_label,
@@ -492,8 +492,8 @@ def plot_quantities_over_x(
         plot_properties=plot_properties,
     )
 
-    plot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name)
     if save_animation:
-        plot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name)
 
     return plot_over_line_x, layout, line_chart_view

@@ -1,4 +1,4 @@
-"""Load the solution from files."""
+"""Load the solution from files using ParaView."""
 
 import os
 from typing import Optional
@@ -6,8 +6,9 @@ import paraview.simple as ps
 import paraview.servermanager
 import paraview.util
 
-from sapphireppplot.utils import get_results_folder, prm_to_dict, ParamDict
 from sapphireppplot.plot_properties import PlotProperties
+from sapphireppplot.utils import ParamDict
+from sapphireppplot import utils
 
 
 def read_parameter_file(
@@ -319,9 +320,10 @@ def load_solution(
 
     This function performs the following steps:
     1. Retrieves the folder containing simulation results.
-    2. Loads the solution data from the files in the results folder.
-    3. Adds time step information if necessary.
-    4. Updates the animation scene to the last available time step.
+    2. Loads the parameter file.
+    3. Loads the solution data from the files in the results folder.
+    4. Adds time step information if necessary.
+    5. Updates the animation scene to the last available time step.
 
     Parameters
     ----------
@@ -356,7 +358,7 @@ def load_solution(
     ValueError
         If no matching files are found.
     """
-    results_folder = get_results_folder(path_prefix=path_prefix)
+    results_folder = utils.get_results_folder(path_prefix=path_prefix)
 
     prm: ParamDict = {}
     if parameter_file_name:
@@ -364,7 +366,7 @@ def load_solution(
             prm_file = read_parameter_file(
                 results_folder, file_name=parameter_file_name
             )
-            prm = prm_to_dict(prm_file)
+            prm = utils.prm_to_dict(prm_file)
         except FileNotFoundError:
             print(
                 f"Parameter file `{parameter_file_name}` not found. "
