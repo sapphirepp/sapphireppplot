@@ -4,6 +4,7 @@ mhd
 utils
 pvplot
 pvload
+numpyify
 
 # Shorthands
 lms
@@ -21,6 +22,7 @@ dx
 # ParaView
 paraview
 servermanager
+vtkconsole
 util
 vtk
 vtu
@@ -40,15 +42,32 @@ Function2
 
 # Python
 pylint
+scipy
+removeprefix
+expandvars
+isabs
+maxsplit
+
+# numpy
 numpy
 ndarray
 dtype
 lexsort
 sqrt
-removeprefix
-expandvars
-isabs
-maxsplit
+savez
+npz
+
+# matplotlib
+matplotlib
+pyplot
+plt
+xlabel
+ylabel
+xlim
+ylim
+yscale
+xscale
+savefig
 
 # Words
 postfix
