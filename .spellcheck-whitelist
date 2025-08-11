@@ -1,73 +1,82 @@
-sapphireppplot
-vfp
+# sapphireppplot
 mhd
-utils
-pvplot
-pvload
 numpyify
+pvload
+pvplot
+sapphireppplot
+utils
+vfp
 
 # Shorthands
-lms
-vec
-prm
-Param
-tmp
-num
-coord
 1d
+1e
 2d
 3d
+coord
 dx
+lms
+num
+Param
+prm
+tmp
+vec
 
 # ParaView
-paraview
-servermanager
-vtkconsole
-util
-vtk
-vtu
-pvtu
+AxesGrid
+Crinkleclip
+Datato
+FacesToRender
+Function2
 hdf5
-xdmf
-Xdmf3
-PointArrays
+paraview
 Point1
 Point2
+PointArrays
+pvtu
 Rescale
-Crinkleclip
-AxesGrid
-FacesToRender
-Datato
-Function2
+servermanager
+util
+vtk
+vtkconsole
+vtu
+xdmf
+Xdmf3
 
 # Python
-pylint
-scipy
-removeprefix
 expandvars
 isabs
 maxsplit
+pylint
+removeprefix
+scipy
 
 # numpy
-numpy
-ndarray
 dtype
 lexsort
-sqrt
-savez
+ndarray
 npz
+numpy
+savez
+sqrt
 
 # matplotlib
+bbox
+cmap
+linestyle
+loc
 matplotlib
-pyplot
 plt
+pyplot
+savefig
+seaborn
+sns
 xlabel
-ylabel
 xlim
+xscale
+ylabel
 ylim
 yscale
-xscale
-savefig
 
 # Words
+colorblind
 postfix

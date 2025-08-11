@@ -65,7 +65,7 @@ class PlotProperties:
         `Tolerance` for center and boundary.
     """
 
-    series_names: Optional[list[str]] = None
+    series_names: list[str] = field(default_factory=list)
     labels: dict[str, str] = field(default_factory=dict)
     data_type: str = "POINTS"
 
