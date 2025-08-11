@@ -2,7 +2,8 @@
 
 import sys
 import os
-from typing import Dict, Union
+from typing import Any, Dict, Union
+import numpy as np
 
 ParamDict = Dict[str, Union[str, "ParamDict"]]
 
@@ -97,3 +98,40 @@ def prm_to_dict(prm_lines: list[str]) -> ParamDict:
             print(f"Unknown line: {line}")
 
     return prm_dict
+
+
+def match_index(
+    list_in: list[Any] | np.typing.NDArray[Any], target: Any
+) -> int:
+    """
+    Find index `i` where `list_in[i] = target`.
+
+    Parameters
+    ----------
+    list_in : list[Any]
+        List/array of values to search.
+    target : Any
+        Target value to find.
+
+    Returns
+    -------
+    index : int
+        Index `i`.
+
+    Raises
+    ------
+    ValueError
+        Raises an error if the `target` can not be found in `list_in`
+        or multiple matches exist.
+    """
+    list_in = np.array(list_in)
+    matched_indices = np.where((list_in == target).all(axis=1))[0]
+
+    if matched_indices.size == 0:
+        raise ValueError(f"No match for {target}.")
+    if matched_indices.size != 1:
+        raise ValueError(
+            f"Multiple matches for {target} at indices {matched_indices}"
+        )
+
+    return matched_indices[0]
