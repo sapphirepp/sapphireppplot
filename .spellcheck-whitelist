@@ -51,6 +51,7 @@ removeprefix
 scipy
 
 # numpy
+argwhere
 dtype
 lexsort
 ndarray

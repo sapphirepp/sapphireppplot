@@ -130,10 +130,11 @@ def to_numpy_2d(
         # Filter out masked data
         data[i] = array[sorted_indices]
 
-    # Reshape arrays to 2D arrays (assume square grid)
-    size = int(np.sqrt(points.shape[0]))
-    size_x = size
-    size_y = size
+    # Reshape arrays to 2D arrays
+    indices_x = np.argwhere(points[:, 0] == points[0, 0])
+    indices_y = np.argwhere(points[:, 1] == points[0, 1])
+    size_x = indices_x.shape[0]
+    size_y = indices_y.shape[0]
     points = points.reshape((size_x, size_y, 3))
     data = data.reshape((len(array_names), size_x, size_y))
 
