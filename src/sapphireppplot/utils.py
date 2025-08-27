@@ -56,6 +56,7 @@ def get_results_folder(
     results_folder = os.path.expanduser(results_folder)
     if path_prefix and not os.path.isabs(results_folder):
         results_folder = os.path.join(path_prefix, results_folder)
+    results_folder = os.path.normpath(results_folder)
 
     print(f"Using results in '{results_folder}'")
     return results_folder
