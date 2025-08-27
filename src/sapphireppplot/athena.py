@@ -13,6 +13,7 @@ def load_solution(
     plot_properties: PlotPropertiesAthena,  # noqa: U100
     path_prefix: str = "",
     base_file_name: str = "solution",
+    results_folder: str = "",
     t_start: float = 0.0,
     t_end: float = 1.0,
 ) -> tuple[
@@ -36,6 +37,8 @@ def load_solution(
         Properties of the solution to load.
     path_prefix : str, optional
         Prefix for relative path.
+    results_folder : str, optional
+        The path to the results folder.
     base_file_name : str, optional
         Base name of the solutions files.
     t_start : float, optional
@@ -59,7 +62,9 @@ def load_solution(
     ValueError
         If no matching files are found.
     """
-    results_folder = utils.get_results_folder(path_prefix=path_prefix)
+    results_folder = utils.get_results_folder(
+        path_prefix=path_prefix, results_folder=results_folder
+    )
 
     prm: ParamDict = {}
 

@@ -14,6 +14,7 @@ from sapphireppplot import utils, pvload, pvplot, transform
 def load_solution(
     plot_properties: PlotPropertiesMHD,
     path_prefix: str = "",
+    results_folder: str = "",
 ) -> tuple[
     str,
     ParamDict,
@@ -34,6 +35,10 @@ def load_solution(
     ----------
     plot_properties : PlotProperties
         Properties of the solution to load.
+    path_prefix : str, optional
+        Prefix for relative path.
+    results_folder : str, optional
+        The path to the results folder.
 
     Returns
     -------
@@ -51,7 +56,9 @@ def load_solution(
     ValueError
         If no matching files are found.
     """
-    results_folder = utils.get_results_folder(path_prefix=path_prefix)
+    results_folder = utils.get_results_folder(
+        path_prefix=path_prefix, results_folder=results_folder
+    )
 
     prm_file = pvload.read_parameter_file(results_folder)
     prm = utils.prm_to_dict(prm_file)
