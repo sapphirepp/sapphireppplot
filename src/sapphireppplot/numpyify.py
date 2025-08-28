@@ -131,8 +131,8 @@ def to_numpy_2d(
         data[i] = array[sorted_indices]
 
     # Reshape arrays to 2D arrays
-    indices_x = np.argwhere(points[:, 0] == points[0, 0])
-    indices_y = np.argwhere(points[:, 1] == points[0, 1])
+    indices_x = np.argwhere(points[:, 1] == points[0, 1])  # y constant
+    indices_y = np.argwhere(points[:, 0] == points[0, 0])  # x constant
     size_x = indices_x.shape[0]
     size_y = indices_y.shape[0]
     points = points.reshape((size_x, size_y, 3))

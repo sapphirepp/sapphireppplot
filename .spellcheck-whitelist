@@ -68,6 +68,7 @@ arange
 argwhere
 dtype
 lexsort
+linspace
 ndarray
 npz
 numpy
@@ -78,6 +79,7 @@ sqrt
 # matplotlib
 bbox
 cmap
+figsize
 linestyle
 loc
 matplotlib
@@ -87,6 +89,7 @@ pyplot
 savefig
 seaborn
 sns
+usetex
 xlabel
 xlim
 xscale
