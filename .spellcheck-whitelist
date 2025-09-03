@@ -56,7 +56,9 @@ Xdmf3
 
 # Python
 expandvars
+globals
 isabs
+locals
 maxsplit
 normpath
 pylint

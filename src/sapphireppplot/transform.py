@@ -13,6 +13,7 @@ def plot_over_line(
     solution: paraview.servermanager.SourceProxy,
     direction: str | list[list[float]] = "x",
     offset: Optional[list[float]] = None,
+    x_axes_scale: Optional[float] = None,
     results_folder: str = "",
     filename: Optional[str] = None,
     plot_properties: PlotProperties = PlotProperties(),
@@ -29,6 +30,9 @@ def plot_over_line(
         Either "x", "y", "z", "d" or a list with start and end points.
     offset : list[float], optional
         Offset of the line.
+    x_axes_scale : float, optional
+        Divide the x-axes coordinate by this scale.
+        The scaled axes will be stored in a variable `scaled_axes`.
     results_folder : str
         The directory path where the data will be saved as `.csv`.
     filename : str
@@ -115,6 +119,28 @@ def plot_over_line(
                 f"Unknown sampling pattern {plot_properties.sampling_pattern}"
             )
 
+    if x_axes_scale is not None:
+        plot_over_line_source = ps.Calculator(
+            registrationName="ScaleAxes", Input=plot_over_line_source
+        )
+        plot_over_line_source.ResultArrayName = "scaled_axes"
+
+        x_array_name = "arc_length"
+        match direction:
+            case list():
+                x_array_name = "arc_length"
+            case "x":
+                x_array_name = "coordsX"
+            case "y":
+                x_array_name = "coordsY"
+            case "z":
+                x_array_name = "coordsZ"
+            case "d":
+                x_array_name = "arc_length"
+            case _:
+                raise ValueError(f"Unknown direction {direction}")
+        plot_over_line_source.Function = f"{x_array_name} / {x_axes_scale}"
+
     # Save data if a file is given
     if filename:
         file_path = os.path.join(results_folder, filename + ".csv")
@@ -125,6 +151,8 @@ def plot_over_line(
             series_names += plot_properties.series_names
         if direction == list() or direction == "d":
             series_names += ["arc_length"]
+        if x_axes_scale is not None:
+            series_names += ["scaled_axes"]
 
         ps.SaveData(
             filename=file_path,

@@ -253,6 +253,8 @@ def plot_f_lms_over_x(
     lms_indices: Optional[list[list[int]]] = None,
     direction: str | list[list[float]] = "x",
     offset: Optional[list[float]] = None,
+    x_axes_scale: Optional[float] = None,
+    x_label: str = r"$x$",
     value_range: Optional[list[float]] = None,
     log_y_scale: bool = False,
     save_animation: bool = False,
@@ -280,6 +282,10 @@ def plot_f_lms_over_x(
         Direction of the line.
     offset : list[float], optional
         Offset of the line.
+    x_axes_scale : float, optional
+        Divide the x-axes coordinate by this scale.
+    x_label : str, optional
+        Label for the bottom axis of the chart.
     value_range : list[float], optional
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the y-axes.
@@ -317,30 +323,27 @@ def plot_f_lms_over_x(
             ]
 
     x_array_name = ""
-    x_label = ""
     match direction:
         case list():
-            x_array_name = ""
-            x_label = r"$d$"
+            x_array_name = "arc_length"
         case "x":
             x_array_name = "Points_X"
-            x_label = r"$x$"
         case "y":
             x_array_name = "Points_Y"
-            x_label = r"$y$"
         case "z":
             x_array_name = "Points_Z"
-            x_label = r"$z$"
         case "d":
             x_array_name = "arc_length"
-            x_label = r"$d$"
         case _:
             raise ValueError(f"Unknown direction {direction}")
+    if x_axes_scale is not None:
+        x_array_name = "scaled_axes"
 
     plot_over_line_x = transform.plot_over_line(
         solution,
         direction=direction,
         offset=offset,
+        x_axes_scale=x_axes_scale,
         results_folder=results_folder,
         filename=name,
         plot_properties=plot_properties,

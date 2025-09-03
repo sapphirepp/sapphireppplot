@@ -50,12 +50,14 @@ class PlotProperties:
         Size of the color bar.
         Set to `0` to hide the color bar.
 
-    scale_x : float
-        Scaling factor for x-axes.
-    scale_y : float
-        Scaling factor for y-axes.
-    scale_z : float
-        Scaling factor for z-axes.
+    axes_scale : list[float]
+        Divide the x,y,z-axes by this scale in the RenderView.
+        This only affects the displayed axes ticks,
+        it does not rescale the underlying data.
+    axes_stretch : list[float]
+        Stretch the x,y,z-axes by this factor in the RenderView.
+        This does not change the displayed numbers,
+        only makes the axes visually bigger/smaller.
 
     sampling_pattern : str
         Sampling pattern used for plot_over_line.
@@ -91,9 +93,8 @@ class PlotProperties:
     )
     color_bar_length: float = 0.25
 
-    scale_x: float = 1.0
-    scale_y: float = 1.0
-    scale_z: float = 1.0
+    axes_scale: list[float] = field(default_factory=lambda: [1.0, 1.0, 1.0])
+    axes_stretch: list[float] = field(default_factory=lambda: [1.0, 1.0, 1.0])
 
     sampling_pattern: str = "center"
     sampling_resolution: Optional[int | float] = None
@@ -176,11 +177,11 @@ class PlotProperties:
         render_view.AxesGrid.YLabelColor = self.text_color
         render_view.AxesGrid.GridColor = self.text_color
         # scale axes
-        solution_display.Scale = [self.scale_x, self.scale_y, self.scale_z]
+        solution_display.Scale = self.axes_stretch
         render_view.AxesGrid.DataScale = [
-            self.scale_x,
-            self.scale_y,
-            self.scale_z,
+            self.axes_stretch[0] * self.axes_scale[0],
+            self.axes_stretch[1] * self.axes_scale[1],
+            self.axes_stretch[2] * self.axes_scale[2],
         ]
 
     def configure_color_bar(
