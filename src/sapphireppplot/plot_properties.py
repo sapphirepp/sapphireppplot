@@ -1,7 +1,7 @@
 """Define PlotProperties class."""
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, Any
 import paraview.servermanager
 
 
@@ -23,6 +23,10 @@ class PlotProperties:
         Preview window size in 1D.
     preview_size_2d : list[float]
         Preview window size in 2D.
+    camera_view_2d: tuple[bool, float] | Any
+        The view for 2D render view.
+        Can be any kind and number of arguments
+        that will be passed to the `render_view.ResetCamera()` method.
 
     text_color : list[float]
         The text color for labels and legends.
@@ -42,7 +46,9 @@ class PlotProperties:
         Labels of the x,y and z axes for 2D/3D plots.
 
     color_map : str
-        Select a color map for
+        Select a color map for the color bar.
+    color_bar_range_labels: bool
+        Show range labels of the color bar?
     color_bar_position : str | list[float]
         Color bar postion.
         Either descriptive string or coordinates.
@@ -73,6 +79,9 @@ class PlotProperties:
 
     preview_size_1d: list[float] = field(default_factory=lambda: [1280, 720])
     preview_size_2d: list[float] = field(default_factory=lambda: [1024, 1024])
+    camera_view_2d: tuple[bool, float] | Any = field(
+        default_factory=lambda: (False, 0.9)
+    )
 
     text_color: list[float] = field(default_factory=lambda: [0.5, 0.5, 0.5])
     label_size: int = 18
@@ -87,6 +96,7 @@ class PlotProperties:
     )
 
     color_map: str = "Viridis (matplotlib)"
+    color_bar_range_labels: bool = True
     color_bar_position: str | list[float] = field(
         # default_factory=lambda: [0.65, 0.1]
         default_factory=lambda: "Lower Right Corner"
@@ -204,6 +214,8 @@ class PlotProperties:
         color_bar.LabelFontSize = self.label_size
         color_bar.TitleColor = self.text_color
         color_bar.LabelColor = self.text_color
+        color_bar.AddRangeLabels = self.color_bar_range_labels
+        color_bar.RangeLabelFormat = "%-#6.1e"
 
         if self.color_bar_length == 0:
             return False
