@@ -231,13 +231,8 @@ def stream_tracer(
     """
     Create stream tracer of a quantity from the solution.
 
-    The `stream_tracer` can be added to an existing `render_view`:
-
-    ```python
-    stream_tracer_display = ps.Show(stream_tracer, render_view)
-    ps.ColorBy(stream_tracer_display, None)
-    render_view.Update()
-    ```
+    The `stream_tracer` can be added to an existing `render_view`
+    using `pvplot.show_stream_tracer()`.
 
     Parameters
     ----------

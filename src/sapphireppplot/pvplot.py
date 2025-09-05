@@ -219,6 +219,101 @@ def plot_render_view_2d(
     return render_view
 
 
+def show_stream_tracer(
+    stream_tracer: paraview.servermanager.SourceProxy,
+    render_view: paraview.servermanager.Proxy,
+    quantity: str | None = None,
+    color_bar_visible: bool = False,
+    value_range: Optional[list[float]] = None,
+    log_scale: bool = False,
+    plot_properties: PlotProperties = PlotProperties(),
+) -> paraview.servermanager.Proxy:
+    """
+    Show a stream tracer in a render view in ParaView.
+
+    Parameters
+    ----------
+    stream_tracer : paraview.servermanager.SourceProxy
+        The stream tracer to visualize.
+    render_view : paraview.servermanager.Proxy
+        ParaView render view in which to show the stream tracer.
+    quantity : str | None, optional
+        Name of the quantity to plot.
+        Use `None` to display `Solid Color` lines.
+    color_bar_visible : bpp;, optional
+        Should the color bar be shown?
+    value_range : list[float], optional
+        Minimal (`value_range[0]`)
+        and maximal (`value_range[1]`) value for the color bar.
+    log_scale : bool, optional
+        Use a logarithmic color scale?
+    plot_properties : PlotProperties, optional
+        Properties for plotting like the labels.
+
+    Returns
+    -------
+    render_view : paraview.servermanager.RenderViewProxy
+        The configured 2D render view.
+    """
+    # set active view
+    ps.SetActiveView(render_view)
+
+    # show data in view
+    solution_display = ps.Show(
+        stream_tracer, render_view, "UnstructuredGridRepresentation"
+    )
+    # update the view to ensure updated data information
+    render_view.Update()
+
+    # ----------------------
+    # Create color bar plot
+    # ----------------------
+
+    # set scalar coloring
+    ps.ColorBy(solution_display, (plot_properties.data_type, quantity))
+
+    if quantity is None:
+        return render_view
+
+    # show color bar/color legend
+    solution_display.SetScalarBarVisibility(render_view, True)
+
+    # get color transfer function/color map
+    transfer_color = ps.GetColorTransferFunction(quantity)
+    # get opacity transfer function/opacity map
+    transfer_opacity = ps.GetOpacityTransferFunction(quantity)
+    # get 2D transfer function
+    transfer_function = ps.GetTransferFunction2D(quantity)
+
+    # Rescale transfer function
+    if value_range:
+        transfer_color.RescaleTransferFunction(value_range[0], value_range[1])
+        transfer_opacity.RescaleTransferFunction(value_range[0], value_range[1])
+        transfer_function.RescaleTransferFunction(
+            value_range[0], value_range[1], 0.0, 1.0
+        )
+
+    # convert to log space
+    if log_scale:
+        transfer_color.MapControlPointsToLogSpace()
+        transfer_color.UseLogScale = 1
+
+    transfer_color.ApplyPreset(plot_properties.color_map, True)
+
+    # get color bar
+    color_bar = ps.GetScalarBar(transfer_color, render_view)
+
+    # Properties modified on color_bar
+    if plot_properties.labels[quantity]:
+        color_bar.Title = plot_properties.labels[quantity]
+    else:
+        color_bar.Title = quantity
+    plot_properties.configure_color_bar(color_bar)
+    solution_display.SetScalarBarVisibility(render_view, color_bar_visible)
+
+    return render_view
+
+
 def display_text(
     view: paraview.servermanager.Proxy,
     text: str,
