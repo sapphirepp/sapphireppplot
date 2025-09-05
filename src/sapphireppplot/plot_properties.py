@@ -71,6 +71,15 @@ class PlotProperties:
         Sampling resolution used for plot_over_line.
         Number of points for uniform sampling,
         `Tolerance` for center and boundary.
+
+    stream_tracer_maximum_error : float
+        Maximum error for stream_tracer.
+    stream_tracer_minimum_step : float
+        Minimum step length for stream_tracer.
+    stream_tracer_initial_step : float
+        Initial step length for stream_tracer.
+    stream_tracer_maximum_step : float
+        Maximum step length for stream_tracer.
     """
 
     series_names: list[str] = field(default_factory=list)
@@ -108,6 +117,11 @@ class PlotProperties:
 
     sampling_pattern: str = "center"
     sampling_resolution: Optional[int | float] = None
+
+    stream_tracer_maximum_error: float = 1e-6
+    stream_tracer_minimum_step: float = 0.01
+    stream_tracer_initial_step: float = 0.2
+    stream_tracer_maximum_step: float = 0.5
 
     def configure_line_chart_view_axes(
         self, line_chart_view: paraview.servermanager.Proxy

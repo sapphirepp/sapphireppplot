@@ -215,3 +215,111 @@ def clip_area(
     ps.HideInteractiveWidgets(proxy=clipped_solution.ClipType)
 
     return clipped_solution
+
+
+def stream_tracer(
+    solution: paraview.servermanager.SourceProxy,
+    quantity: str,
+    direction: str | list[list[float]] = "d",
+    offset: Optional[list[float]] = None,
+    n_lines: int = 30,
+    plot_properties: PlotProperties = PlotProperties(),
+) -> paraview.servermanager.SourceProxy:
+    """
+    Create stream tracer of a quantity from the solution.
+
+    The `stream_tracer` can be added to an existing `render_view`:
+
+    ```python
+    stream_tracer_display = ps.Show(stream_tracer, render_view)
+    ps.ColorBy(stream_tracer_display, None)
+    render_view.Update()
+    ```
+
+    Parameters
+    ----------
+    solution : paraview.servermanager.SourceProxy
+        The data source.
+    quantity : str
+        Name of the quantity for the stream tracer.
+    direction : str | list[list[float]]
+        Direction of the line.
+        Either "x", "y", "z", "d" or a list with start and end points.
+    offset : list[float], optional
+        Offset of the line.
+    n_lines : int, optional
+        Number of stream lines.
+    plot_properties : PlotProperties, optional
+        Properties of the solution.
+
+    Returns
+    -------
+    paraview.servermanager.SourceProxy
+    stream_tracer_source : paraview.servermanager.SourceProxy
+        The StreamTracer source.
+    """
+    # create a new 'Stream Tracer'
+    stream_tracer_source = ps.StreamTracer(
+        registrationName="StreamTracer",
+        Input=solution,
+        SeedType="Line",
+    )
+    stream_tracer_source.Vectors = [plot_properties.data_type, quantity]
+
+    # Get the bounds in x
+    # Fetch data information from the solution
+    solution_data = paraview.servermanager.Fetch(solution)
+    # Get bounds of the data
+    solution_bounds = solution_data.GetBounds()
+    if offset is None:
+        offset = [0.0, 0.0, 0.0]
+    match direction:
+        case list():
+            stream_tracer_source.SeedType.Point1 = direction[0]
+            stream_tracer_source.SeedType.Point2 = direction[1]
+        case "x":
+            # Extract min_x and max_x from the solution_bounds
+            min_x = solution_bounds[0]
+            max_x = solution_bounds[1]
+
+            # Properties modified on stream_tracer_source
+            stream_tracer_source.SeedType.Point1 = [min_x, offset[1], offset[2]]
+            stream_tracer_source.SeedType.Point2 = [max_x, offset[1], offset[2]]
+        case "y":
+            min_y = solution_bounds[2]
+            max_y = solution_bounds[3]
+            stream_tracer_source.SeedType.Point1 = [offset[0], min_y, offset[2]]
+            stream_tracer_source.SeedType.Point2 = [offset[0], max_y, offset[2]]
+        case "z":
+            min_z = solution_bounds[4]
+            max_z = solution_bounds[5]
+            stream_tracer_source.SeedType.Point1 = [offset[0], offset[1], min_z]
+            stream_tracer_source.SeedType.Point2 = [offset[0], offset[1], max_z]
+        case "d":
+            min_x = solution_bounds[0]
+            max_x = solution_bounds[1]
+            min_y = solution_bounds[2]
+            max_y = solution_bounds[3]
+            min_z = solution_bounds[4]
+            max_z = solution_bounds[5]
+            stream_tracer_source.SeedType.Point1 = [min_x, min_y, min_z]
+            stream_tracer_source.SeedType.Point2 = [max_x, max_y, max_z]
+        case _:
+            raise ValueError(f"Unknown direction {direction}")
+
+    stream_tracer_source.SeedType.Resolution = n_lines
+
+    stream_tracer_source.MaximumError = (
+        plot_properties.stream_tracer_maximum_error
+    )
+    stream_tracer_source.MinimumStepLength = (
+        plot_properties.stream_tracer_minimum_step
+    )
+    stream_tracer_source.InitialStepLength = (
+        plot_properties.stream_tracer_initial_step
+    )
+    stream_tracer_source.MaximumStepLength = (
+        plot_properties.stream_tracer_maximum_step
+    )
+
+    return stream_tracer_source
