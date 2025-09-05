@@ -176,6 +176,72 @@ def scale_distribution_function(
     return solution_scaled, plot_properties
 
 
+def merge_input_function_vectors(
+    solution: paraview.servermanager.SourceProxy,
+    plot_properties_in: PlotPropertiesVFP,
+    prefix: str = "func_",
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVFP]:
+    """
+    Merge the magnetic field and velocity field into ParaView vectors.
+
+    This enables the use vector specific functionality,
+    e.g. the stream tracer.
+
+    Parameters
+    ----------
+    solution : paraview.servermanager.SourceProxy
+        The the data with the vector components as scalars.
+    plot_properties_in : PlotPropertiesVFP
+        Properties of the source.
+    prefix : str, optional
+        Prefix for the `series_names`.
+
+    Returns
+    -------
+    solution_scaled : paraview.servermanager.SourceProxy
+        Solution with the merged vectors.
+    plot_properties : PlotPropertiesVFP
+        Solution properties for the merged vectors.
+    """
+    plot_properties = copy.deepcopy(plot_properties_in)
+
+    assert (
+        plot_properties.debug_input_functions is True
+    ), "`debug_input_functions` must be enabled to merge into vectors"
+    assert (
+        plot_properties.momentum is False
+    ), "Merging to vectors only makes sense in pure space dimensions"
+
+    merge_vector_components_b = ps.MergeVectorComponents(
+        registrationName="MergeVectorComponentsB", Input=solution
+    )
+    merge_vector_components_b.XArray = prefix + "B_x"
+    merge_vector_components_b.YArray = prefix + "B_y"
+    merge_vector_components_b.ZArray = prefix + "B_z"
+    merge_vector_components_b.OutputVectorName = prefix + "B"
+    plot_properties.series_names += [prefix + "B"]
+    plot_properties.labels[prefix + "B"] = r"$B$"
+    plot_properties.line_styles[prefix + "B"] = plot_properties.line_styles[
+        prefix + "B_x"
+    ]
+
+    merge_vector_components_u = ps.MergeVectorComponents(
+        registrationName="MergeVectorComponentsU",
+        Input=merge_vector_components_b,
+    )
+    merge_vector_components_u.XArray = prefix + "u_x"
+    merge_vector_components_u.YArray = prefix + "u_y"
+    merge_vector_components_u.ZArray = prefix + "u_z"
+    merge_vector_components_u.OutputVectorName = prefix + "u"
+    plot_properties.series_names += [prefix + "u"]
+    plot_properties.labels[prefix + "u"] = r"$u$"
+    plot_properties.line_styles[prefix + "u"] = plot_properties.line_styles[
+        prefix + "u_x"
+    ]
+
+    return merge_vector_components_u, plot_properties
+
+
 def plot_f_lms_2d(
     solution: paraview.servermanager.SourceProxy,
     results_folder: str,

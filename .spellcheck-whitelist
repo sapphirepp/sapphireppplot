@@ -18,8 +18,10 @@ CFL
 coord
 dt
 dx
+func
 hd
 inj
+interpol
 lms
 nu0
 num
