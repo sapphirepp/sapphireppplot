@@ -49,6 +49,8 @@ PointArrays
 pvtu
 Rescale
 servermanager
+UpdatePipeline
+UpdatePipelineInformation
 util
 vtk
 vtkconsole

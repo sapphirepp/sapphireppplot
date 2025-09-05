@@ -296,7 +296,8 @@ def scale_time_steps(
     solution_temporal_scaled.PreShift = 0
     solution_temporal_scaled.PostShift = t_start
 
-    solution_temporal_scaled.UpdatePipelineInformation()
+    # solution_temporal_scaled.UpdatePipelineInformation()
+    solution_temporal_scaled.UpdatePipeline()
 
     return solution_temporal_scaled
 

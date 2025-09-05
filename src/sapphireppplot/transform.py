@@ -166,6 +166,8 @@ def plot_over_line(
             UseScientificNotation=1,
         )
 
+    plot_over_line_source.UpdatePipeline()
+
     return plot_over_line_source
 
 
@@ -213,6 +215,7 @@ def clip_area(
     ]
 
     ps.HideInteractiveWidgets(proxy=clipped_solution.ClipType)
+    clipped_solution.UpdatePipeline()
 
     return clipped_solution
 
@@ -321,5 +324,7 @@ def stream_tracer(
     stream_tracer_source.MaximumStepLength = (
         plot_properties.stream_tracer_maximum_step
     )
+
+    stream_tracer_source.UpdatePipeline()
 
     return stream_tracer_source

@@ -143,6 +143,8 @@ def compute_magnetic_pressure(
     if plot_properties.line_colors:
         plot_properties.line_colors["P_B"] = ["0", "0", "0"]
 
+    calculator.UpdatePipeline()
+
     return calculator, plot_properties
 
 
@@ -214,6 +216,8 @@ def compute_normalized_magnetic_divergence(
         plot_properties.line_styles[name] = "1"
     if plot_properties.line_colors:
         plot_properties.line_colors[name] = ["0", "0", "0"]
+
+    calculator.UpdatePipeline()
 
     return calculator, plot_properties
 

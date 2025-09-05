@@ -120,4 +120,6 @@ def compute_magnetic_divergence(
     if plot_properties.series_names:
         plot_properties.series_names += ["magnetic_divergence"]
 
+    gradient.UpdatePipeline()
+
     return gradient, plot_properties

@@ -172,6 +172,7 @@ def scale_distribution_function(
             ]
 
     # solution_scaled.PointArrays = plot_properties.series_names
+    solution_scaled.UpdatePipeline()
 
     return solution_scaled, plot_properties
 
@@ -225,6 +226,8 @@ def merge_input_function_vectors(
         prefix + "B_x"
     ]
 
+    merge_vector_components_b.UpdatePipeline()
+
     merge_vector_components_u = ps.MergeVectorComponents(
         registrationName="MergeVectorComponentsU",
         Input=merge_vector_components_b,
@@ -238,6 +241,8 @@ def merge_input_function_vectors(
     plot_properties.line_styles[prefix + "u"] = plot_properties.line_styles[
         prefix + "u_x"
     ]
+
+    merge_vector_components_u.UpdatePipeline()
 
     return merge_vector_components_u, plot_properties
 
