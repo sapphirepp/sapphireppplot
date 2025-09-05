@@ -62,6 +62,11 @@ def load_solution(
     prm_file = pvload.read_parameter_file(results_folder)
     prm = utils.prm_to_dict(prm_file)
 
+    if plot_properties.expansion_order is None:
+        plot_properties.set_expansion_order(
+            int(prm["VFP"]["Expansion"]["Expansion order"])
+        )
+
     file_format = prm["Output"]["Format"]
     base_file_name = prm["Output"]["Base file name"]
     t_start = 0.0

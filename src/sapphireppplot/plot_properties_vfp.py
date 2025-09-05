@@ -23,8 +23,10 @@ class PlotPropertiesVFP(PlotProperties):
         Spatial dimension of the results.
     momentum : bool
         Does the solution have a momentum dependence?
-    expansion_order : int
-        Expansion order l_max of the solution.
+
+    expansion_order : int, optional
+        Maximum expansion order l_max to display.
+        If left empty it will be set automatically at loading.
 
     _spectral_index : float, optional
         If set, the distribution function is scaled by this index in ParaView.
@@ -47,7 +49,8 @@ class PlotPropertiesVFP(PlotProperties):
     dim_ps: int = 2
     dim_cs: int = 1
     logarithmic_p: bool = True
-    expansion_order: int = 1
+
+    expansion_order: Optional[int] = None
 
     debug_input_functions: bool = False
 
@@ -68,6 +71,86 @@ class PlotPropertiesVFP(PlotProperties):
             else:
                 self.grid_labels[self.dim_ps - 1] = r"$p$"
 
+        if self.expansion_order is not None:
+            self.set_expansion_order(self.expansion_order)
+
+    def _add_debug_input_functions(
+        self,
+        lms_indices: list[list[int]],
+        prefix: str = "func_",
+        line_style: str = "1",
+    ) -> None:
+        """
+        Add the debug input functions to plot properties.
+
+        Parameters
+        ----------
+        lms_indices : list[list[int]]
+            The lms_indices to activate for the source.
+        prefix : str, optional
+            Prefix.
+        line_style : str, optional
+            Line styles for the series quantities in the LineChartView.
+        """
+        vec_component_names = ["x", "y", "z"]
+
+        if self.series_names:
+            self.series_names += [prefix + "nu"]
+        self.labels[prefix + "nu"] = r"$\nu$"
+        self.line_styles[prefix + "nu"] = line_style
+
+        for lms_index in lms_indices:
+            s_lms_name = self.f_lms_name(lms_index, prefix, base_name="S")
+            if self.series_names:
+                self.series_names += [s_lms_name]
+            self.labels[s_lms_name] = self.f_lms_label(
+                lms_index, variable_name="S"
+            )
+            self.line_styles[s_lms_name] = line_style
+
+        for vec_comp in vec_component_names:
+            if self.series_names:
+                self.series_names += [prefix + "B_" + vec_comp]
+            self.labels[prefix + "B_" + vec_comp] = f"$B_{vec_comp}$"
+            self.line_styles[prefix + "B_" + vec_comp] = line_style
+
+        for vec_comp in vec_component_names:
+            if self.series_names:
+                self.series_names += [prefix + "u_" + vec_comp]
+            self.labels[prefix + "u_" + vec_comp] = f"$u_{vec_comp}$"
+            self.line_styles[prefix + "u_" + vec_comp] = line_style
+        if self.series_names:
+            self.series_names += [prefix + "div_u"]
+        self.labels[prefix + "div_u"] = r"$\nabla \cdot u$"
+        self.line_styles[prefix + "div_u"] = line_style
+        for vec_comp in vec_component_names:
+            if self.series_names:
+                self.series_names += [prefix + "DT_u_" + vec_comp]
+            self.labels[prefix + "DT_u_" + vec_comp] = f"$D u_{vec_comp} / Dt$"
+            self.line_styles[prefix + "DT_u_" + vec_comp] = line_style
+        for vec_comp_i in vec_component_names:
+            for vec_comp_j in vec_component_names:
+                if self.series_names:
+                    self.series_names += [
+                        prefix + f"du{vec_comp_i}_d{vec_comp_j}"
+                    ]
+                self.labels[prefix + f"du{vec_comp_i}_d{vec_comp_j}"] = (
+                    f"$d u_{vec_comp_i} / d{vec_comp_j}$"
+                )
+                self.line_styles[prefix + f"du{vec_comp_i}_d{vec_comp_j}"] = (
+                    line_style
+                )
+
+    def set_expansion_order(self, expansion_order: int) -> None:
+        """
+        Set the `series_names` and labels using the expansion order.
+
+        Parameters
+        ----------
+        expansion_order : int
+            Maximum expansion order l_max to display.
+        """
+        self.expansion_order = expansion_order
         lms_indices = self.create_lms_indices(self.expansion_order)
 
         self.series_names = []
@@ -200,73 +283,6 @@ class PlotPropertiesVFP(PlotProperties):
             tmp_postfix = " ," + annotation
 
         return f"${variable_name}_{{ {lms_index[0]} {lms_index[1]} {lms_index[2]} {tmp_postfix} }}$"
-
-    def _add_debug_input_functions(
-        self,
-        lms_indices: list[list[int]],
-        prefix: str = "func_",
-        line_style: str = "1",
-    ) -> None:
-        """
-        Add the debug input functions to plot properties.
-
-        Parameters
-        ----------
-        lms_indices : list[list[int]]
-            The lms_indices to activate for the source.
-        prefix : str, optional
-            Prefix.
-        line_style : str, optional
-            Line styles for the series quantities in the LineChartView.
-        """
-        vec_component_names = ["x", "y", "z"]
-
-        if self.series_names:
-            self.series_names += [prefix + "nu"]
-        self.labels[prefix + "nu"] = r"$\nu$"
-        self.line_styles[prefix + "nu"] = line_style
-
-        for lms_index in lms_indices:
-            s_lms_name = self.f_lms_name(lms_index, prefix, base_name="S")
-            if self.series_names:
-                self.series_names += [s_lms_name]
-            self.labels[s_lms_name] = self.f_lms_label(
-                lms_index, variable_name="S"
-            )
-            self.line_styles[s_lms_name] = line_style
-
-        for vec_comp in vec_component_names:
-            if self.series_names:
-                self.series_names += [prefix + "B_" + vec_comp]
-            self.labels[prefix + "B_" + vec_comp] = f"$B_{vec_comp}$"
-            self.line_styles[prefix + "B_" + vec_comp] = line_style
-
-        for vec_comp in vec_component_names:
-            if self.series_names:
-                self.series_names += [prefix + "u_" + vec_comp]
-            self.labels[prefix + "u_" + vec_comp] = f"$u_{vec_comp}$"
-            self.line_styles[prefix + "u_" + vec_comp] = line_style
-        if self.series_names:
-            self.series_names += [prefix + "div_u"]
-        self.labels[prefix + "div_u"] = r"$\nabla \cdot u$"
-        self.line_styles[prefix + "div_u"] = line_style
-        for vec_comp in vec_component_names:
-            if self.series_names:
-                self.series_names += [prefix + "DT_u_" + vec_comp]
-            self.labels[prefix + "DT_u_" + vec_comp] = f"$D u_{vec_comp} / Dt$"
-            self.line_styles[prefix + "DT_u_" + vec_comp] = line_style
-        for vec_comp_i in vec_component_names:
-            for vec_comp_j in vec_component_names:
-                if self.series_names:
-                    self.series_names += [
-                        prefix + f"du{vec_comp_i}_d{vec_comp_j}"
-                    ]
-                self.labels[prefix + f"du{vec_comp_i}_d{vec_comp_j}"] = (
-                    f"$d u_{vec_comp_i} / d{vec_comp_j}$"
-                )
-                self.line_styles[prefix + f"du{vec_comp_i}_d{vec_comp_j}"] = (
-                    line_style
-                )
 
     def scale_by_spectral_index(
         self, spectral_index: float, lms_indices: list[list[int]]
