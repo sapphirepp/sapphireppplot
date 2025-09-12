@@ -22,6 +22,23 @@ class PlotPropertiesAthena(PlotPropertiesMHD):
             "dens",
         ]
 
+        quantities = [
+            "rho",
+            "E",
+            "p_x",
+            "p_y",
+            "p_z",
+            "b_x",
+            "b_y",
+            "b_z",
+        ]
+
+        for quantity in quantities:
+            self.labels[self.quantity_name(quantity)] = self.quantity_label(
+                quantity
+            )
+            self.line_styles[self.quantity_name(quantity)] = "1"
+
     @override
     def quantity_name(self, quantity: str, prefix: str = "") -> str:
         """
