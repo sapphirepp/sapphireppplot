@@ -165,7 +165,7 @@ def plot_render_view_2d(
     solution_display.DisableLighting = 1
     solution_display.Diffuse = 1.0
 
-    plot_properties.show_grid_2d(render_view, solution_display)
+    plot_properties.configure_grid_2d(render_view, solution_display)
 
     # reset view to fit data
     render_view.ResetCamera(*plot_properties.camera_view_2d)

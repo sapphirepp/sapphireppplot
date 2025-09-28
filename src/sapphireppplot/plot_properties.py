@@ -42,6 +42,8 @@ class PlotProperties:
     line_styles : dict[str, str]
         Line styles for the series quantities in the LineChartView.
 
+    show_grid : bool
+        Show the grid lines for 2D/3D plots.
     grid_labels : list[str]
         Labels of the x,y and z axes for 2D/3D plots.
 
@@ -100,6 +102,7 @@ class PlotProperties:
     line_colors: dict[str, list[str]] = field(default_factory=dict)
     line_styles: dict[str, str] = field(default_factory=dict)
 
+    show_grid: bool = False
     grid_labels: list[str] = field(
         default_factory=lambda: [r"$x$", r"$y$", r"$z$"]
     )
@@ -168,13 +171,13 @@ class PlotProperties:
                 flat_dict += [key, value]
             solution_display.SeriesLineStyle = flat_dict
 
-    def show_grid_2d(
+    def configure_grid_2d(
         self,
         render_view: paraview.servermanager.Proxy,
         solution_display: paraview.servermanager.Proxy,
     ) -> None:
         """
-        Set display properties to show the grid in 2d.
+        Configure display properties to show the grid in 2d.
 
         Parameters
         ----------
@@ -183,6 +186,8 @@ class PlotProperties:
         solution_display : paraview.servermanager.Proxy
             Solution display.
         """
+        if self.show_grid:
+            solution_display.SetRepresentationType("Surface With Edges")
         render_view.AxesGrid.Visibility = 1
         render_view.AxesGrid.XTitle = self.grid_labels[0]
         render_view.AxesGrid.YTitle = self.grid_labels[1] + "  "
