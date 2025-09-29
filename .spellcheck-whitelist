@@ -40,19 +40,25 @@ x0
 
 # ParaView
 AxesGrid
+ComputeTolerance
+Coords
 Crinkleclip
 Datato
 FacesToRender
 Function2
 hdf5
+HideInteractiveWidgets
 Multiline
 paraview
 Point1
 Point2
 PointArrays
+pointEvaluation
+ProbeType
 pvtu
 Rescale
 ResultArrayName
+ResultTCoords
 servermanager
 UpdatePipeline
 UpdatePipelineInformation
