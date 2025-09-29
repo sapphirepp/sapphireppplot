@@ -450,6 +450,7 @@ def plot_f_lms_over_p(
     name: str,
     plot_properties: PlotPropertiesVFP,
     lms_indices: Optional[list[list[int]]] = None,
+    direction: str | list[list[float]] = "",
     offset: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
     log_y_scale: bool = True,
@@ -474,6 +475,8 @@ def plot_f_lms_over_p(
         Properties for plotting.
     lms_indices : list[list[int]], optional
         The list of indices `[[l_1,m_1,s_1], [l_2,m_2,s_2]]` to plot.
+    direction : str | list[list[float]]
+        Direction of the line.
     offset : list[float], optional
         Offset of the line.
     value_range : list[float], optional
@@ -512,17 +515,19 @@ def plot_f_lms_over_p(
                 plot_properties.f_lms_name(lms_index, "interpol_")
             ]
 
-    direction = ""
     x_array_name = ""
     match plot_properties.dim_ps:
         case 1:
-            direction = "x"
+            if not direction:
+                direction = "x"
             x_array_name = "Points_X"
         case 2:
-            direction = "y"
+            if not direction:
+                direction = "y"
             x_array_name = "Points_Y"
         case 3:
-            direction = "z"
+            if not direction:
+                direction = "z"
             x_array_name = "Points_Z"
         case _:
             assert False
