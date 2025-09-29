@@ -43,6 +43,13 @@ class PlotProperties:
     line_styles : dict[str, str]
         Line styles for the series quantities in the LineChartView.
 
+    legend_location : str | list[float]
+        Legend postion in LineChartView.
+        Either descriptive string or coordinates.
+    legend_symbol_width : int
+        Size of the legend marker in LineChartView..
+        Set to `0` to hide the legend.
+
     show_grid : bool
         Show the grid lines for 2D/3D plots.
     grid_labels : list[str]
@@ -102,6 +109,11 @@ class PlotProperties:
 
     line_colors: dict[str, list[str]] = field(default_factory=dict)
     line_styles: dict[str, str] = field(default_factory=dict)
+
+    legend_location: str | list[float] = field(
+        default_factory=lambda: "TopRight"
+    )
+    legend_symbol_width: int = 30
 
     show_grid: bool = False
     grid_labels: list[str] = field(
@@ -166,6 +178,22 @@ class PlotProperties:
         line_chart_view.LegendFontSize = self.label_size
         line_chart_view.LeftAxisLabelFontSize = self.label_size
         line_chart_view.BottomAxisLabelFontSize = self.label_size
+        match self.legend_location:
+            case str():
+                line_chart_view.LegendLocation = self.legend_location
+            case list():
+                line_chart_view.LegendLocation = "Custom"
+                line_chart_view.LegendPosition = self.legend_location
+            case _:
+                raise TypeError(
+                    f"Unsupported `legend_location` type "
+                    f"{type(self.legend_location)}: {self.legend_location}"
+                )
+        if self.legend_symbol_width == 0:
+            line_chart_view.ShowLegend = False
+        else:
+            line_chart_view.ShowLegend = True
+            line_chart_view.LegendSymbolWidth = self.legend_symbol_width
 
     def configure_line_chart_view_display(
         self, solution_display: paraview.servermanager.Proxy

@@ -18,6 +18,9 @@ CFL
 coord
 dt
 dx
+f0
+f1
+f2
 func
 hd
 inj
@@ -42,12 +45,14 @@ Datato
 FacesToRender
 Function2
 hdf5
+Multiline
 paraview
 Point1
 Point2
 PointArrays
 pvtu
 Rescale
+ResultArrayName
 servermanager
 UpdatePipeline
 UpdatePipelineInformation
