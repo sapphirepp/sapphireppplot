@@ -1,7 +1,6 @@
 """Module for MHD specific plotting."""
 
 from typing import Optional
-import copy
 import math
 import paraview.simple as ps
 import paraview.servermanager
@@ -126,7 +125,7 @@ def compute_magnetic_pressure(
     plot_properties : PlotPropertiesVFP
         Solution properties for the including the magnetic pressure.
     """
-    plot_properties = copy.deepcopy(plot_properties_in)
+    plot_properties = plot_properties_in.copy()
 
     # Add a new 'Calculator' to the pipeline
     calculator = ps.Calculator(registrationName="P_B", Input=solution)
@@ -172,7 +171,7 @@ def compute_normalized_magnetic_divergence(
     plot_properties : PlotPropertiesVFP
         Solution properties for the including the log magnetic divergence.
     """
-    plot_properties = copy.deepcopy(plot_properties_in)
+    plot_properties = plot_properties_in.copy()
 
     # Fetch data information from the solution
     solution_data = paraview.servermanager.Fetch(solution)
@@ -354,7 +353,7 @@ def plot_split_view_1d(
     layout.EqualizeViews()
 
     # Temporarily modify properties
-    plot_properties = copy.deepcopy(plot_properties_in)
+    plot_properties = plot_properties_in.copy()
     # Set all lines black
     for key in plot_properties.line_colors:
         plot_properties.line_colors[key] = ["0", "0", "0"]

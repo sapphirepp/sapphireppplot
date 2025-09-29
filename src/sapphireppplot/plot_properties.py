@@ -1,7 +1,8 @@
 """Define PlotProperties class."""
 
-from dataclasses import dataclass, field
-from typing import Optional, Any
+from dataclasses import dataclass, field, replace
+import copy
+from typing import Optional, Any, Self
 import paraview.servermanager
 
 
@@ -125,6 +126,28 @@ class PlotProperties:
     stream_tracer_minimum_step: float = 0.01
     stream_tracer_initial_step: float = 0.2
     stream_tracer_maximum_step: float = 0.5
+
+    def copy(self) -> Self:
+        """
+        Create a deep copy of the PlotProperties.
+
+        Returns
+        -------
+        PlotProperties
+            Copy of the PlotProperties.
+        """
+        return copy.deepcopy(self)
+
+    def replace(self, **kwargs: Any) -> Self:
+        """
+        Copy and replace variables in the PlotProperties.
+
+        Returns
+        -------
+        PlotProperties
+            Copy of the PlotProperties with replaced values.
+        """
+        return replace(self, **kwargs)
 
     def configure_line_chart_view_axes(
         self, line_chart_view: paraview.servermanager.Proxy

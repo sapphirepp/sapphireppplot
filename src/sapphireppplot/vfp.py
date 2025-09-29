@@ -1,7 +1,6 @@
 """Module for VFP specific plotting."""
 
 from typing import Optional
-import copy
 import paraview.simple as ps
 import paraview.servermanager
 
@@ -139,7 +138,7 @@ def scale_distribution_function(
     """
     if lms_indices is None:
         lms_indices = [[0, 0, 0]]
-    plot_properties = copy.deepcopy(plot_properties_in)
+    plot_properties = plot_properties_in.copy()
     plot_properties.scale_by_spectral_index(spectral_index, lms_indices)
 
     assert plot_properties.momentum is True, "Can only scale p-dependent data"
@@ -209,7 +208,7 @@ def merge_input_function_vectors(
     plot_properties : PlotPropertiesVFP
         Solution properties for the merged vectors.
     """
-    plot_properties = copy.deepcopy(plot_properties_in)
+    plot_properties = plot_properties_in.copy()
 
     assert (
         plot_properties.debug_input_functions is True
