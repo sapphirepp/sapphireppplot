@@ -13,6 +13,7 @@ def load_solution(
     plot_properties: PlotPropertiesVFP,
     path_prefix: str = "",
     results_folder: str = "",
+    base_file_name: str = "",
 ) -> tuple[
     str,
     ParamDict,
@@ -37,6 +38,8 @@ def load_solution(
         Prefix for relative path.
     results_folder : str, optional
         The path to the results folder.
+    base_file_name : str, optional
+        Overwrite base name of the solutions files.
 
     Returns
     -------
@@ -67,7 +70,8 @@ def load_solution(
         )
 
     file_format = prm["Output"]["Format"]
-    base_file_name = prm["Output"]["Base file name"]
+    if not base_file_name:
+        base_file_name = prm["Output"]["Base file name"]
     t_start = 0.0
     t_end = float(prm["VFP"]["Time stepping"]["Final time"])
 
@@ -258,6 +262,7 @@ def plot_f_lms_2d(
     plot_properties: PlotPropertiesVFP,
     lms_index: Optional[list[int]] = None,
     value_range: Optional[list[float]] = None,
+    prefix: str = "",
     log_scale: bool = True,
     show_time: bool = False,
     save_animation: bool = False,
@@ -279,6 +284,8 @@ def plot_f_lms_2d(
         Properties for plotting.
     lms_index : list[int], optional
         The index `[l,m,s]` to plot.
+    prefix : str, optional
+        Prefix.
     value_range : list[float], optional
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the y-axes.
@@ -304,7 +311,7 @@ def plot_f_lms_2d(
     render_view = pvplot.plot_render_view_2d(
         solution,
         layout,
-        plot_properties.f_lms_name(lms_index),
+        plot_properties.f_lms_name(lms_index, prefix=prefix),
         value_range=value_range,
         log_scale=log_scale,
         plot_properties=plot_properties,

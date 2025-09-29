@@ -14,6 +14,7 @@ def load_solution(
     plot_properties: PlotPropertiesMHD,
     path_prefix: str = "",
     results_folder: str = "",
+    base_file_name: str = "",
 ) -> tuple[
     str,
     ParamDict,
@@ -38,6 +39,8 @@ def load_solution(
         Prefix for relative path.
     results_folder : str, optional
         The path to the results folder.
+    base_file_name : str, optional
+        Overwrite base name of the solutions files.
 
     Returns
     -------
@@ -63,7 +66,8 @@ def load_solution(
     prm = utils.prm_to_dict(prm_file)
 
     file_format = prm["Output"]["Format"]
-    base_file_name = prm["Output"]["Base file name"]
+    if not base_file_name:
+        base_file_name = prm["Output"]["Base file name"]
     t_start = 0.0
     t_end = float(prm["MHD"]["Time stepping"]["Final time"])
 
