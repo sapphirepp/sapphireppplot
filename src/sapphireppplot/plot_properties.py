@@ -54,11 +54,20 @@ class PlotProperties:
         Show the grid lines for 2D/3D plots.
     grid_labels : list[str]
         Labels of the x,y and z axes for 2D/3D plots.
+    grid_color : list[float]
+        The color of grid axes and legend for 2D/3D plots.
 
     color_map : str
         Select a color map for the color bar.
+    color_bar_label_format : str
+        The format string for the color bar labels,
+        e.g. `r"%-#6.3g"`.
+        Use automatic formatting if empty.
     color_bar_range_labels: bool
         Show range labels of the color bar?
+    color_bar_range_label_format : str
+        The format string for the color bar range labels,
+        e.g. `r"%-#6.1e"`.
     color_bar_position : str | list[float]
         Color bar postion.
         Either descriptive string or coordinates.
@@ -74,6 +83,12 @@ class PlotProperties:
         Stretch the x,y,z-axes by this factor in the RenderView.
         This does not change the displayed numbers,
         only makes the axes visually bigger/smaller.
+
+    time_format : str
+        Formatted text for the time.
+    time_location : str | list[float]
+        Text postion for time labeling.
+        Either descriptive string or coordinates.
 
     sampling_pattern : str
         Sampling pattern used for plot_over_line.
@@ -119,9 +134,12 @@ class PlotProperties:
     grid_labels: list[str] = field(
         default_factory=lambda: [r"$x$", r"$y$", r"$z$"]
     )
+    grid_color: list[float] = field(default_factory=lambda: [0.5, 0.5, 0.5])
 
     color_map: str = "Viridis (matplotlib)"
+    color_bar_label_format: str = ""
     color_bar_range_labels: bool = True
+    color_bar_range_label_format: str = r"%-#6.1e"
     color_bar_position: str | list[float] = field(
         # default_factory=lambda: [0.65, 0.1]
         default_factory=lambda: "Lower Right Corner"
@@ -130,6 +148,9 @@ class PlotProperties:
 
     axes_scale: list[float] = field(default_factory=lambda: [1.0, 1.0, 1.0])
     axes_stretch: list[float] = field(default_factory=lambda: [1.0, 1.0, 1.0])
+
+    time_format: str = r"Time: {time:.2f}"
+    time_location: str | list[float] = "Upper Left Corner"
 
     sampling_pattern: str = "center"
     sampling_resolution: Optional[int | float] = None
@@ -251,11 +272,11 @@ class PlotProperties:
         render_view.AxesGrid.XLabelFontSize = self.label_size
         render_view.AxesGrid.YLabelFontSize = self.label_size
         # Use gray color for label for good visibility in both light and dark mode
-        render_view.AxesGrid.XTitleColor = self.text_color
-        render_view.AxesGrid.YTitleColor = self.text_color
-        render_view.AxesGrid.XLabelColor = self.text_color
-        render_view.AxesGrid.YLabelColor = self.text_color
-        render_view.AxesGrid.GridColor = self.text_color
+        render_view.AxesGrid.XTitleColor = self.grid_color
+        render_view.AxesGrid.YTitleColor = self.grid_color
+        render_view.AxesGrid.XLabelColor = self.grid_color
+        render_view.AxesGrid.YLabelColor = self.grid_color
+        render_view.AxesGrid.GridColor = self.grid_color
         # scale axes
         solution_display.Scale = self.axes_stretch
         render_view.AxesGrid.DataScale = [
@@ -284,8 +305,11 @@ class PlotProperties:
         color_bar.LabelFontSize = self.label_size
         color_bar.TitleColor = self.text_color
         color_bar.LabelColor = self.text_color
+        if self.color_bar_label_format:
+            color_bar.AutomaticLabelFormat = False
+            color_bar.LabelFormat = self.color_bar_label_format
         color_bar.AddRangeLabels = self.color_bar_range_labels
-        color_bar.RangeLabelFormat = "%-#6.1e"
+        color_bar.RangeLabelFormat = self.color_bar_range_label_format
 
         if self.color_bar_length == 0:
             return False

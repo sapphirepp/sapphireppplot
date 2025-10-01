@@ -211,7 +211,7 @@ def plot_render_view_2d(
     color_bar = ps.GetScalarBar(transfer_color, render_view)
 
     # Properties modified on color_bar
-    if plot_properties.labels[quantity]:
+    if quantity in plot_properties.labels.keys():
         color_bar.Title = plot_properties.labels[quantity]
     else:
         color_bar.Title = quantity
@@ -367,8 +367,6 @@ def display_text(
 
 def display_time(
     view: paraview.servermanager.Proxy,
-    time_format: str = r"Time: {time:.2f}",
-    location: str | list[float] = "Upper Left Corner",
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
@@ -378,11 +376,6 @@ def display_time(
     ----------
     view : paraview.servermanager.Proxy
         ParaView view to display the text.
-    time_format : str, optional
-        Formatted text for the time.
-    location : str | list[float], optional
-        Text postion.
-        Either descriptive string or coordinates.
     plot_properties : PlotProperties, optional
         Properties for plotting like the color.
 
@@ -393,7 +386,7 @@ def display_time(
     """
     # create a new 'Annotate Time'
     annotate_time = ps.AnnotateTime(registrationName="AnnotateTime")
-    annotate_time.Format = time_format
+    annotate_time.Format = plot_properties.time_format
 
     ps.SetActiveSource(annotate_time)
 
@@ -403,12 +396,12 @@ def display_time(
     # Properties modified on time_display
     time_display.FontSize = plot_properties.label_size
     time_display.Color = plot_properties.text_color
-    match location:
+    match plot_properties.time_location:
         case str():
-            time_display.WindowLocation = location
+            time_display.WindowLocation = plot_properties.time_location
         case _:
             time_display.WindowLocation = "Any Location"
-            time_display.Position = location
+            time_display.Position = plot_properties.time_location
 
     view.Update()
     return annotate_time
