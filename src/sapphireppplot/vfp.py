@@ -173,6 +173,10 @@ def scale_distribution_function(
         # Properties modified on solution_scaled
         solution_scaled.ResultArrayName = name_new
         solution_scaled.Function = f"{coord_p}^{spectral_index} * {name_old}"
+        if plot_properties.scaled_distribution_function:
+            solution_scaled.Function = (
+                f"{coord_p}^{spectral_index-3} * {name_old}"
+            )
 
         if plot_properties.line_colors:
             plot_properties.line_colors[name_new] = plot_properties.line_colors[

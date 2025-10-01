@@ -305,39 +305,42 @@ class PlotPropertiesVFP(PlotProperties):
             The lms_indices to activate.
             Will deactivate all other and unscaled series names.
         """
+        plot_properties_old = self.copy()
         self._spectral_index = spectral_index
 
         self.series_names = []
 
         prefix_list = [""]
         label_postfix_list = [""]
-        line_style_list = ["1"]
         if self.prefix_numeric:
             prefix_list = ["numeric_"]
         if self.project:
             prefix_list += ["project_"]
             label_postfix_list += [self.annotation_project_interpol]
-            line_style_list += ["2"]
         if self.interpol:
             prefix_list += ["interpol_"]
             label_postfix_list += [self.annotation_project_interpol]
-            line_style_list += ["2"]
 
         for i, prefix in enumerate(prefix_list):
             label_postfix = label_postfix_list[i]
-            line_style = line_style_list[i]
 
             for lms_index in lms_indices:
                 f_lms_name = self.f_lms_name(lms_index, prefix)
+                f_lms_name_old = plot_properties_old.f_lms_name(
+                    lms_index, prefix
+                )
                 self.series_names += [f_lms_name]
                 self.labels[f_lms_name] = self.f_lms_label(
                     lms_index, label_postfix
                 )
-                self.line_styles[f_lms_name] = line_style
-                # if self.line_colors:
-                #     self.line_colors[f_lms_name] = self.line_colors[
-                #         f_lms_name_old
-                #     ]
+                if plot_properties_old.line_styles:
+                    self.line_styles[f_lms_name] = (
+                        plot_properties_old.line_styles[f_lms_name_old]
+                    )
+                if plot_properties_old.line_colors:
+                    self.line_colors[f_lms_name] = (
+                        plot_properties_old.line_colors[f_lms_name_old]
+                    )
 
         if self.debug_input_functions:
             self._add_debug_input_functions(lms_indices)
