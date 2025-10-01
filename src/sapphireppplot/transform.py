@@ -5,6 +5,7 @@ import os
 import paraview.simple as ps
 import paraview.servermanager
 from sapphireppplot.plot_properties import PlotProperties
+from sapphireppplot.pvplot import PARAVIEW_DATA_SERVER_LOCATION
 
 _epsilon_d: float = 1e-10
 
@@ -157,7 +158,7 @@ def plot_over_line(
         ps.SaveData(
             filename=file_path,
             proxy=plot_over_line_source,
-            location=ps.vtkPVSession.DATA_SERVER,
+            location=PARAVIEW_DATA_SERVER_LOCATION,
             ChooseArraysToWrite=(
                 1 if plot_properties.series_names is not None else 0
             ),
@@ -274,7 +275,7 @@ def plot_over_time(
         ps.SaveData(
             filename=file_path,
             proxy=plot_over_time_source,
-            location=ps.vtkPVSession.DATA_SERVER,
+            location=PARAVIEW_DATA_SERVER_LOCATION,
             ChooseArraysToWrite=(
                 1 if plot_properties.series_names is not None else 0
             ),

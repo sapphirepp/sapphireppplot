@@ -6,6 +6,8 @@ import paraview.simple as ps
 import paraview.servermanager
 from sapphireppplot.plot_properties import PlotProperties
 
+PARAVIEW_DATA_SERVER_LOCATION = 2
+
 
 def plot_line_chart_view(
     solution: paraview.servermanager.SourceProxy,
@@ -438,7 +440,7 @@ def save_screenshot(
     ps.SaveScreenshot(
         filename=file_path,
         viewOrLayout=view_or_layout,
-        location=ps.vtkPVSession.DATA_SERVER,
+        location=PARAVIEW_DATA_SERVER_LOCATION,
         TransparentBackground=transparent_background,
     )
 
@@ -472,7 +474,7 @@ def save_animation(
     ps.SaveAnimation(
         filename=file_path,
         viewOrLayout=view_or_layout,
-        location=ps.vtkPVSession.DATA_SERVER,
+        location=PARAVIEW_DATA_SERVER_LOCATION,
         # For animations it is better to not have transparent background
         TransparentBackground=transparent_background,
         FrameStride=1,
