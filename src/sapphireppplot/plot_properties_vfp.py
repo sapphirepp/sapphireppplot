@@ -23,6 +23,8 @@ class PlotPropertiesVFP(PlotProperties):
         Spatial dimension of the results.
     momentum : bool
         Does the solution have a momentum dependence?
+    scaled_distribution_function : bool
+        Is the distribution function scaled in Sapphire++ as :math:`g = p^s f`?
 
     expansion_order : int, optional
         Maximum expansion order l_max to display.
@@ -49,6 +51,7 @@ class PlotPropertiesVFP(PlotProperties):
     dim_ps: int = 2
     dim_cs: int = 1
     logarithmic_p: bool = True
+    scaled_distribution_function: bool = False
 
     expansion_order: Optional[int] = None
 
@@ -242,6 +245,8 @@ class PlotPropertiesVFP(PlotProperties):
         """
         if not base_name:
             base_name = "f"
+            if self.scaled_distribution_function:
+                base_name = "g"
             if self._spectral_index:
                 base_name = "p^s f"
 
@@ -275,6 +280,8 @@ class PlotPropertiesVFP(PlotProperties):
         """
         if not variable_name:
             variable_name = "f"
+            if self.scaled_distribution_function:
+                variable_name = "g"
             if self._spectral_index:
                 variable_name = f"p^{{ {self._spectral_index:g} }} f"
 
