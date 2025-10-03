@@ -1,15 +1,4 @@
-# Sapphire++ — Plot
-
-A [ParaView](https://www.paraview.org/)
-[Python](https://docs.paraview.org/en/latest/UsersGuide/introduction.html#getting-started-with-pvpython)
-package to plot the results from
-[Sapphire++](https://sapphirepp.org/).
-
-This package is developed for personal use
-and is therefore not claimed to be generally applicable to all Sapphire++ results
-and might exhibit unexpected behaviours.
-
-## Installation
+# Installation
 
 The installation of Python packages for ParaView is not strait forward.
 We refer to the [Sapphire++ Tutorial](https://sapphirepp.org/latest/paraview-python.html)
@@ -71,3 +60,37 @@ source ~/miniforge3/bin/activate
 conda activate sapplot
 paraview &
 ```
+
+:::{note}
+For older ParaView versions,
+if you want to use it on a remote server,
+you might want to install the
+[`egl` version](https://www.paraview.org/paraview-docs/v5.13.3/cxx/Offscreen.html):
+
+```shell
+conda install paraview=5.13.3=\*_egl
+```
+
+Or manually specify a build version found
+[here](https://anaconda.org/conda-forge/paraview/files):
+
+```shell
+conda install paraview=5.13.3=pyXXXX_XX_egl
+```
+
+This changed with ParaView 6.0.0,
+an off-screen version can directly be included in the build.
+
+:::
+
+## Further resources
+
+An alternative installation is to change the `PYTHONPATH`,
+see the [ParaView tutorial](https://docs.paraview.org/en/latest/Tutorials/SelfDirectedTutorial/batchPythonScripting.html#starting-the-python-interpreter).
+This [blog post](https://mbarzegary.github.io/2022/01/03/use-python-packages-modules-in-paraview/)
+presents simplified instructions.
+
+Further reading:
+
+- [Sapphire++ ParaView Python introduction](https://sapphirepp.org/latest/paraview-python.html)
+- [`paraview.simple` documentation](https://www.paraview.org/paraview-docs/nightly/python/paraview.servermanager_proxies.html#)
