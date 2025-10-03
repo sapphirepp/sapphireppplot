@@ -4,7 +4,10 @@ from typing import Optional
 import paraview.simple as ps
 import paraview.servermanager
 
-from sapphireppplot.plot_properties_vfp import PlotPropertiesVFP
+from sapphireppplot.plot_properties_vfp import (
+    PlotPropertiesVFP,
+    create_lms_indices,
+)
 from sapphireppplot.utils import ParamDict
 from sapphireppplot import utils, pvload, pvplot, transform
 
@@ -64,9 +67,11 @@ def load_solution(
     prm_file = pvload.read_parameter_file(results_folder)
     prm = utils.prm_to_dict(prm_file)
 
-    if plot_properties.expansion_order is None:
-        plot_properties.set_expansion_order(
-            int(prm["VFP"]["Expansion"]["Expansion order"])
+    if not plot_properties.lms_indices:
+        plot_properties.set_lms_indices(
+            create_lms_indices(
+                expansion_order=int(prm["VFP"]["Expansion"]["Expansion order"])
+            )
         )
 
     file_format = prm["Output"]["Format"]
@@ -141,7 +146,7 @@ def scale_distribution_function(
         Solution properties for the scaled distribution function.
     """
     if lms_indices is None:
-        lms_indices = [[0, 0, 0]]
+        lms_indices = plot_properties_in.lms_indices
     plot_properties = plot_properties_in.copy()
     plot_properties.scale_by_spectral_index(spectral_index, lms_indices)
 
@@ -390,7 +395,7 @@ def plot_f_lms_over_x(
         The configured XY chart view.
     """
     if lms_indices is None:
-        lms_indices = [[0, 0, 0]]
+        lms_indices = plot_properties.lms_indices
 
     y_label = plot_properties.f_lms_label(["l", "m", "s"])
     if len(lms_indices) == 1:
@@ -508,7 +513,7 @@ def plot_f_lms_over_p(
         The configured XY chart view.
     """
     if lms_indices is None:
-        lms_indices = [[0, 0, 0]]
+        lms_indices = plot_properties.lms_indices
 
     y_label = plot_properties.f_lms_label(["l", "m", "s"])
     if len(lms_indices) == 1:

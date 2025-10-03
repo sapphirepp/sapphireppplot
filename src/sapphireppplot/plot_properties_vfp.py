@@ -1,9 +1,39 @@
 """Define PlotPropertiesVFP class."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 from sapphireppplot.plot_properties import PlotProperties
+
+
+def create_lms_indices(expansion_order: int) -> list[list[int]]:
+    """
+    Create mapping between system index $i$ and spherical harmonic indices $(l,m,s)$.
+
+    Parameters
+    ----------
+    expansion_order : int
+        Expansion order l_max.
+
+    Returns
+    -------
+    lms_indices : list[list[int]]
+        Mapping `lms_indices[i] = [l,m,s]`.
+    """
+    system_size = (expansion_order + 1) ** 2
+    lms_indices = []
+
+    l = 0  # noqa: E741
+    m = 0
+    for _ in range(system_size):
+        s = 0 if m <= 0 else 1
+        lms_indices += [[l, abs(m), s]]
+
+        m += 1
+        if m > l:
+            l += 1
+            m = -l
+    return lms_indices
 
 
 @dataclass
@@ -26,8 +56,8 @@ class PlotPropertiesVFP(PlotProperties):
     scaled_distribution_function : bool
         Is the distribution function scaled in Sapphire++ as :math:`g = p^s f`?
 
-    expansion_order : int, optional
-        Maximum expansion order l_max to display.
+    lms_indices : list[list[int]], optional
+        List of lms_indices to display.
         If left empty it will be set automatically at loading.
 
     _spectral_index : float, optional
@@ -53,7 +83,7 @@ class PlotPropertiesVFP(PlotProperties):
     logarithmic_p: bool = True
     scaled_distribution_function: bool = False
 
-    expansion_order: Optional[int] = None
+    lms_indices: list[list[int]] = field(default_factory=list)
 
     debug_input_functions: bool = False
 
@@ -74,8 +104,8 @@ class PlotPropertiesVFP(PlotProperties):
             else:
                 self.grid_labels[self.dim_ps - 1] = r"$p$"
 
-        if self.expansion_order is not None:
-            self.set_expansion_order(self.expansion_order)
+        if self.lms_indices:
+            self.set_lms_indices(self.lms_indices)
 
     def _add_debug_input_functions(
         self,
@@ -143,81 +173,6 @@ class PlotPropertiesVFP(PlotProperties):
                 self.line_styles[prefix + f"du{vec_comp_i}_d{vec_comp_j}"] = (
                     line_style
                 )
-
-    def set_expansion_order(self, expansion_order: int) -> None:
-        """
-        Set the `series_names` and labels using the expansion order.
-
-        Parameters
-        ----------
-        expansion_order : int
-            Maximum expansion order l_max to display.
-        """
-        self.expansion_order = expansion_order
-        lms_indices = self.create_lms_indices(self.expansion_order)
-
-        self.series_names = []
-        self.labels = {}
-        # self.colors = {}
-        self.line_styles = {}
-
-        prefix_list = [""]
-        label_postfix_list = [""]
-        line_style_list = ["1"]
-        if self.prefix_numeric:
-            prefix_list = ["numeric_"]
-        if self.project:
-            prefix_list += ["project_"]
-            label_postfix_list += [self.annotation_project_interpol]
-            line_style_list += ["2"]
-        if self.interpol:
-            prefix_list += ["interpol_"]
-            label_postfix_list += [self.annotation_project_interpol]
-            line_style_list += ["2"]
-
-        for i, prefix in enumerate(prefix_list):
-            label_postfix = label_postfix_list[i]
-            line_style = line_style_list[i]
-
-            for lms_index in lms_indices:
-                f_lms_name = self.f_lms_name(lms_index, prefix)
-                self.series_names += [f_lms_name]
-                self.labels[f_lms_name] = self.f_lms_label(
-                    lms_index, label_postfix
-                )
-                self.line_styles[f_lms_name] = line_style
-
-        if self.debug_input_functions:
-            self._add_debug_input_functions(lms_indices)
-
-    def create_lms_indices(self, expansion_order: int) -> list[list[int]]:
-        """
-        Create mapping between system index $i$ and spherical harmonic indices $(l,m,s)$.
-
-        Parameters
-        ----------
-        expansion_order : int
-            Expansion order l_max of the solution.
-
-        Returns
-        -------
-        lms_indices : list[list[int]]
-            Mapping `lms_indices[i] = [l,m,s]`.
-        """
-        system_size = (expansion_order + 1) ** 2
-        lms_indices = []
-
-        l = 0  # noqa: E741
-        m = 0
-        for _ in range(system_size):
-            s = 0 if m <= 0 else 1
-            lms_indices += [[l, abs(m), s]]
-
-            m += 1
-            if m > l:
-                l += 1
-                m = -l
-        return lms_indices
 
     def f_lms_name(
         self,
@@ -290,6 +245,52 @@ class PlotPropertiesVFP(PlotProperties):
             tmp_postfix = " ," + annotation
 
         return f"${variable_name}_{{ {lms_index[0]} {lms_index[1]} {lms_index[2]} {tmp_postfix} }}$"
+
+    def set_lms_indices(self, lms_indices: list[list[int]]) -> None:
+        """
+        Set the `series_names` and labels activating only the `lms_indices`.
+
+        Parameters
+        ----------
+        lms_indices : list[list[int]]
+            The lms_indices to activate.
+            Will deactivate all other series names.
+        """
+        self.lms_indices = lms_indices
+
+        self.series_names = []
+        self.labels = {}
+        # self.colors = {}
+        self.line_styles = {}
+
+        prefix_list = [""]
+        label_postfix_list = [""]
+        line_style_list = ["1"]
+        if self.prefix_numeric:
+            prefix_list = ["numeric_"]
+        if self.project:
+            prefix_list += ["project_"]
+            label_postfix_list += [self.annotation_project_interpol]
+            line_style_list += ["2"]
+        if self.interpol:
+            prefix_list += ["interpol_"]
+            label_postfix_list += [self.annotation_project_interpol]
+            line_style_list += ["2"]
+
+        for i, prefix in enumerate(prefix_list):
+            label_postfix = label_postfix_list[i]
+            line_style = line_style_list[i]
+
+            for lms_index in lms_indices:
+                f_lms_name = self.f_lms_name(lms_index, prefix)
+                self.series_names += [f_lms_name]
+                self.labels[f_lms_name] = self.f_lms_label(
+                    lms_index, label_postfix
+                )
+                self.line_styles[f_lms_name] = line_style
+
+        if self.debug_input_functions:
+            self._add_debug_input_functions(lms_indices)
 
     def scale_by_spectral_index(
         self, spectral_index: float, lms_indices: list[list[int]]
