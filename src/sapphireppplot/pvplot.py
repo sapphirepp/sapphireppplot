@@ -411,7 +411,7 @@ def save_screenshot(
     view_or_layout: paraview.servermanager.ViewLayoutProxy,
     results_folder: str,
     filename: str,
-    transparent_background: bool = True,
+    plot_properties: PlotProperties = PlotProperties(),
 ) -> None:
     """
     Save screenshot of the given line chart view as `png`.
@@ -424,9 +424,8 @@ def save_screenshot(
         The directory path where the screenshot will be saved.
     filename : str
         The base name for the screenshot file (without extension).
-    transparent_background : bool, optional
-        Use a transparent background?
-        Defaults to `True`.
+    plot_properties : PlotProperties, optional
+        Additional properties like background transparency.
     """
     file_path = os.path.join(results_folder, filename + ".png")
     print(f"Save screenshot '{file_path}")
@@ -434,7 +433,7 @@ def save_screenshot(
         filename=file_path,
         viewOrLayout=view_or_layout,
         location=PARAVIEW_DATA_SERVER_LOCATION,
-        TransparentBackground=transparent_background,
+        TransparentBackground=plot_properties.screenshot_transparent_background,
     )
 
 
@@ -442,7 +441,7 @@ def save_animation(
     view_or_layout: paraview.servermanager.ViewLayoutProxy,
     results_folder: str,
     filename: str,
-    transparent_background: bool = False,
+    plot_properties: PlotProperties = PlotProperties(),
 ) -> None:
     """
     Save animation of the given line chart view as series of `.png` files.
@@ -455,12 +454,8 @@ def save_animation(
         The directory path where the screenshot will be saved.
     filename : str
         The base name for the screenshot file (without extension).
-    transparent_background : bool, optional
-        Use a transparent background?
-        Defaults to `False`.
-        For animations it is recommended not to use a transparent background.
-        Many formats like `.mp4` do not support it, resulting in artefacts.
-        For `.gif` using a transparent background is possible.
+    plot_properties : PlotProperties, optional
+        Additional properties like background transparency.
     """
     file_path = os.path.join(results_folder, filename + ".png")
     print(f"Save animation '{file_path}")
@@ -468,7 +463,6 @@ def save_animation(
         filename=file_path,
         viewOrLayout=view_or_layout,
         location=PARAVIEW_DATA_SERVER_LOCATION,
-        # For animations it is better to not have transparent background
-        TransparentBackground=transparent_background,
-        FrameStride=1,
+        TransparentBackground=plot_properties.animation_transparent_background,
+        FrameStride=plot_properties.animation_frame_stride,
     )

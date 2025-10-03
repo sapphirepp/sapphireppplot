@@ -296,9 +296,9 @@ def plot_quantities_1d(
         plot_properties=plot_properties,
     )
 
-    pvplot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
     if save_animation:
-        pvplot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name, plot_properties)
 
     # Exit preview mode
     # layout.PreviewMode = [0, 0]
@@ -400,9 +400,9 @@ def plot_split_view_1d(
         if i == 0 and labels:
             line_chart_view.ShowLegend = 1
 
-    pvplot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
     if save_animation:
-        pvplot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name, plot_properties)
 
     return layout
 
@@ -466,9 +466,9 @@ def plot_quantity_2d(
     if show_time:
         pvplot.display_time(render_view, plot_properties=plot_properties)
 
-    pvplot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
     if save_animation:
-        pvplot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name, plot_properties)
 
     # Exit preview mode
     # layout.PreviewMode = [0, 0]
@@ -598,8 +598,8 @@ def plot_quantities_over_x(
         plot_properties=plot_properties,
     )
 
-    pvplot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
     if save_animation:
-        pvplot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name, plot_properties)
 
     return plot_over_line_x, layout, line_chart_view

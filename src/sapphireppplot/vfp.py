@@ -329,9 +329,9 @@ def plot_f_lms_2d(
     if show_time:
         pvplot.display_time(render_view, plot_properties=plot_properties)
 
-    pvplot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
     if save_animation:
-        pvplot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name, plot_properties)
 
     return layout, render_view
 
@@ -453,9 +453,9 @@ def plot_f_lms_over_x(
         plot_properties=plot_properties,
     )
 
-    pvplot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
     if save_animation:
-        pvplot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name, plot_properties)
 
     return plot_over_line_x, layout, line_chart_view
 
@@ -573,8 +573,8 @@ def plot_f_lms_over_p(
         plot_properties=plot_properties,
     )
 
-    pvplot.save_screenshot(layout, results_folder, name)
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
     if save_animation:
-        pvplot.save_animation(layout, results_folder, name)
+        pvplot.save_animation(layout, results_folder, name, plot_properties)
 
     return plot_over_line_p, layout, line_chart_view

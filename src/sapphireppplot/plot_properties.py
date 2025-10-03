@@ -29,6 +29,18 @@ class PlotProperties:
         Can be any kind and number of arguments
         that will be passed to the `render_view.ResetCamera()` method.
 
+    screenshot_transparent_background : bool
+        Use a transparent background for screenshots?
+        Defaults to `True`.
+    animation_transparent_background : bool
+        Use a transparent background for animations?
+        Defaults to `False`.
+        For animations it is recommended not to use a transparent background.
+        Many formats like `.mp4` do not support it, resulting in artefacts.
+        For `.gif` using a transparent background is possible.
+    animation_frame_stride : int
+        Frame stride for the animation snapshots.
+
     text_color : list[float]
         The text color for labels and legends.
     label_size : int
@@ -116,6 +128,10 @@ class PlotProperties:
     camera_view_2d: tuple[bool, float] | Any = field(
         default_factory=lambda: (False, 0.9)
     )
+
+    screenshot_transparent_background: bool = True
+    animation_transparent_background: bool = False
+    animation_frame_stride: int = 1
 
     text_color: list[float] = field(default_factory=lambda: [0.5, 0.5, 0.5])
     label_size: int = 18
