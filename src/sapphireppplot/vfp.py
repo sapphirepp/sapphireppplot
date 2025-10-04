@@ -27,6 +27,7 @@ def load_solution(
     Load solution for VFP module.
 
     This function performs the following steps:
+
     1. Retrieves the folder containing simulation results.
     2. Loads the parameter file.
     3. Loads the solution data from the files in the results folder.
@@ -121,7 +122,7 @@ def scale_distribution_function(
     spectral_index: float = 4.0,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVFP]:
     """
-    Scales the distribution function to the desired spectral index $s$.
+    Scales the distribution function to the desired spectral index :math:`s`.
 
     This will create a number of calculator objects,
     each scaling one specific lms_index.
@@ -141,7 +142,7 @@ def scale_distribution_function(
     Returns
     -------
     solution_scaled : paraview.servermanager.SourceProxy
-        The scaled distribution function `p^s f_lms` for lms_indices.
+        The scaled distribution function :math:`p^s f_{lms}` for lms_indices.
     plot_properties : PlotPropertiesVFP
         Solution properties for the scaled distribution function.
     """

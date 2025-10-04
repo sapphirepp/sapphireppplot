@@ -2,10 +2,11 @@
 
 import sys
 import os
-from typing import Any, Dict, Union
+from typing import Any, Dict
 import numpy as np
 
-ParamDict = Dict[str, Union[str, "ParamDict"]]
+# ParamDict = Dict[str, Union[str, "ParamDict"]] # Confuses autodoc_typehints
+ParamDict = Dict[str, Any]
 
 
 _results_folder_argv: int = 1

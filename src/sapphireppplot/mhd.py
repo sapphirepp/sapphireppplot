@@ -25,6 +25,7 @@ def load_solution(
     Load solution for MHD module.
 
     This function performs the following steps:
+
     1. Retrieves the folder containing simulation results.
     2. Loads the parameter file.
     3. Loads the solution data from the files in the results folder.

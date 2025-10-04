@@ -8,7 +8,7 @@ from sapphireppplot.plot_properties import PlotProperties
 
 def create_lms_indices(expansion_order: int) -> list[list[int]]:
     """
-    Create mapping between system index $i$ and spherical harmonic indices $(l,m,s)$.
+    Create mapping between system index :math:`i` and spherical harmonic indices :math:`(l,m,s)`.
 
     Parameters
     ----------
@@ -191,7 +191,7 @@ class PlotPropertiesVFP(PlotProperties):
             Prefix.
         base_name : str, optional
             Base name for variable.
-            Defaults to "f" or "p^s f".
+            Defaults to "f", "g" or "p^s f".
 
         Returns
         -------
@@ -226,7 +226,7 @@ class PlotPropertiesVFP(PlotProperties):
             Postfix annotation of quantity.
         variable_name : str, optional
             Name of the variable.
-            Defaults to "f" or "p^s f".
+            Defaults to "f", "g" or "p^s f".
 
         Returns
         -------
@@ -296,12 +296,12 @@ class PlotPropertiesVFP(PlotProperties):
         self, spectral_index: float, lms_indices: list[list[int]]
     ) -> None:
         """
-        Set properties to a scaled distribution function with spectral index $s$.
+        Set properties to a scaled distribution function with spectral index :math:`s`.
 
         Parameters
         ----------
         spectral_index : float
-            Spectral index $s$.
+            Spectral index :math:`s`.
         lms_indices : list[list[int]]
             The lms_indices to activate.
             Will deactivate all other and unscaled series names.

@@ -120,6 +120,7 @@ yscale
 # sphinx
 autodoc
 autosummary
+typehints
 
 # Words
 advection

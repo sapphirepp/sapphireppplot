@@ -26,6 +26,7 @@ def load_solution(
     Load athena++ solution.
 
     This function performs the following steps:
+
     1. Retrieves the folder containing simulation results.
     2. Loads the solution data from the files in the results folder.
     3. Adds time step information if necessary.
