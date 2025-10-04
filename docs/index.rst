@@ -17,4 +17,6 @@ and might exhibit unexpected behaviours.
    :caption: Contents:
 
    installation
+   examples/plot_quick_start
+   examples/jupyter_tutorial
    api

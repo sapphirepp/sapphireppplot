@@ -29,6 +29,7 @@ extensions = [
     "sphinx_autodoc_typehints",
     # "sphinx.ext.autosummary",
     "myst_parser",
+    "nbsphinx",
 ]
 
 templates_path = ["_templates"]
@@ -47,7 +48,10 @@ source_suffix = {
     ".md": "markdown",
 }
 
-myst_enable_extensions = ["colon_fence"]
+myst_enable_extensions = [
+    "colon_fence",
+    "dollarmath",
+]
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

@@ -195,3 +195,4 @@ cython_debug/
 
 # Documentation
 _build
+examples/figures
