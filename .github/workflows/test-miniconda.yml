@@ -20,10 +20,10 @@ jobs:
           activate-environment: sapplot
           environment-file: environment.yml
 
-      - name: Install sapplot
+      - name: Install sapphireppplot
         shell: bash -el {0}
         run: |
-          pip install -e '.[test]'
+          pip install -e '.[test,docs]'
 
       - name: list env info
         shell: bash -el {0}
@@ -41,3 +41,9 @@ jobs:
         run: |
           echo "Run flake8"
           flake8 .
+
+      - name: documentation
+        shell: bash -el {0}
+        run: |
+          cd docs
+          make html
