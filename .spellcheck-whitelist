@@ -83,6 +83,7 @@ scipy
 
 # numpy
 arange
+argmin
 argwhere
 dtype
 lexsort
@@ -92,6 +93,7 @@ npz
 numpy
 popt
 savez
+searchsorted
 sqrt
 
 # matplotlib

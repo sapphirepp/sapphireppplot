@@ -139,3 +139,43 @@ def match_index(
         )
 
     return matched_indices[0]
+
+
+def find_closest_index(
+    array: list[Any] | np.typing.NDArray[Any],
+    target: Any,
+    print_index: bool = False,
+) -> int:
+    """
+    Find closest index `i` to `array[i] = target` in a sorted array.
+
+    Parameters
+    ----------
+    array : list[Any]
+        Sorted array of values to search.
+    target : Any
+        Target value to find.
+    print_index : bool, optional
+        Print the found index and match to the console?
+
+    Returns
+    -------
+    index : int
+        Index `i`.
+    """
+    index = np.searchsorted(array, target, side="left")
+    if index > 0 and (
+        index == len(array)
+        or np.abs(target - array[index - 1]) < np.abs(target - array[index])
+    ):
+        index -= 1
+
+    # Alternative for unsorted arrays:
+    # index = (np.abs(array - target)).argmin()
+
+    if print_index:
+        print(
+            f"{index} is closest index to {target}: "
+            f"array[{index}] = {array[index]}"
+        )
+    return index
