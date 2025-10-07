@@ -6,36 +6,6 @@ from typing import Optional
 from sapphireppplot.plot_properties import PlotProperties
 
 
-def create_lms_indices(expansion_order: int) -> list[list[int]]:
-    """
-    Create mapping between system index :math:`i` and spherical harmonic indices :math:`(l,m,s)`.
-
-    Parameters
-    ----------
-    expansion_order : int
-        Expansion order l_max.
-
-    Returns
-    -------
-    lms_indices : list[list[int]]
-        Mapping `lms_indices[i] = [l,m,s]`.
-    """
-    system_size = (expansion_order + 1) ** 2
-    lms_indices = []
-
-    l = 0  # noqa: E741
-    m = 0
-    for _ in range(system_size):
-        s = 0 if m <= 0 else 1
-        lms_indices += [[l, abs(m), s]]
-
-        m += 1
-        if m > l:
-            l += 1
-            m = -l
-    return lms_indices
-
-
 @dataclass
 class PlotPropertiesVFP(PlotProperties):
     """
@@ -174,6 +144,36 @@ class PlotPropertiesVFP(PlotProperties):
                     line_style
                 )
 
+    @staticmethod
+    def create_lms_indices(expansion_order: int) -> list[list[int]]:
+        """
+        Create mapping between system index :math:`i` and spherical harmonic indices :math:`(l,m,s)`.
+
+        Parameters
+        ----------
+        expansion_order : int
+            Expansion order `l_max`.
+
+        Returns
+        -------
+        lms_indices : list[list[int]]
+            Mapping `lms_indices[i] = [l,m,s]`.
+        """
+        system_size = (expansion_order + 1) ** 2
+        lms_indices = []
+
+        l = 0  # noqa: E741
+        m = 0
+        for _ in range(system_size):
+            s = 0 if m <= 0 else 1
+            lms_indices += [[l, abs(m), s]]
+
+            m += 1
+            if m > l:
+                l += 1
+                m = -l
+        return lms_indices
+
     def f_lms_name(
         self,
         lms_index: list[int],
@@ -291,6 +291,17 @@ class PlotPropertiesVFP(PlotProperties):
 
         if self.debug_input_functions:
             self._add_debug_input_functions(lms_indices)
+
+    def set_expansion_order(self, expansion_order: int) -> None:
+        """
+        Set the `series_names` and labels using the expansion order.
+
+        Parameters
+        ----------
+        expansion_order : int
+            Maximum expansion order `l_max` to display.
+        """
+        self.set_lms_indices(self.create_lms_indices(expansion_order))
 
     def scale_by_spectral_index(
         self, spectral_index: float, lms_indices: list[list[int]]

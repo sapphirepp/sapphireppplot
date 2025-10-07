@@ -4,10 +4,7 @@ from typing import Optional
 import paraview.simple as ps
 import paraview.servermanager
 
-from sapphireppplot.plot_properties_vfp import (
-    PlotPropertiesVFP,
-    create_lms_indices,
-)
+from sapphireppplot.plot_properties_vfp import PlotPropertiesVFP
 from sapphireppplot.utils import ParamDict
 from sapphireppplot import utils, pvload, pvplot, transform
 
@@ -69,10 +66,8 @@ def load_solution(
     prm = utils.prm_to_dict(prm_file)
 
     if not plot_properties.lms_indices:
-        plot_properties.set_lms_indices(
-            create_lms_indices(
-                expansion_order=int(prm["VFP"]["Expansion"]["Expansion order"])
-            )
+        plot_properties.set_expansion_order(
+            int(prm["VFP"]["Expansion"]["Expansion order"])
         )
 
     file_format = prm["Output"]["Format"]
