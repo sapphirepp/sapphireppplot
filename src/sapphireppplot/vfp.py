@@ -260,6 +260,96 @@ def merge_input_function_vectors(
     return merge_vector_components_u, plot_properties
 
 
+def plot_f_lms_1d(
+    solution: paraview.servermanager.SourceProxy,
+    results_folder: str,
+    name: str,
+    plot_properties: PlotPropertiesVFP,
+    lms_indices: Optional[list[list[int]]] = None,
+    x_label: Optional[str] = None,
+    value_range: Optional[list[float]] = None,
+    log_y_scale: bool = False,
+    save_animation: bool = False,
+) -> tuple[
+    paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
+]:
+    """
+    Plot and save visualization of the specified f_lms in 2D.
+
+    Parameters
+    ----------
+    solution : paraview.servermanager.SourceProxy
+        The simulation or computation result containing the data to plot.
+    results_folder : str
+        Path to the folder where results (images/animations) will be saved.
+    name : str
+        Name of the layout and image/animation files.
+    plot_properties : PlotPropertiesVFP
+        Properties for plotting.
+    lms_indices : list[list[int]], optional
+        The list of indices `[[l_1,m_1,s_1], [l_2,m_2,s_2]]` to plot.
+    x_label : str, optional
+        Label for the bottom axis of the chart.
+    value_range : list[float], optional
+        Minimal (`value_range[0]`)
+        and maximal (`value_range[1]`) value for the y-axes.
+    log_y_scale : bool, optional
+        Use a logarithmic y-scale?
+    save_animation : bool, optional
+        Save an animation of the plot.
+
+    Returns
+    -------
+    layout : paraview.servermanager.ViewLayoutProxy
+        The layout object used for the plot.
+    line_chart_view : paraview.servermanager.XYChartViewProxy
+        The configured XY chart view.
+    """
+    if lms_indices is None:
+        lms_indices = plot_properties.lms_indices
+
+    if x_label is None:
+        if plot_properties.momentum:
+            x_label = r"$\ln p$"
+        else:
+            x_label = r"$x$"
+
+    y_label = plot_properties.f_lms_label(["l", "m", "s"])
+    if len(lms_indices) == 1:
+        y_label = plot_properties.f_lms_label(lms_indices[0])
+
+    visible_lines = []
+    for lms_index in lms_indices:
+        if plot_properties.prefix_numeric:
+            visible_lines += [plot_properties.f_lms_name(lms_index, "numeric_")]
+        else:
+            visible_lines += [plot_properties.f_lms_name(lms_index)]
+        if plot_properties.project:
+            visible_lines += [plot_properties.f_lms_name(lms_index, "project_")]
+        if plot_properties.interpol:
+            visible_lines += [
+                plot_properties.f_lms_name(lms_index, "interpol_")
+            ]
+
+    layout = ps.CreateLayout(name)
+    line_chart_view = pvplot.plot_line_chart_view(
+        solution,
+        layout,
+        x_label=x_label,
+        y_label=y_label,
+        visible_lines=visible_lines,
+        value_range=value_range,
+        log_y_scale=log_y_scale,
+        plot_properties=plot_properties,
+    )
+
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
+    if save_animation:
+        pvplot.save_animation(layout, results_folder, name, plot_properties)
+
+    return layout, line_chart_view
+
+
 def plot_f_lms_2d(
     solution: paraview.servermanager.SourceProxy,
     results_folder: str,
