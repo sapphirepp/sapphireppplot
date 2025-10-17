@@ -1,6 +1,10 @@
 Sapphire++ — Plot
 =================
 
+.. image:: https://img.shields.io/badge/GitHub-sapphirepp--sapphireppplot-blue?logo=github
+   :target: https://github.com/sapphirepp/sapphireppplot
+   :alt: GitHub
+
 A `ParaView <https://www.paraview.org/>`__
 `Python <https://docs.paraview.org/en/latest/UsersGuide/introduction.html#getting-started-with-pvpython>`__
 package to plot the results from
