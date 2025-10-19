@@ -5,7 +5,7 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-# -- Add project root to sys.path ---------------------------------------------
+# -- Add project root to sys.path --------------------------------------------
 import os
 import sys
 
@@ -18,7 +18,8 @@ sys.path.insert(0, os.path.abspath("../src"))
 project = "sapphireppplot"
 copyright = "2025, Florian Schulze"
 author = "Florian Schulze"
-release = "0.0.1"
+version = "latest"
+release = version
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -30,6 +31,7 @@ extensions = [
     # "sphinx.ext.autosummary",
     "myst_parser",
     "nbsphinx",
+    "sphinx_multiversion",
 ]
 
 templates_path = ["_templates"]
@@ -57,3 +59,10 @@ myst_enable_extensions = [
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "sphinx_rtd_theme"
+
+# -- Options for sphinx-multiversion -----------------------------------------
+# https://sphinx-contrib.github.io/multiversion/main/configuration.html
+
+smv_tag_whitelist = r"^v\d+\.\d+\.\d+$"
+smv_branch_whitelist = r"main"
+smv_released_pattern = r"^refs/tags/v\d+\.\d+\.\d+$"

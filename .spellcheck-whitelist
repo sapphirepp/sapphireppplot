@@ -120,6 +120,8 @@ yscale
 # sphinx
 autodoc
 autosummary
+multiversion
+smv
 typehints
 
 # Words

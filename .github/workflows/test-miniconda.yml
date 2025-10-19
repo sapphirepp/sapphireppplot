@@ -46,4 +46,4 @@ jobs:
         shell: bash -el {0}
         run: |
           cd docs
-          make html
+          make multiversion
