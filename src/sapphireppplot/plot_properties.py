@@ -20,7 +20,7 @@ class PlotProperties:
     labels: dict[str, str] = field(default_factory=dict)
     """Labels for the series quantities in the chart."""
     data_type: str = "POINTS"
-    """Specifies if solution has DG (`POINTS`) or VE (`CELLS`) data."""
+    """Specifies if solution has DG ("POINTS") or FV ("CELLS") data."""
 
     preview_size_1d: list[float] = field(default_factory=lambda: [1280, 720])
     """Preview window size in 1D."""
@@ -60,7 +60,20 @@ class PlotProperties:
     line_colors: dict[str, list[str]] = field(default_factory=dict)
     """Line colors for the series quantities in the LineChartView."""
     line_styles: dict[str, str] = field(default_factory=dict)
-    """Line styles for the series quantities in the LineChartView."""
+    """
+    Line styles for the series quantities in the LineChartView.
+
+    - "0" for None (default)
+    - "1" for Solid
+    - "2" for Dash
+    - "3" for Dot
+    - "4" for Dash Dot
+    - "5" for Dash Dot Dot
+
+    If no line style is set for a quantity,
+    it default to None,
+    making the line invisible.
+    """
 
     legend_location: str | list[float] = field(
         default_factory=lambda: "TopRight"
@@ -134,12 +147,18 @@ class PlotProperties:
     """
 
     sampling_pattern: str = "center"
-    """Sampling pattern used for plot_over_line."""
+    """
+    Sampling pattern used for plot_over_line.
+
+    - "uniform" for `Sample Uniformly`
+    - "center" for `Sample At Segment Centers`
+    - "boundary" for `Sample At Cell Boundaries`
+    """
     sampling_resolution: Optional[int | float] = None
     """
     Sampling resolution used for plot_over_line.
-    Number of points for uniform sampling,
-    `Tolerance` for center and boundary.
+    Number of points for "uniform" sampling,
+    `Tolerance` for "center" and "boundary".
     """
 
     stream_tracer_maximum_error: float = 1e-6

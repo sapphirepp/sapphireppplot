@@ -117,7 +117,8 @@ def plot_over_line(
                 )
         case _:
             raise ValueError(
-                f"Unknown sampling pattern {plot_properties.sampling_pattern}"
+                f"Unknown sampling pattern {plot_properties.sampling_pattern}."
+                + "Use one of `uniform`, `center`, `boundary`"
             )
 
     if x_axes_scale is not None:
