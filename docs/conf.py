@@ -42,6 +42,7 @@ autodoc_default_options = {
     "members": True,
     "undoc-members": True,
     "show-inheritance": True,
+    "member-order": "bysource",
 }
 
 # Allow Markdown files

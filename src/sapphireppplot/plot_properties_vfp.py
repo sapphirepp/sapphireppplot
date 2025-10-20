@@ -10,59 +10,44 @@ from sapphireppplot.plot_properties import PlotProperties
 class PlotPropertiesVFP(PlotProperties):
     """
     Specialized plot properties for VFP plots.
-
-    Attributes
-    ----------
-    dimension : int
-        Dimensionality of the results.
-    momentum : bool
-        Does the solution have a momentum dependence?
-    dim_ps : int
-        Dimension of the reduced phase space.
-    dim_cs : int
-        Spatial dimension of the results.
-    momentum : bool
-        Does the solution have a momentum dependence?
-    scaled_distribution_function : bool
-        Is the distribution function scaled in Sapphire++ as :math:`g = p^s f`?
-
-    lms_indices : list[list[int]], optional
-        List of lms_indices to display.
-        If left empty it will be set automatically at loading.
-
-    _spectral_index : float, optional
-        If set, the distribution function is scaled by this index in ParaView.
-
-    debug_input_functions : bool
-        Show user defined input functions.
-
-    prefix_numeric : bool
-        Use numeric prefix for results.
-    project : bool
-        Show projected solution.
-    interpol : bool
-        Show interpolated solution.
-    annotation_project_interpol : str
-        Label annotation for projected/interpolated solution.
     """
 
     dimension: int = 2
+    """Dimensionality of the results."""
     momentum: bool = True
+    """Does the solution have a momentum dependence?"""
     dim_ps: int = 2
+    """Dimension of the reduced phase space."""
     dim_cs: int = 1
+    """Spatial dimension of the results."""
     logarithmic_p: bool = True
+    """Does the solution have a momentum dependence?"""
     scaled_distribution_function: bool = False
+    """
+    Is the distribution function scaled in Sapphire++ as
+    :math:`g = p^s f`?
+    """
 
     lms_indices: list[list[int]] = field(default_factory=list)
+    """
+    List of lms_indices to display.
+    If left empty it will be set automatically at loading.
+    """
 
     debug_input_functions: bool = False
+    """Show user defined input functions."""
 
     prefix_numeric: bool = False
+    """Use numeric prefix for results?"""
     project: bool = False
+    """Show projected exact solution?"""
     interpol: bool = False
-    annotation_project_interpol: str = "ana"
+    """Show interpolated exact solution?"""
+    annotation_project_interpol: str = "exact"
+    """Label annotation for exact solution."""
 
     _spectral_index: Optional[float] = None
+    """If set, the distribution function is scaled by this index in ParaView."""
 
     def __post_init__(self) -> None:
         self.dim_ps = self.dimension

@@ -10,171 +10,146 @@ import paraview.servermanager
 class PlotProperties:
     """
     Class to collect properties for plotting.
-
-    Attributes
-    ----------
-    series_names : Optional[list[str]]
-        Names of the series to load and show.
-    labels : dict[str, str]
-        Labels for the series quantities in the chart.
-    data_type : str
-        Specifies if solution has DG (`POINTS`) or VE (`CELLS`) data.
-
-    preview_size_1d : list[float]
-        Preview window size in 1D.
-    preview_size_2d : list[float]
-        Preview window size in 2D.
-    camera_view_2d: tuple[bool, float] | Any
-        The view for 2D render view.
-        Can be any kind and number of arguments
-        that will be passed to the `render_view.ResetCamera()` method.
-
-    screenshot_transparent_background : bool
-        Use a transparent background for screenshots?
-        Defaults to `True`.
-    animation_transparent_background : bool
-        Use a transparent background for animations?
-        Defaults to `False`.
-        For animations it is recommended not to use a transparent background.
-        Many formats like `.mp4` do not support it, resulting in artefacts.
-        For `.gif` using a transparent background is possible.
-    animation_frame_stride : int
-        Frame stride for the animation snapshots.
-
-    text_color : list[float]
-        The text color for labels and legends.
-    label_size : int
-        Font size for label text.
-    text_size : int
-        Font size for text, e.g. legend and axes titles.
-    title_size : int
-        Font size for chart titles.
-
-    line_colors : dict[str, list[str]]
-        Line colors for the series quantities in the LineChartView.
-    line_styles : dict[str, str]
-        Line styles for the series quantities in the LineChartView.
-
-    legend_location : str | list[float]
-        Legend postion in LineChartView.
-        Either descriptive string or coordinates.
-    legend_symbol_width : int
-        Size of the legend marker in LineChartView..
-        Set to `0` to hide the legend.
-
-    show_grid : bool
-        Show the grid lines for 2D/3D plots.
-    grid_labels : list[str]
-        Labels of the x,y and z axes for 2D/3D plots.
-    grid_color : list[float]
-        The color of grid axes and legend for 2D/3D plots.
-
-    color_map : str
-        Select a color map for the color bar.
-    color_bar_label_format : str
-        The format string for the color bar labels,
-        e.g. `r"%-#6.3g"`.
-        Use automatic formatting if empty.
-    color_bar_range_labels: bool
-        Show range labels of the color bar?
-    color_bar_range_label_format : str
-        The format string for the color bar range labels,
-        e.g. `r"%-#6.1e"`.
-    color_bar_position : str | list[float]
-        Color bar postion.
-        Either descriptive string or coordinates.
-    color_bar_length : float
-        Size of the color bar.
-        Set to `0` to hide the color bar.
-
-    axes_scale : list[float]
-        Divide the x,y,z-axes by this scale in the RenderView.
-        This only affects the displayed axes ticks,
-        it does not rescale the underlying data.
-    axes_stretch : list[float]
-        Stretch the x,y,z-axes by this factor in the RenderView.
-        This does not change the displayed numbers,
-        only makes the axes visually bigger/smaller.
-
-    time_format : str
-        Formatted text for the time.
-    time_location : str | list[float]
-        Text postion for time labeling.
-        Either descriptive string or coordinates.
-
-    sampling_pattern : str
-        Sampling pattern used for plot_over_line.
-    sampling_resolution : int | float, optional
-        Sampling resolution used for plot_over_line.
-        Number of points for uniform sampling,
-        `Tolerance` for center and boundary.
-
-    stream_tracer_maximum_error : float
-        Maximum error for stream_tracer.
-    stream_tracer_minimum_step : float
-        Minimum step length for stream_tracer.
-    stream_tracer_initial_step : float
-        Initial step length for stream_tracer.
-    stream_tracer_maximum_step : float
-        Maximum step length for stream_tracer.
     """
 
     series_names: list[str] = field(default_factory=list)
+    """
+    Optional[list[str]]
+    Names of the series to load and show.
+    """
     labels: dict[str, str] = field(default_factory=dict)
+    """Labels for the series quantities in the chart."""
     data_type: str = "POINTS"
+    """Specifies if solution has DG (`POINTS`) or VE (`CELLS`) data."""
 
     preview_size_1d: list[float] = field(default_factory=lambda: [1280, 720])
+    """Preview window size in 1D."""
     preview_size_2d: list[float] = field(default_factory=lambda: [1024, 1024])
+    """Preview window size in 2D."""
     camera_view_2d: tuple[bool, float] | Any = field(
         default_factory=lambda: (False, 0.9)
     )
+    """
+    The view for 2D render view.
+    Can be any kind and number of arguments
+    that will be passed to the `render_view.ResetCamera()` method.
+    """
 
     screenshot_transparent_background: bool = True
+    """Use a transparent background for screenshots?"""
     animation_transparent_background: bool = False
+    """
+    Use a transparent background for animations?
+    Defaults to `False`.
+    For animations it is recommended not to use a transparent background.
+    Many formats like `.mp4` do not support it, resulting in artefacts.
+    For `.gif` using a transparent background is possible.
+    """
     animation_frame_stride: int = 1
+    """Frame stride for the animation snapshots."""
 
     text_color: list[float] = field(default_factory=lambda: [0.5, 0.5, 0.5])
+    """The text color for labels and legends."""
     label_size: int = 18
+    """Font size for label text."""
     text_size: int = 24
+    """Font size for text, e.g. legend and axes titles."""
     title_size = 30
+    """Font size for chart titles."""
 
     line_colors: dict[str, list[str]] = field(default_factory=dict)
+    """Line colors for the series quantities in the LineChartView."""
     line_styles: dict[str, str] = field(default_factory=dict)
+    """Line styles for the series quantities in the LineChartView."""
 
     legend_location: str | list[float] = field(
         default_factory=lambda: "TopRight"
     )
+    """
+    Legend postion in LineChartView.
+    Either descriptive string or coordinates.
+    """
     legend_symbol_width: int = 30
+    """
+    Size of the legend marker in LineChartView..
+    Set to `0` to hide the legend.
+    """
 
     show_grid: bool = False
+    """Show the grid lines for 2D/3D plots?"""
     grid_labels: list[str] = field(
         default_factory=lambda: [r"$x$", r"$y$", r"$z$"]
     )
+    """Labels of the x,y and z axes for 2D/3D plots."""
     grid_color: list[float] = field(default_factory=lambda: [0.5, 0.5, 0.5])
+    """The color of grid axes and legend for 2D/3D plots."""
 
     color_map: str = "Viridis (matplotlib)"
+    """Select a color map for the color bar."""
     color_bar_label_format: str = ""
+    """
+    The format string for the color bar labels,
+    e.g. `r"%-#6.3g"`.
+    Use automatic formatting if empty.
+    """
     color_bar_range_labels: bool = True
+    """Show range labels of the color bar?"""
     color_bar_range_label_format: str = r"%-#6.1e"
+    """
+    The format string for the color bar range labels,
+    e.g. `r"%-#6.1e"`.
+    """
     color_bar_position: str | list[float] = field(
-        # default_factory=lambda: [0.65, 0.1]
         default_factory=lambda: "Lower Right Corner"
     )
+    """
+    Color bar postion.
+    Either descriptive string or coordinates.
+    """
     color_bar_length: float = 0.25
+    """
+    Size of the color bar.
+    Set to `0` to hide the color bar.
+    """
 
     axes_scale: list[float] = field(default_factory=lambda: [1.0, 1.0, 1.0])
+    """
+    Divide the x,y,z-axes by this scale in the RenderView.
+    This only affects the displayed axes ticks,
+    it does not rescale the underlying data.
+    """
     axes_stretch: list[float] = field(default_factory=lambda: [1.0, 1.0, 1.0])
+    """
+    Stretch the x,y,z-axes by this factor in the RenderView.
+    This does not change the displayed numbers,
+    only makes the axes visually bigger/smaller.
+    """
 
     time_format: str = r"Time: {time:.2f}"
+    """Formatted text for the time."""
     time_location: str | list[float] = "Upper Left Corner"
+    """
+    Text postion for time labeling.
+    Either descriptive string or coordinates.
+    """
 
     sampling_pattern: str = "center"
+    """Sampling pattern used for plot_over_line."""
     sampling_resolution: Optional[int | float] = None
+    """
+    Sampling resolution used for plot_over_line.
+    Number of points for uniform sampling,
+    `Tolerance` for center and boundary.
+    """
 
     stream_tracer_maximum_error: float = 1e-6
+    """Maximum error for stream_tracer."""
     stream_tracer_minimum_step: float = 0.01
+    """Minimum step length for stream_tracer."""
     stream_tracer_initial_step: float = 0.2
+    """Initial step length for stream_tracer."""
     stream_tracer_maximum_step: float = 0.5
+    """Maximum step length for stream_tracer."""
 
     def copy(self) -> Self:
         """

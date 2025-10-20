@@ -9,29 +9,22 @@ from sapphireppplot.plot_properties import PlotProperties
 class PlotPropertiesMHD(PlotProperties):
     """
     Specialized plot properties for MHD plots.
-
-    Attributes
-    ----------
-    dimension : int
-        Dimensionality of the results.
-    prefix_numeric : bool
-        Use numeric prefix for results.
-    project : bool
-        Show projected solution.
-    interpol : bool
-        Show interpolated solution.
-    annotation_project_interpol : str
-        Label annotation for projected/interpolated solution.
-    show_indicators : bool
-        Show debug indicators, like the shock indicator.
     """
 
     dimension: int = 3
-    prefix_numeric: bool = False
-    project: bool = False
-    interpol: bool = False
-    annotation_project_interpol: str = "ana"
+    """Dimensionality of the results."""
+
     show_indicators: bool = False
+    """Show debug indicators, like the shock indicator?"""
+
+    prefix_numeric: bool = False
+    """Use numeric prefix for results?"""
+    project: bool = False
+    """Show projected exact solution?"""
+    interpol: bool = False
+    """Show interpolated exact solution?"""
+    annotation_project_interpol: str = "exact"
+    """Label annotation for exact solution."""
 
     def __post_init__(self) -> None:
         self.series_names = []
