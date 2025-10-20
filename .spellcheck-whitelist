@@ -121,6 +121,7 @@ yscale
 autodoc
 autosummary
 multiversion
+rtype
 smv
 typehints
 

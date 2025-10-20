@@ -23,15 +23,15 @@ def read_parameter_file(
 
     Parameters
     ----------
-    results_folder : str
+    results_folder
         Path to the folder containing parameter file.
-    file_name : str, optional
+    file_name
         File name of the parameter file including file extension.
         By default "log.prm".
 
     Returns
     -------
-    list[str]
+    prm_lines
         List of lines of in the parameter file.
 
     Raises
@@ -75,14 +75,14 @@ def load_solution_vtk(
 
     Parameters
     ----------
-    results_folder : str
+    results_folder
         Path to the folder containing `solution_*.vtk` files.
-    base_file_name : str, optional
+    base_file_name
         Base name of the solutions files.
 
     Returns
     -------
-    solution : paraview.servermanager.SourceProxy
+    solution
         A ParaView reader object with selected point arrays enabled.
 
     Raises
@@ -124,16 +124,16 @@ def load_solution_vtu(
 
     Parameters
     ----------
-    results_folder : str
+    results_folder
         Path to the folder containing `solution_*.vtu` files.
-    base_file_name : str, optional
+    base_file_name
         Base name of the solutions files.
-    load_arrays : list[str], optional
+    load_arrays
         The name of the arrays in the solution that should be loaded.
 
     Returns
     -------
-    solution : paraview.servermanager.SourceProxy
+    solution
         A ParaView reader object with selected point arrays enabled.
 
     Raises
@@ -171,16 +171,16 @@ def load_solution_pvtu(
 
     Parameters
     ----------
-    results_folder : str
+    results_folder
         Path to the folder containing `solution_*.pvtu` files.
-    base_file_name : str, optional
+    base_file_name
         Base name of the solutions files.
-    load_arrays : list[str], optional
+    load_arrays
         The name of the arrays in the solution that should be loaded.
 
     Returns
     -------
-    solution : paraview.servermanager.SourceProxy
+    solution
         A ParaView reader object with selected point arrays enabled.
 
     Raises
@@ -222,16 +222,16 @@ def load_solution_hdf5_with_xdmf(
 
     Parameters
     ----------
-    results_folder : str
+    results_folder
         Path to the folder containing the `solution.xdmf` file.
-    base_file_name : str, optional
+    base_file_name
         Base name of the solutions files.
-    load_arrays : list[str], optional
+    load_arrays
         The name of the arrays in the solution that should be loaded.
 
     Returns
     -------
-    solution : paraview.servermanager.SourceProxy
+    solution
         A ParaView reader object with selected point arrays enabled.
 
     Raises
@@ -273,16 +273,16 @@ def scale_time_steps(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         Solution without time steps.
-    t_start : float, optional
+    t_start
         Simulation start time.
-    t_end : float, optional
+    t_end
         Simulation end time.
 
     Returns
     -------
-    solution_temporal_scaled: paraview.servermanager.SourceProxy
+    solution_temporal_scaled
         Solution with scaled time steps.
     """
     # create a new 'Temporal Shift Scale'
@@ -329,30 +329,30 @@ def load_solution(
 
     Parameters
     ----------
-    plot_properties : PlotProperties
+    plot_properties
         Properties of the solution to load.
-    file_format : str, optional
+    file_format
         Format of the solution files.
-    path_prefix : str, optional
+    path_prefix
         Prefix for relative path.
-    base_file_name : str, optional
+    base_file_name
         Base name of the solutions files.
-    t_start : float, optional
+    t_start
         Simulation start time.
-    t_end : float, optional
+    t_end
         Simulation end time.
-    parameter_file_name : str, optional
+    parameter_file_name
         File name of the parameter file including file extension.
 
     Returns
     -------
-    results_folder : str
+    results_folder
         The path to the results folder.
-    prm : ParamDict
+    prm
         Dictionary of the parameters.
-    solution : paraview.servermanager.SourceProxy
+    solution
         A ParaView reader object with selected point arrays enabled.
-    animation_scene : paraview.servermanager.Proxy
+    animation_scene
         The ParaView AnimationScene.
 
     Raises

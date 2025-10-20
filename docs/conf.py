@@ -44,6 +44,7 @@ autodoc_default_options = {
     "show-inheritance": True,
     "member-order": "bysource",
 }
+napoleon_use_rtype = False
 
 # Allow Markdown files
 source_suffix = {

@@ -181,7 +181,7 @@ class PlotProperties:
 
         Parameters
         ----------
-        line_chart_view : paraview.servermanager.Proxy
+        line_chart_view
             ParaView LineChartView object.
         """
         line_chart_view.ChartTitleFontSize = self.title_size
@@ -215,7 +215,7 @@ class PlotProperties:
 
         Parameters
         ----------
-        solution_display : paraview.servermanager.Proxy
+        solution_display
             Solution display
         """
         if self.labels:
@@ -244,9 +244,9 @@ class PlotProperties:
 
         Parameters
         ----------
-        render_view : paraview.servermanager.Proxy
+        render_view
             Render view.
-        solution_display : paraview.servermanager.Proxy
+        solution_display
             Solution display.
         """
         if self.show_grid:
@@ -284,7 +284,7 @@ class PlotProperties:
 
         Parameters
         ----------
-        color_bar : paraview.servermanager.Proxy
+        color_bar
             Color bar.
 
         Returns

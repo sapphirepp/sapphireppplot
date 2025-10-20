@@ -25,29 +25,29 @@ def plot_line_chart_view(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         The data source to visualize, typically a ParaView data object.
-    layout : paraview.servermanager.ViewLayoutProxy
+    layout
         ParaView layout to use for the plot.
-    x_label : str, optional
+    x_label
         Label for the bottom axis of the chart.
-    y_label : str, optional
+    y_label
         Label for the left axis of the chart.
-    x_array_name : str, optional
+    x_array_name
         Name of the array ot use as x-axes.
-    visible_lines : list[str], optional
+    visible_lines
         List of series names to display in the chart.
-    value_range : list[float], optional
+    value_range
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the y-axes.
-    log_y_scale : bool, optional
+    log_y_scale
         Use a logarithmic y-scale?
-    plot_properties : PlotProperties, optional
+    plot_properties
         Properties for plotting like the labels.
 
     Returns
     -------
-    line_chart_view : paraview.servermanager.XYChartViewProxy
+    line_chart_view
         The configured XY chart view.
     """
     # Create a new 'Line Chart View'
@@ -105,23 +105,23 @@ def plot_render_view_2d(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         The data source to visualize, typically a ParaView data object.
-    layout : paraview.servermanager.ViewLayoutProxy
+    layout
         ParaView layout to use for the plot.
-    quantity : str
+    quantity
         Name of the quantity to plot.
-    value_range : list[float], optional
+    value_range
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the color bar.
-    log_scale : bool, optional
+    log_scale
         Use a logarithmic color scale?
-    plot_properties : PlotProperties, optional
+    plot_properties
         Properties for plotting like the labels.
 
     Returns
     -------
-    render_view : paraview.servermanager.RenderViewProxy
+    render_view
         The configured 2D render view.
     """
     # Create a new 'Line Chart View'
@@ -235,26 +235,26 @@ def show_stream_tracer(
 
     Parameters
     ----------
-    stream_tracer : paraview.servermanager.SourceProxy
+    stream_tracer
         The stream tracer to visualize.
-    render_view : paraview.servermanager.Proxy
+    render_view
         ParaView render view in which to show the stream tracer.
-    quantity : str | None, optional
+    quantity
         Name of the quantity to plot.
         Use `None` to display `Solid Color` lines.
-    color_bar_visible : bpp;, optional
+    color_bar_visible
         Should the color bar be shown?
-    value_range : list[float], optional
+    value_range
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the color bar.
-    log_scale : bool, optional
+    log_scale
         Use a logarithmic color scale?
-    plot_properties : PlotProperties, optional
+    plot_properties
         Properties for plotting like the labels.
 
     Returns
     -------
-    render_view : paraview.servermanager.RenderViewProxy
+    render_view
         The configured 2D render view.
     """
     # set active view
@@ -327,19 +327,19 @@ def display_text(
 
     Parameters
     ----------
-    view : paraview.servermanager.Proxy
+    view
         ParaView view to display the text.
-    text : str
+    text
         Text to display.
-    location : str | list[float], optional
+    location
         Text postion.
         Either descriptive string or coordinates.
-    plot_properties : PlotProperties, optional
+    plot_properties
         Properties for plotting like the color.
 
     Returns
     -------
-    text_proxy : paraview.servermanager.Proxy
+    text_proxy
         The text proxy.
     """
     # create a new 'Text'
@@ -374,14 +374,14 @@ def display_time(
 
     Parameters
     ----------
-    view : paraview.servermanager.Proxy
+    view
         ParaView view to display the text.
-    plot_properties : PlotProperties, optional
+    plot_properties
         Properties for plotting like the color.
 
     Returns
     -------
-    annotate_time : paraview.servermanager.Proxy
+    annotate_time
         The text proxy.
     """
     # create a new 'Annotate Time'
@@ -418,13 +418,13 @@ def save_screenshot(
 
     Parameters
     ----------
-    view_or_layout : paraview.servermanager.ViewLayoutProxy
+    view_or_layout
         The ParaView view or layout object to capture in the screenshot.
-    results_folder : str
+    results_folder
         The directory path where the screenshot will be saved.
-    filename : str
+    filename
         The base name for the screenshot file (without extension).
-    plot_properties : PlotProperties, optional
+    plot_properties
         Additional properties like background transparency.
     """
     file_path = os.path.join(results_folder, filename + ".png")
@@ -448,13 +448,13 @@ def save_animation(
 
     Parameters
     ----------
-    view_or_layout : paraview.servermanager.ViewLayoutProxy
+    view_or_layout
         The ParaView view or layout object to capture in the screenshot.
-    results_folder : str
+    results_folder
         The directory path where the screenshot will be saved.
-    filename : str
+    filename
         The base name for the screenshot file (without extension).
-    plot_properties : PlotProperties, optional
+    plot_properties
         Additional properties like background transparency.
     """
     file_path = os.path.join(results_folder, filename + ".png")

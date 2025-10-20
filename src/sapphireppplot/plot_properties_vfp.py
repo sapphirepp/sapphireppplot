@@ -73,11 +73,11 @@ class PlotPropertiesVFP(PlotProperties):
 
         Parameters
         ----------
-        lms_indices : list[list[int]]
+        lms_indices
             The lms_indices to activate for the source.
-        prefix : str, optional
+        prefix
             Prefix.
-        line_style : str, optional
+        line_style
             Line styles for the series quantities in the LineChartView.
         """
         vec_component_names = ["x", "y", "z"]
@@ -136,12 +136,12 @@ class PlotPropertiesVFP(PlotProperties):
 
         Parameters
         ----------
-        expansion_order : int
+        expansion_order
             Expansion order `l_max`.
 
         Returns
         -------
-        lms_indices : list[list[int]]
+        lms_indices
             Mapping `lms_indices[i] = [l,m,s]`.
         """
         system_size = (expansion_order + 1) ** 2
@@ -170,17 +170,17 @@ class PlotPropertiesVFP(PlotProperties):
 
         Parameters
         ----------
-        lms_index : list[int]
+        lms_index
             The index `[l,m,s]`.
-        prefix : str, optional
+        prefix
             Prefix.
-        base_name : str, optional
+        base_name
             Base name for variable.
             Defaults to "f", "g" or "p^s f".
 
         Returns
         -------
-        quantity_name : str
+        quantity_name
             The ParaView Series name for the lms_index.
         """
         if not base_name:
@@ -205,17 +205,17 @@ class PlotPropertiesVFP(PlotProperties):
 
         Parameters
         ----------
-        lms_index : list[int] | list[str]
+        lms_index
             The index `[l,m,s]`.
-        annotation : str, optional
+        annotation
             Postfix annotation of quantity.
-        variable_name : str, optional
+        variable_name
             Name of the variable.
             Defaults to "f", "g" or "p^s f".
 
         Returns
         -------
-        quantity_label : str
+        quantity_label
             The label for the lms_index.
         """
         if not variable_name:
@@ -283,7 +283,7 @@ class PlotPropertiesVFP(PlotProperties):
 
         Parameters
         ----------
-        expansion_order : int
+        expansion_order
             Maximum expansion order `l_max` to display.
         """
         self.set_lms_indices(self.create_lms_indices(expansion_order))
@@ -296,9 +296,9 @@ class PlotPropertiesVFP(PlotProperties):
 
         Parameters
         ----------
-        spectral_index : float
+        spectral_index
             Spectral index :math:`s`.
-        lms_indices : list[list[int]]
+        lms_indices
             The lms_indices to activate.
             Will deactivate all other and unscaled series names.
         """

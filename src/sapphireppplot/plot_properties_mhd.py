@@ -118,14 +118,14 @@ class PlotPropertiesMHD(PlotProperties):
 
         Parameters
         ----------
-        quantity : str
+        quantity
             The physical quantity.
-        prefix : str, optional
+        prefix
             Prefix
 
         Returns
         -------
-        quantity_name : str
+        quantity_name
             The ParaView Series name for the quantity.
         """
         indicators = [
@@ -177,14 +177,14 @@ class PlotPropertiesMHD(PlotProperties):
 
         Parameters
         ----------
-        quantity : str
+        quantity
             The physical quantity.
-        annotation : str, optional
+        annotation
             Postfix annotation of quantity.
 
         Returns
         -------
-        quantity_label : str
+        quantity_label
             The label for the quantity.
         """
         tmp_postfix_1 = ""

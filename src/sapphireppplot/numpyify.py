@@ -19,22 +19,22 @@ def to_numpy_1d(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         ParaView solution data.
-    array_names : list[str]
+    array_names
         List of array names that should be extracted.
-    x_direction : int, optional
+    x_direction
         The of the x-axes to extract.
-    x_min : float, optional
+    x_min
         If set, only return the data `x >= x_min`.
-    x_max : float, optional
+    x_max
         If set, only return the data `x <= x_max`.
 
     Returns
     -------
-    x_values : np.ndarray
+    x_values
         The x vales as `np.ndarray`.
-    data : np.ndarray
+    data
         2D array `data[c][i]` with the data from the solution.
         The first index `c` corresponds to `array_names[c]`,
         the second index corresponds to the `x_array[i]`.
@@ -79,18 +79,18 @@ def to_numpy_2d(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         ParaView solution data.
-    array_names : list[str]
+    array_names
         List of array names that should be extracted.
 
     Returns
     -------
-    points : np.ndarray
+    points
         The x/y/z-values of the points organized in a 2D grid:
         `points[i][j] = [x, y, z]`.
         Sorted so that `x` corresponds to `i` and `y` to `j`.
-    data : np.ndarray
+    data
         3D array `data[c][i][j]` with the data from the solution.
         The first index `c` corresponds to `array_names[c]`,
         the second index and third corresponds to `points[i][j]`.

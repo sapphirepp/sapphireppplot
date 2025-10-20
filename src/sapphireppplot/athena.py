@@ -34,28 +34,28 @@ def load_solution(
 
     Parameters
     ----------
-    plot_properties : PlotPropertiesAthena
+    plot_properties
         Properties of the solution to load.
-    path_prefix : str, optional
+    path_prefix
         Prefix for relative path.
-    results_folder : str, optional
+    results_folder
         The path to the results folder.
-    base_file_name : str, optional
+    base_file_name
         Base name of the solutions files.
-    t_start : float, optional
+    t_start
         Simulation start time.
-    t_end : float, optional
+    t_end
         Simulation end time.
 
     Returns
     -------
-    results_folder : str
+    results_folder
         The path to the results folder.
-    prm : ParamDict
+    prm
         Dictionary of the parameters.
-    solution : paraview.servermanager.SourceProxy
+    solution
         A ParaView reader object with selected point arrays enabled.
-    animation_scene : paraview.servermanager.Proxy
+    animation_scene
         The ParaView AnimationScene.
 
     Raises
@@ -95,16 +95,16 @@ def compute_magnetic_divergence(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         The data to calculate the magnetic_convergence on.
-    plot_properties_in : PlotPropertiesAthena
+    plot_properties_in
         Properties of the source.
 
     Returns
     -------
-    gradient : paraview.servermanager.SourceProxy
+    gradient
         The solution with magnetic divergence.
-    plot_properties : PlotPropertiesVFP
+    plot_properties
         Solution properties for the new solution.
     """
     plot_properties = copy.deepcopy(plot_properties_in)

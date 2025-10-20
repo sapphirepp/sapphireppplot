@@ -24,27 +24,27 @@ def plot_over_line(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         The data source.
-    direction : str | list[list[float]]
+    direction
         Direction of the line.
         Either "x", "y", "z", "d" or a list with start and end points.
-    offset : list[float], optional
+    offset
         Offset of the line.
-    x_axes_scale : float, optional
+    x_axes_scale
         Divide the x-axes coordinate by this scale.
         The scaled axes will be stored in a variable `scaled_axes`.
-    results_folder : str
+    results_folder
         The directory path where the data will be saved as `.csv`.
-    filename : str
+    filename
         The base name for the saved data file (without extension).
         If no filename is given, the data is not saved.
-    plot_properties : PlotProperties, optional
+    plot_properties
         Properties of the solution, like the sampling pattern.
 
     Returns
     -------
-    plot_over_line_source : paraview.servermanager.SourceProxy
+    plot_over_line_source
         The PlotOverLine source.
     """
     # create a new 'Plot Over Line'
@@ -185,26 +185,26 @@ def plot_over_time(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         The data source.
-    point : list[float]
+    point
         The point where to evaluate the time evolution.
-    t_axes_scale : float, optional
+    t_axes_scale
         Divide the time-axes by this scale.
         The scaled axes will be stored in a variable `scaled_t_axes`.
-    results_folder : str
+    results_folder
         The directory path where the data will be saved as `.csv`.
-    filename : str
+    filename
         The base name for the saved data file (without extension).
         If no filename is given, the data is not saved.
-    plot_properties : PlotProperties, optional
+    plot_properties
         Properties of the solution, like the sampling pattern.
 
     Returns
     -------
-    plot_over_time_source : paraview.servermanager.SourceProxy
+    plot_over_time_source
         The PlotOverTime source.
-    plot_properties : PlotProperties
+    plot_properties
         The PlotProperties for PlotOverTime
     """
     plot_properties = plot_properties_in.copy()
@@ -297,18 +297,18 @@ def clip_area(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         The data source.
-    min_x : float, optional
+    min_x
         Start clip at min_x,
-    min_x : float, optional
+    min_x
         End clip at max_x.
-    plot_properties : PlotProperties, optional
+    plot_properties
         Properties of the solution, like the sampling pattern.
 
     Returns
     -------
-    clipped_solution : paraview.servermanager.SourceProxy
+    clipped_solution
         The clipped source.
     """
     clipped_solution = ps.Clip(registrationName="Clip", Input=solution)
@@ -351,24 +351,24 @@ def stream_tracer(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         The data source.
-    quantity : str
+    quantity
         Name of the quantity for the stream tracer.
-    direction : str | list[list[float]]
+    direction
         Direction of the line.
         Either "x", "y", "z", "d" or a list with start and end points.
-    offset : list[float], optional
+    offset
         Offset of the line.
-    n_lines : int, optional
+    n_lines
         Number of stream lines.
-    plot_properties : PlotProperties, optional
+    plot_properties
         Properties of the solution.
 
     Returns
     -------
     paraview.servermanager.SourceProxy
-    stream_tracer_source : paraview.servermanager.SourceProxy
+    stream_tracer_source
         The StreamTracer source.
     """
     # create a new 'Stream Tracer'

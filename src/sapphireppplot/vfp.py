@@ -33,24 +33,24 @@ def load_solution(
 
     Parameters
     ----------
-    plot_properties : PlotProperties
+    plot_properties
         Properties of the solution to load.
-    path_prefix : str, optional
+    path_prefix
         Prefix for relative path.
-    results_folder : str, optional
+    results_folder
         The path to the results folder.
-    base_file_name : str, optional
+    base_file_name
         Overwrite base name of the solutions files.
 
     Returns
     -------
-    results_folder : str
+    results_folder
         The path to the results folder.
-    prm : ParamDict
+    prm
         Dictionary of the parameters.
-    solution : paraview.servermanager.SourceProxy
+    solution
         A ParaView reader object with selected point arrays enabled.
-    animation_scene : paraview.servermanager.Proxy
+    animation_scene
         The ParaView AnimationScene.
 
     Raises
@@ -124,21 +124,21 @@ def scale_distribution_function(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         The the data to scale.
-    plot_properties_in : PlotPropertiesVFP
+    plot_properties_in
         Properties of the source.
-    lms_indices : list[list[int]], optional
+    lms_indices
         The list of indices `[[l_1,m_1,s_1], [l_2,m_2,s_2]]` to scale.
         Only these indices will be active in the new solution.
-    spectral_index : float, optional
+    spectral_index
         Spectral index to scale the distributions function f.
 
     Returns
     -------
-    solution_scaled : paraview.servermanager.SourceProxy
+    solution_scaled
         The scaled distribution function :math:`p^s f_{lms}` for lms_indices.
-    plot_properties : PlotPropertiesVFP
+    plot_properties
         Solution properties for the scaled distribution function.
     """
     if lms_indices is None:
@@ -203,18 +203,18 @@ def merge_input_function_vectors(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         The the data with the vector components as scalars.
-    plot_properties_in : PlotPropertiesVFP
+    plot_properties_in
         Properties of the source.
-    prefix : str, optional
+    prefix
         Prefix for the `series_names`.
 
     Returns
     -------
-    solution_scaled : paraview.servermanager.SourceProxy
+    solution_scaled
         Solution with the merged vectors.
-    plot_properties : PlotPropertiesVFP
+    plot_properties
         Solution properties for the merged vectors.
     """
     plot_properties = plot_properties_in.copy()
@@ -278,31 +278,31 @@ def plot_f_lms_1d(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         The simulation or computation result containing the data to plot.
-    results_folder : str
+    results_folder
         Path to the folder where results (images/animations) will be saved.
-    name : str
+    name
         Name of the layout and image/animation files.
-    plot_properties : PlotPropertiesVFP
+    plot_properties
         Properties for plotting.
-    lms_indices : list[list[int]], optional
+    lms_indices
         The list of indices `[[l_1,m_1,s_1], [l_2,m_2,s_2]]` to plot.
-    x_label : str, optional
+    x_label
         Label for the bottom axis of the chart.
-    value_range : list[float], optional
+    value_range
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the y-axes.
-    log_y_scale : bool, optional
+    log_y_scale
         Use a logarithmic y-scale?
-    save_animation : bool, optional
+    save_animation
         Save an animation of the plot.
 
     Returns
     -------
-    layout : paraview.servermanager.ViewLayoutProxy
+    layout
         The layout object used for the plot.
-    line_chart_view : paraview.servermanager.XYChartViewProxy
+    line_chart_view
         The configured XY chart view.
     """
     if lms_indices is None:
@@ -369,33 +369,33 @@ def plot_f_lms_2d(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         The simulation or computation result containing the data to plot.
-    results_folder : str
+    results_folder
         Path to the folder where results (images/animations) will be saved.
-    name : str
+    name
         Name of the layout and image/animation files.
-    plot_properties : PlotPropertiesVFP
+    plot_properties
         Properties for plotting.
-    lms_index : list[int], optional
+    lms_index
         The index `[l,m,s]` to plot.
-    prefix : str, optional
+    prefix
         Prefix.
-    value_range : list[float], optional
+    value_range
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the y-axes.
-    log_scale : bool, optional
+    log_scale
         Use a logarithmic color scale?
-    show_time : bool, optional
+    show_time
         Display the simulation time in the render view.
-    save_animation : bool, optional
+    save_animation
         Save an animation of the plot.
 
     Returns
     -------
-    layout : paraview.servermanager.ViewLayoutProxy
+    layout
         The layout object used for the plot.
-    render_view : paraview.servermanager.RenderViewProxy
+    render_view
         The configured 2D render view.
     """
     if lms_index is None:
@@ -445,39 +445,39 @@ def plot_f_lms_over_x(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         The simulation or computation result containing the data to plot.
-    results_folder : str
+    results_folder
         Path to the folder where results (images/animations) will be saved.
-    name : str
+    name
         Name of the layout and image/animation files.
-    plot_properties : PlotPropertiesVFP
+    plot_properties
         Properties for plotting.
-    lms_indices : list[list[int]], optional
+    lms_indices
         The list of indices `[[l_1,m_1,s_1], [l_2,m_2,s_2]]` to plot.
-    direction : str | list[list[float]]
+    direction
         Direction of the line.
-    offset : list[float], optional
+    offset
         Offset of the line.
-    x_axes_scale : float, optional
+    x_axes_scale
         Divide the x-axes coordinate by this scale.
-    x_label : str, optional
+    x_label
         Label for the bottom axis of the chart.
-    value_range : list[float], optional
+    value_range
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the y-axes.
-    log_y_scale : bool, optional
+    log_y_scale
         Use a logarithmic y-scale?
-    save_animation : bool, optional
+    save_animation
         Save an animation of the plot.
 
     Returns
     -------
-    plot_over_line_x : paraview.servermanager.SourceProxy
+    plot_over_line_x
         The PlotOverLine source.
-    layout : paraview.servermanager.ViewLayoutProxy
+    layout
         The layout object used for the plot.
-    line_chart_view : paraview.servermanager.XYChartViewProxy
+    line_chart_view
         The configured XY chart view.
     """
     if lms_indices is None:
@@ -567,35 +567,35 @@ def plot_f_lms_over_p(
 
     Parameters
     ----------
-    solution : paraview.servermanager.SourceProxy
+    solution
         The simulation or computation result containing the data to plot.
-    results_folder : str
+    results_folder
         Path to the folder where results (images/animations) will be saved.
-    name : str
+    name
         Name of the layout and image/animation files.
-    plot_properties : PlotPropertiesVFP
+    plot_properties
         Properties for plotting.
-    lms_indices : list[list[int]], optional
+    lms_indices
         The list of indices `[[l_1,m_1,s_1], [l_2,m_2,s_2]]` to plot.
-    direction : str | list[list[float]]
+    direction
         Direction of the line.
-    offset : list[float], optional
+    offset
         Offset of the line.
-    value_range : list[float], optional
+    value_range
         Minimal (`value_range[0]`)
         and maximal (`value_range[1]`) value for the y-axes.
-    log_y_scale : bool, optional
+    log_y_scale
         Use a logarithmic y-scale?
-    save_animation : bool, optional
+    save_animation
         Save an animation of the plot.
 
     Returns
     -------
-    plot_over_line_x : paraview.servermanager.SourceProxy
+    plot_over_line_x
         The PlotOverLine source.
-    layout : paraview.servermanager.ViewLayoutProxy
+    layout
         The layout object used for the plot.
-    line_chart_view : paraview.servermanager.XYChartViewProxy
+    line_chart_view
         The configured XY chart view.
     """
     if lms_indices is None:

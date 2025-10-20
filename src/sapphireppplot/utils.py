@@ -29,20 +29,20 @@ def get_results_folder(
 
     Parameters
     ----------
-    path_prefix : str, optional
+    path_prefix
         Prefix for relative path.
         Note that relative path and environment variables
         are evaluated on the executing machine.
         Avoid relative path if you are connected to a data server
         with client-side execution.
-    results_folder : str, optional
+    results_folder
         The path to the results folder.
-    message : str, optional
+    message
         Message to be prompted for input.
 
     Returns
     -------
-    results_folder : str
+    results_folder
         The path to the results folder.
     """
     global _results_folder_argv  # pylint: disable=global-statement
@@ -72,7 +72,7 @@ def prm_to_dict(prm_lines: list[str]) -> ParamDict:
 
     Parameters
     ----------
-    prm_lines : list[str]
+    prm_lines
         List of line in the parameter file.
 
     Returns
@@ -113,14 +113,14 @@ def match_index(
 
     Parameters
     ----------
-    list_in : list[Any]
+    list_in
         List/array of values to search.
-    target : Any
+    target
         Target value to find.
 
     Returns
     -------
-    index : int
+    index
         Index `i`.
 
     Raises
@@ -152,16 +152,16 @@ def find_closest_index(
 
     Parameters
     ----------
-    array : list[Any]
+    array
         Sorted array of values to search.
-    target : Any
+    target
         Target value to find.
-    print_index : bool, optional
+    print_index
         Print the found index and match to the console?
 
     Returns
     -------
-    index : int
+    index
         Index `i`.
     """
     index = np.searchsorted(array, target, side="left")
