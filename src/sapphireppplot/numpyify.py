@@ -94,6 +94,11 @@ def to_numpy_2d(
         3D array ``data[c][i][j]`` with the data from the solution.
         The first index ``c`` corresponds to ``array_names[c]``,
         the second index and third corresponds to ``points[i][j]``.
+
+    See Also
+    --------
+    :ps:`CellCenters` : ParaView CellCenters filter.
+    :ps:`PointDatatoCellData` : ParaView PointDatatoCellData filter.
     """
     # create a new 'Cell Centers'
     cell_centers = ps.CellCenters(

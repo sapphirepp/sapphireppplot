@@ -58,6 +58,13 @@ def load_solution(
     ------
     ValueError
         If no matching files are found.
+
+    See Also
+    --------
+    sapphireppplot.pvload : Module to load ParaView files.
+    sapphireppplot.utils.get_results_folder : Prompt for results folder.
+    sapphireppplot.plot_properties.PlotProperties.series_names :
+        Series names list to load.
     """
     results_folder = utils.get_results_folder(
         path_prefix=path_prefix, results_folder=results_folder
@@ -264,6 +271,10 @@ def plot_quantities_1d(
         The layout object used for the plot.
     line_chart_view : XYChartViewProxy
         The configured XY chart view.
+
+    See Also
+    --------
+    sapphireppplot.pvplot.plot_line_chart_view : Plot LineChartView.
     """
     y_label = r"$\mathbf{w}(x)$"
     if len(quantities) == 1:
@@ -341,6 +352,10 @@ def plot_split_view_1d(
     -------
     layout : ViewLayoutProxy
         The layout object used for the plot.
+
+    See Also
+    --------
+    sapphireppplot.pvplot.plot_line_chart_view : Plot LineChartView.
     """
     # create new layout object
     layout = ps.CreateLayout(name)
@@ -450,6 +465,11 @@ def plot_quantity_2d(
         The layout object used for the plot.
     render_view : RenderViewProxy
         The configured 2D render view.
+
+    See Also
+    --------
+    sapphireppplot.pvplot.plot_render_view_2d : Plot 2D RenderView.
+    sapphireppplot.pvplot.display_time : Display time.
     """
     # create new layout object
     layout = ps.CreateLayout(name)
@@ -531,6 +551,11 @@ def plot_quantities_over_x(
         The layout object used for the plot.
     line_chart_view : XYChartViewProxy
         The configured XY chart view.
+
+    See Also
+    --------
+    sapphireppplot.transform.plot_over_line : Create PlotOverLine.
+    sapphireppplot.pvplot.plot_line_chart_view : Plot LineChartView.
     """
     y_label = r"$\mathbf{w}(x)$"
     if len(quantities) == 1:

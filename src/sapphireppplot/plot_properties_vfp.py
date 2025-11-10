@@ -301,6 +301,10 @@ class PlotPropertiesVFP(PlotProperties):
         lms_indices
             The lms_indices to activate.
             Will deactivate all other and unscaled series names.
+
+        See Also
+        --------
+        sapphireppplot.vfp.scale_distribution_function
         """
         plot_properties_old = self.copy()
         self._spectral_index = spectral_index

@@ -46,6 +46,14 @@ def plot_over_line(
     -------
     plot_over_line_source : SourceProxy
         The PlotOverLine source.
+
+    See Also
+    --------
+    :ps:`PlotOverLine` : ParaView PlotOverLine filter.
+    sapphireppplot.plot_properties.PlotProperties.sampling_pattern :
+        Sampling pattern.
+    sapphireppplot.plot_properties.PlotProperties.sampling_resolution :
+        Sampling resolution.
     """
     # create a new 'Plot Over Line'
     plot_over_line_source = ps.PlotOverLine(
@@ -206,7 +214,14 @@ def plot_over_time(
     plot_over_time_source : SourceProxy
         The PlotOverTime source.
     plot_properties : PlotProperties
-        The PlotProperties for PlotOverTime
+        The PlotProperties for PlotOverTime.
+
+    See Also
+    --------
+    :ps:`PlotDataOverTime` : ParaView PlotDataOverTime filter.
+    :ps:`ProbeLocation` : ParaView ProbeLocation filter.
+    sapphireppplot.plot_properties.PlotProperties.sampling_resolution :
+        Sampling resolution.
     """
     plot_properties = plot_properties_in.copy()
     plot_properties.series_names = []
@@ -311,6 +326,10 @@ def clip_area(
     -------
     clipped_solution : SourceProxy
         The clipped source.
+
+    See Also
+    --------
+    :ps:`Clip` : ParaView Clip filter.
     """
     clipped_solution = ps.Clip(registrationName="Clip", Input=solution)
 
@@ -370,6 +389,18 @@ def stream_tracer(
     -------
     stream_tracer_source : SourceProxy
         The StreamTracer source.
+
+    See Also
+    --------
+    :ps:`StreamTracer` : ParaView StreamTracer filter.
+    sapphireppplot.plot_properties.PlotProperties.stream_tracer_maximum_error :
+        Maximum error.
+    sapphireppplot.plot_properties.PlotProperties.stream_tracer_minimum_step :
+        Minimum step length.
+    sapphireppplot.plot_properties.PlotProperties.stream_tracer_initial_step :
+        Initial step length.
+    sapphireppplot.plot_properties.PlotProperties.stream_tracer_maximum_step :
+        Maximum step length.
     """
     # create a new 'Stream Tracer'
     stream_tracer_source = ps.StreamTracer(

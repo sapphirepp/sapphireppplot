@@ -55,6 +55,8 @@ Point2
 PointArrays
 pointEvaluation
 ProbeType
+pvbatch
+pvpython
 pvtu
 Rescale
 ResultArrayName
@@ -120,6 +122,7 @@ yscale
 # sphinx
 autodoc
 autosummary
+extlinks
 multiversion
 rtype
 smv

@@ -55,6 +55,10 @@ class PlotPropertiesAthena(PlotPropertiesMHD):
         -------
         quantity_name : str
             The ParaView Series name for the quantity.
+
+        See Also
+        --------
+        sapphireppplot.plot_properties_mhd.PlotPropertiesMHD.quantity_name
         """
         quantity_names = {
             "rho": "dens",

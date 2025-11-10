@@ -29,6 +29,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_autodoc_typehints",
     # "sphinx.ext.autosummary",
+    "sphinx.ext.extlinks",
     "myst_parser",
     "nbsphinx",
     "sphinx_multiversion",
@@ -45,6 +46,17 @@ autodoc_default_options = {
     "member-order": "bysource",
 }
 napoleon_use_rtype = False
+
+extlinks = {
+    "pv": (
+        "https://www.paraview.org/paraview-docs/latest/python/%s",
+        "%s",
+    ),
+    "ps": (
+        "https://www.paraview.org/paraview-docs/latest/python/paraview.simple.__init__.%s.html",
+        "paraview.simple.%s",
+    ),
+}
 
 # Allow Markdown files
 source_suffix = {

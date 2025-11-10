@@ -57,6 +57,13 @@ def load_solution(
     ------
     ValueError
         If no matching files are found.
+
+    See Also
+    --------
+    sapphireppplot.pvload : Module to load ParaView files.
+    sapphireppplot.utils.get_results_folder : Prompt for results folder.
+    sapphireppplot.plot_properties.PlotProperties.series_names :
+        Series names list to load.
     """
     results_folder = utils.get_results_folder(
         path_prefix=path_prefix, results_folder=results_folder
@@ -216,6 +223,10 @@ def merge_input_function_vectors(
         Solution with the merged vectors.
     plot_properties : PlotPropertiesVFP
         Solution properties for the merged vectors.
+
+    See Also
+    --------
+    :ps:`MergeVectorComponents` : ParaView MergeVectorComponents filter.
     """
     plot_properties = plot_properties_in.copy()
 
@@ -304,6 +315,10 @@ def plot_f_lms_1d(
         The layout object used for the plot.
     line_chart_view : XYChartViewProxy
         The configured XY chart view.
+
+    See Also
+    --------
+    sapphireppplot.pvplot.plot_line_chart_view : Plot LineChartView.
     """
     if lms_indices is None:
         lms_indices = plot_properties.lms_indices
@@ -397,6 +412,11 @@ def plot_f_lms_2d(
         The layout object used for the plot.
     render_view : RenderViewProxy
         The configured 2D render view.
+
+    See Also
+    --------
+    sapphireppplot.pvplot.plot_render_view_2d : Plot 2D RenderView.
+    sapphireppplot.pvplot.display_time : Display time.
     """
     if lms_index is None:
         lms_index = [0, 0, 0]
@@ -479,6 +499,11 @@ def plot_f_lms_over_x(
         The layout object used for the plot.
     line_chart_view : XYChartViewProxy
         The configured XY chart view.
+
+    See Also
+    --------
+    sapphireppplot.transform.plot_over_line : Create PlotOverLine.
+    sapphireppplot.pvplot.plot_line_chart_view : Plot LineChartView.
     """
     if lms_indices is None:
         lms_indices = plot_properties.lms_indices
@@ -597,6 +622,11 @@ def plot_f_lms_over_p(
         The layout object used for the plot.
     line_chart_view : XYChartViewProxy
         The configured XY chart view.
+
+    See Also
+    --------
+    sapphireppplot.transform.plot_over_line : Create PlotOverLine.
+    sapphireppplot.pvplot.plot_line_chart_view : Plot LineChartView.
     """
     if lms_indices is None:
         lms_indices = plot_properties.lms_indices

@@ -13,10 +13,7 @@ class PlotProperties:
     """
 
     series_names: list[str] = field(default_factory=list)
-    """
-    Optional[list[str]]
-    Names of the series to load and show.
-    """
+    """Optional list of the series names to load and show."""
     labels: dict[str, str] = field(default_factory=dict)
     """Labels for the series quantities in the chart."""
     data_type: str = "POINTS"
@@ -84,7 +81,7 @@ class PlotProperties:
     """
     legend_symbol_width: int = 30
     """
-    Size of the legend marker in LineChartView..
+    Size of the legend marker in LineChartView.
     Set to ``0`` to hide the legend.
     """
 
@@ -159,6 +156,10 @@ class PlotProperties:
     Sampling resolution used for plot_over_line.
     Number of points for "uniform" sampling,
     ``Tolerance`` for "center" and "boundary".
+
+    See Also
+    --------
+    sapphireppplot.transform.plot_over_line
     """
 
     stream_tracer_maximum_error: float = 1e-6
@@ -168,7 +169,13 @@ class PlotProperties:
     stream_tracer_initial_step: float = 0.2
     """Initial step length for stream_tracer."""
     stream_tracer_maximum_step: float = 0.5
-    """Maximum step length for stream_tracer."""
+    """
+    Maximum step length for stream_tracer.
+
+    See Also
+    --------
+    sapphireppplot.transform.stream_tracer
+    """
 
     def copy(self) -> Self:
         """

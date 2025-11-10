@@ -359,6 +359,12 @@ def load_solution(
     ------
     ValueError
         If no matching files are found.
+
+    See Also
+    --------
+    sapphireppplot.utils.get_results_folder : Prompt for results folder.
+    sapphireppplot.plot_properties.PlotProperties.series_names :
+        Series names list to load.
     """
     results_folder = utils.get_results_folder(path_prefix=path_prefix)
 

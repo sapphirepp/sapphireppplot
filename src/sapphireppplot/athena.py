@@ -62,6 +62,11 @@ def load_solution(
     ------
     ValueError
         If no matching files are found.
+
+    See Also
+    --------
+    sapphireppplot.pvload : Module to load ParaView files.
+    sapphireppplot.utils.get_results_folder : Prompt for results folder.
     """
     results_folder = utils.get_results_folder(
         path_prefix=path_prefix, results_folder=results_folder
@@ -106,6 +111,10 @@ def compute_magnetic_divergence(
         The solution with magnetic divergence.
     plot_properties : PlotPropertiesVFP
         Solution properties for the new solution.
+
+    See Also
+    --------
+    :ps:`Gradient` : ParaView Gradient filter.
     """
     plot_properties = copy.deepcopy(plot_properties_in)
 
