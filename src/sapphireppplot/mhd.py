@@ -45,13 +45,13 @@ def load_solution(
 
     Returns
     -------
-    results_folder
+    results_folder : str
         The path to the results folder.
-    prm
+    prm : ParamDict
         Dictionary of the parameters.
-    solution
+    solution : SourceProxy
         A ParaView reader object with selected point arrays enabled.
-    animation_scene
+    animation_scene : Proxy
         The ParaView AnimationScene.
 
     Raises
@@ -125,9 +125,9 @@ def compute_magnetic_pressure(
 
     Returns
     -------
-    calculator
+    calculator : SourceProxy
         Solution with magnetic pressure.
-    plot_properties
+    plot_properties : PlotPropertiesMHD
         Solution properties for the including the magnetic pressure.
     """
     plot_properties = plot_properties_in.copy()
@@ -171,9 +171,9 @@ def compute_normalized_magnetic_divergence(
 
     Returns
     -------
-    calculator
+    calculator : SourceProxy
         Solution with normalized magnetic divergence.
-    plot_properties
+    plot_properties : PlotPropertiesMHD
         Solution properties for the including the log magnetic divergence.
     """
     plot_properties = plot_properties_in.copy()
@@ -253,16 +253,16 @@ def plot_quantities_1d(
     plot_properties
         Properties for plotting.
     value_range
-        Minimal (`value_range[0]`)
-        and maximal (`value_range[1]`) value for the y-axes.
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the y-axes.
     save_animation
         Save an animation of the plot.
 
     Returns
     -------
-    layout
+    layout : ViewLayoutProxy
         The layout object used for the plot.
-    line_chart_view
+    line_chart_view : XYChartViewProxy
         The configured XY chart view.
     """
     y_label = r"$\mathbf{w}(x)$"
@@ -301,8 +301,6 @@ def plot_quantities_1d(
     if save_animation:
         pvplot.save_animation(layout, results_folder, name, plot_properties)
 
-    # Exit preview mode
-    # layout.PreviewMode = [0, 0]
     return layout, line_chart_view
 
 
@@ -334,14 +332,14 @@ def plot_split_view_1d(
     labels
         Labels for the numeric and projected/interpolated solution.
     value_range
-        Minimal (`value_range[0]`)
-        and maximal (`value_range[1]`) value for the y-axes.
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the y-axes.
     save_animation
         Save an animation of the plot.
 
     Returns
     -------
-    paraview.servermanager.ViewLayoutProxy
+    layout : ViewLayoutProxy
         The layout object used for the plot.
     """
     # create new layout object
@@ -388,7 +386,7 @@ def plot_split_view_1d(
                 plot_properties.quantity_name(quantity, "interpol_"): labels[1],
             }
 
-        # The subplots seem to work without the `hint` parameter?!
+        # The subplots seem to work without the ``hint`` parameter?!
         line_chart_view = pvplot.plot_line_chart_view(
             solution,
             layout,
@@ -437,8 +435,8 @@ def plot_quantity_2d(
     name
         Name of the layout and image/animation files.
     value_range
-        Minimal (`value_range[0]`)
-        and maximal (`value_range[1]`) value for the y-axes.
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the y-axes.
     log_scale
         Use a logarithmic color scale?
     show_time
@@ -448,9 +446,9 @@ def plot_quantity_2d(
 
     Returns
     -------
-    layout
+    layout : ViewLayoutProxy
         The layout object used for the plot.
-    render_view
+    render_view : RenderViewProxy
         The configured 2D render view.
     """
     # create new layout object
@@ -518,8 +516,8 @@ def plot_quantities_over_x(
     x_label
         Label for the bottom axis of the chart.
     value_range
-        Minimal (`value_range[0]`)
-        and maximal (`value_range[1]`) value for the y-axes.
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the y-axes.
     log_y_scale
         Use a logarithmic y-scale?
     save_animation
@@ -527,11 +525,11 @@ def plot_quantities_over_x(
 
     Returns
     -------
-    plot_over_line_x
+    plot_over_line_x : SourceProxy
         The PlotOverLine source.
-    layout
+    layout : ViewLayoutProxy
         The layout object used for the plot.
-    line_chart_view
+    line_chart_view : XYChartViewProxy
         The configured XY chart view.
     """
     y_label = r"$\mathbf{w}(x)$"

@@ -49,13 +49,13 @@ def load_solution(
 
     Returns
     -------
-    results_folder
+    results_folder : str
         The path to the results folder.
-    prm
+    prm : ParamDict
         Dictionary of the parameters.
-    solution
+    solution : SourceProxy
         A ParaView reader object with selected point arrays enabled.
-    animation_scene
+    animation_scene : Proxy
         The ParaView AnimationScene.
 
     Raises
@@ -102,9 +102,9 @@ def compute_magnetic_divergence(
 
     Returns
     -------
-    gradient
+    gradient : SourceProxy
         The solution with magnetic divergence.
-    plot_properties
+    plot_properties : PlotPropertiesVFP
         Solution properties for the new solution.
     """
     plot_properties = copy.deepcopy(plot_properties_in)

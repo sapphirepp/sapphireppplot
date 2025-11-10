@@ -38,8 +38,8 @@ def plot_line_chart_view(
     visible_lines
         List of series names to display in the chart.
     value_range
-        Minimal (`value_range[0]`)
-        and maximal (`value_range[1]`) value for the y-axes.
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the y-axes.
     log_y_scale
         Use a logarithmic y-scale?
     plot_properties
@@ -47,7 +47,7 @@ def plot_line_chart_view(
 
     Returns
     -------
-    line_chart_view
+    line_chart_view : XYChartViewProxy
         The configured XY chart view.
     """
     # Create a new 'Line Chart View'
@@ -112,8 +112,8 @@ def plot_render_view_2d(
     quantity
         Name of the quantity to plot.
     value_range
-        Minimal (`value_range[0]`)
-        and maximal (`value_range[1]`) value for the color bar.
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the color bar.
     log_scale
         Use a logarithmic color scale?
     plot_properties
@@ -121,7 +121,7 @@ def plot_render_view_2d(
 
     Returns
     -------
-    render_view
+    render_view : RenderViewProxy
         The configured 2D render view.
     """
     # Create a new 'Line Chart View'
@@ -241,12 +241,12 @@ def show_stream_tracer(
         ParaView render view in which to show the stream tracer.
     quantity
         Name of the quantity to plot.
-        Use `None` to display `Solid Color` lines.
+        Use ``None`` to display ``Solid Color`` lines.
     color_bar_visible
         Should the color bar be shown?
     value_range
-        Minimal (`value_range[0]`)
-        and maximal (`value_range[1]`) value for the color bar.
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the color bar.
     log_scale
         Use a logarithmic color scale?
     plot_properties
@@ -254,7 +254,7 @@ def show_stream_tracer(
 
     Returns
     -------
-    render_view
+    render_view : RenderViewProxy
         The configured 2D render view.
     """
     # set active view
@@ -339,7 +339,7 @@ def display_text(
 
     Returns
     -------
-    text_proxy
+    text_proxy : Proxy
         The text proxy.
     """
     # create a new 'Text'
@@ -381,7 +381,7 @@ def display_time(
 
     Returns
     -------
-    annotate_time
+    annotate_time : Proxy
         The text proxy.
     """
     # create a new 'Annotate Time'
@@ -414,7 +414,7 @@ def save_screenshot(
     plot_properties: PlotProperties = PlotProperties(),
 ) -> None:
     """
-    Save screenshot of the given line chart view as `png`.
+    Save screenshot of the given line chart view as ``png``.
 
     Parameters
     ----------
@@ -444,7 +444,7 @@ def save_animation(
     plot_properties: PlotProperties = PlotProperties(),
 ) -> None:
     """
-    Save animation of the given line chart view as series of `.png` files.
+    Save animation of the given line chart view as series of ``.png`` files.
 
     Parameters
     ----------

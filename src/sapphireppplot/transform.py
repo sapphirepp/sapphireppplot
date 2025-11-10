@@ -33,9 +33,9 @@ def plot_over_line(
         Offset of the line.
     x_axes_scale
         Divide the x-axes coordinate by this scale.
-        The scaled axes will be stored in a variable `scaled_axes`.
+        The scaled axes will be stored in a variable ``scaled_axes``.
     results_folder
-        The directory path where the data will be saved as `.csv`.
+        The directory path where the data will be saved as ``.csv``.
     filename
         The base name for the saved data file (without extension).
         If no filename is given, the data is not saved.
@@ -44,7 +44,7 @@ def plot_over_line(
 
     Returns
     -------
-    plot_over_line_source
+    plot_over_line_source : SourceProxy
         The PlotOverLine source.
     """
     # create a new 'Plot Over Line'
@@ -192,9 +192,9 @@ def plot_over_time(
         The point where to evaluate the time evolution.
     t_axes_scale
         Divide the time-axes by this scale.
-        The scaled axes will be stored in a variable `scaled_t_axes`.
+        The scaled axes will be stored in a variable ``scaled_t_axes``.
     results_folder
-        The directory path where the data will be saved as `.csv`.
+        The directory path where the data will be saved as ``.csv``.
     filename
         The base name for the saved data file (without extension).
         If no filename is given, the data is not saved.
@@ -203,9 +203,9 @@ def plot_over_time(
 
     Returns
     -------
-    plot_over_time_source
+    plot_over_time_source : SourceProxy
         The PlotOverTime source.
-    plot_properties
+    plot_properties : PlotProperties
         The PlotProperties for PlotOverTime
     """
     plot_properties = plot_properties_in.copy()
@@ -309,7 +309,7 @@ def clip_area(
 
     Returns
     -------
-    clipped_solution
+    clipped_solution : SourceProxy
         The clipped source.
     """
     clipped_solution = ps.Clip(registrationName="Clip", Input=solution)
@@ -347,8 +347,8 @@ def stream_tracer(
     """
     Create stream tracer of a quantity from the solution.
 
-    The `stream_tracer` can be added to an existing `render_view`
-    using `pvplot.show_stream_tracer()`.
+    The ``stream_tracer`` can be added to an existing ``render_view``
+    using ``pvplot.show_stream_tracer()``.
 
     Parameters
     ----------
@@ -368,8 +368,7 @@ def stream_tracer(
 
     Returns
     -------
-    paraview.servermanager.SourceProxy
-    stream_tracer_source
+    stream_tracer_source : SourceProxy
         The StreamTracer source.
     """
     # create a new 'Stream Tracer'

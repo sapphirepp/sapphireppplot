@@ -32,7 +32,7 @@ class PlotProperties:
     """
     The view for 2D render view.
     Can be any kind and number of arguments
-    that will be passed to the `render_view.ResetCamera()` method.
+    that will be passed to the ``render_view.ResetCamera()`` method.
     """
 
     screenshot_transparent_background: bool = True
@@ -40,10 +40,10 @@ class PlotProperties:
     animation_transparent_background: bool = False
     """
     Use a transparent background for animations?
-    Defaults to `False`.
+    Defaults to ``False``.
     For animations it is recommended not to use a transparent background.
-    Many formats like `.mp4` do not support it, resulting in artefacts.
-    For `.gif` using a transparent background is possible.
+    Many formats like ``.mp4`` do not support it, resulting in artefacts.
+    For ``.gif`` using a transparent background is possible.
     """
     animation_frame_stride: int = 1
     """Frame stride for the animation snapshots."""
@@ -85,7 +85,7 @@ class PlotProperties:
     legend_symbol_width: int = 30
     """
     Size of the legend marker in LineChartView..
-    Set to `0` to hide the legend.
+    Set to ``0`` to hide the legend.
     """
 
     show_grid: bool = False
@@ -102,7 +102,7 @@ class PlotProperties:
     color_bar_label_format: str = ""
     """
     The format string for the color bar labels,
-    e.g. `r"%-#6.3g"`.
+    e.g. ``r"%-#6.3g"``.
     Use automatic formatting if empty.
     """
     color_bar_range_labels: bool = True
@@ -110,7 +110,7 @@ class PlotProperties:
     color_bar_range_label_format: str = r"%-#6.1e"
     """
     The format string for the color bar range labels,
-    e.g. `r"%-#6.1e"`.
+    e.g. ``r"%-#6.1e"``.
     """
     color_bar_position: str | list[float] = field(
         default_factory=lambda: "Lower Right Corner"
@@ -122,7 +122,7 @@ class PlotProperties:
     color_bar_length: float = 0.25
     """
     Size of the color bar.
-    Set to `0` to hide the color bar.
+    Set to ``0`` to hide the color bar.
     """
 
     axes_scale: list[float] = field(default_factory=lambda: [1.0, 1.0, 1.0])
@@ -150,15 +150,15 @@ class PlotProperties:
     """
     Sampling pattern used for plot_over_line.
 
-    - "uniform" for `Sample Uniformly`
-    - "center" for `Sample At Segment Centers`
-    - "boundary" for `Sample At Cell Boundaries`
+    - "uniform" for ``Sample Uniformly``
+    - "center" for ``Sample At Segment Centers``
+    - "boundary" for ``Sample At Cell Boundaries``
     """
     sampling_resolution: Optional[int | float] = None
     """
     Sampling resolution used for plot_over_line.
     Number of points for "uniform" sampling,
-    `Tolerance` for "center" and "boundary".
+    ``Tolerance`` for "center" and "boundary".
     """
 
     stream_tracer_maximum_error: float = 1e-6
@@ -309,7 +309,7 @@ class PlotProperties:
         Returns
         -------
         bool
-            `True` if color bar is visible, `False` otherwise.
+            ``True`` if color bar is visible, ``False`` otherwise.
         """
         color_bar.TitleFontSize = self.text_size
         color_bar.LabelFontSize = self.label_size

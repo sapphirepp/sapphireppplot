@@ -26,18 +26,18 @@ def to_numpy_1d(
     x_direction
         The of the x-axes to extract.
     x_min
-        If set, only return the data `x >= x_min`.
+        If set, only return the data ``x >= x_min``.
     x_max
-        If set, only return the data `x <= x_max`.
+        If set, only return the data ``x <= x_max``.
 
     Returns
     -------
-    x_values
-        The x vales as `np.ndarray`.
-    data
-        2D array `data[c][i]` with the data from the solution.
-        The first index `c` corresponds to `array_names[c]`,
-        the second index corresponds to the `x_array[i]`.
+    x_values : np.ndarray
+        The x vales as ``np.ndarray``.
+    data : np.ndarray
+        2D array ``data[c][i]`` with the data from the solution.
+        The first index ``c`` corresponds to ``array_names[c]``,
+        the second index corresponds to the ``x_array[i]``.
     """
     # Fetch the data from the solution
     solution_data = paraview.servermanager.Fetch(solution)
@@ -86,14 +86,14 @@ def to_numpy_2d(
 
     Returns
     -------
-    points
+    points : np.ndarray
         The x/y/z-values of the points organized in a 2D grid:
-        `points[i][j] = [x, y, z]`.
-        Sorted so that `x` corresponds to `i` and `y` to `j`.
-    data
-        3D array `data[c][i][j]` with the data from the solution.
-        The first index `c` corresponds to `array_names[c]`,
-        the second index and third corresponds to `points[i][j]`.
+        ``points[i][j] = [x, y, z]``.
+        Sorted so that ``x`` corresponds to ``i`` and ``y`` to ``j``.
+    data : np.ndarray
+        3D array ``data[c][i][j]`` with the data from the solution.
+        The first index ``c`` corresponds to ``array_names[c]``,
+        the second index and third corresponds to ``points[i][j]``.
     """
     # create a new 'Cell Centers'
     cell_centers = ps.CellCenters(

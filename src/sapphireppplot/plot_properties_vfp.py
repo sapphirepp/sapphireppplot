@@ -137,12 +137,12 @@ class PlotPropertiesVFP(PlotProperties):
         Parameters
         ----------
         expansion_order
-            Expansion order `l_max`.
+            Expansion order ``l_max``.
 
         Returns
         -------
-        lms_indices
-            Mapping `lms_indices[i] = [l,m,s]`.
+        lms_indices : list[list[int]]
+            Mapping ``lms_indices[i] = [l,m,s]``.
         """
         system_size = (expansion_order + 1) ** 2
         lms_indices = []
@@ -171,7 +171,7 @@ class PlotPropertiesVFP(PlotProperties):
         Parameters
         ----------
         lms_index
-            The index `[l,m,s]`.
+            The index ``[l,m,s]``.
         prefix
             Prefix.
         base_name
@@ -180,7 +180,7 @@ class PlotPropertiesVFP(PlotProperties):
 
         Returns
         -------
-        quantity_name
+        quantity_name : str
             The ParaView Series name for the lms_index.
         """
         if not base_name:
@@ -206,7 +206,7 @@ class PlotPropertiesVFP(PlotProperties):
         Parameters
         ----------
         lms_index
-            The index `[l,m,s]`.
+            The index ``[l,m,s]``.
         annotation
             Postfix annotation of quantity.
         variable_name
@@ -215,7 +215,7 @@ class PlotPropertiesVFP(PlotProperties):
 
         Returns
         -------
-        quantity_label
+        quantity_label : str
             The label for the lms_index.
         """
         if not variable_name:
@@ -233,7 +233,7 @@ class PlotPropertiesVFP(PlotProperties):
 
     def set_lms_indices(self, lms_indices: list[list[int]]) -> None:
         """
-        Set the `series_names` and labels activating only the `lms_indices`.
+        Set the ``series_names`` and labels activating only the ``lms_indices``.
 
         Parameters
         ----------
@@ -279,12 +279,12 @@ class PlotPropertiesVFP(PlotProperties):
 
     def set_expansion_order(self, expansion_order: int) -> None:
         """
-        Set the `series_names` and labels using the expansion order.
+        Set the ``series_names`` and labels using the expansion order.
 
         Parameters
         ----------
         expansion_order
-            Maximum expansion order `l_max` to display.
+            Maximum expansion order ``l_max`` to display.
         """
         self.set_lms_indices(self.create_lms_indices(expansion_order))
 

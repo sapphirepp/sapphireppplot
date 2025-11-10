@@ -15,7 +15,7 @@ def read_parameter_file(
     results_folder: str, file_name: str = "log.prm"
 ) -> list[str]:
     """
-    Read contents of a `.prm` parameter file.
+    Read contents of a ``.prm`` parameter file.
 
     This function utiles the ParaView CSV reader
     to allow reading parameter files on a remote data server.
@@ -31,13 +31,13 @@ def read_parameter_file(
 
     Returns
     -------
-    prm_lines
+    prm_lines : list[str]
         List of lines of in the parameter file.
 
     Raises
     ------
     FileNotFoundError
-        If the parameter file is found in the `results_folder`.
+        If the parameter file is found in the ``results_folder``.
     """
     search_pattern = os.path.join(results_folder, file_name)
     prm_file = paraview.util.Glob(search_pattern)
@@ -71,24 +71,24 @@ def load_solution_vtk(
     base_file_name: str = "solution",
 ) -> paraview.servermanager.SourceProxy:
     """
-    Load series of `.vtk` solution files.
+    Load series of ``.vtk`` solution files.
 
     Parameters
     ----------
     results_folder
-        Path to the folder containing `solution_*.vtk` files.
+        Path to the folder containing ``solution_*.vtk`` files.
     base_file_name
         Base name of the solutions files.
 
     Returns
     -------
-    solution
+    solution : SourceProxy
         A ParaView reader object with selected point arrays enabled.
 
     Raises
     ------
     FileNotFoundError
-        If no `.vtk` files are found in the `results_folder`.
+        If no ``.vtk`` files are found in the ``results_folder``.
 
     Notes
     -----
@@ -120,12 +120,12 @@ def load_solution_vtu(
     load_arrays: Optional[list[str]] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
-    Load series of `.vtu` solution files.
+    Load series of ``.vtu`` solution files.
 
     Parameters
     ----------
     results_folder
-        Path to the folder containing `solution_*.vtu` files.
+        Path to the folder containing ``solution_*.vtu`` files.
     base_file_name
         Base name of the solutions files.
     load_arrays
@@ -133,13 +133,13 @@ def load_solution_vtu(
 
     Returns
     -------
-    solution
+    solution : SourceProxy
         A ParaView reader object with selected point arrays enabled.
 
     Raises
     ------
     FileNotFoundError
-        If no `.vtu` files are found in the `results_folder`.
+        If no ``.vtu`` files are found in the ``results_folder``.
     """
     search_pattern = os.path.join(results_folder, base_file_name + "*.vtu")
     vtu_files = paraview.util.Glob(search_pattern)
@@ -167,12 +167,12 @@ def load_solution_pvtu(
     load_arrays: Optional[list[str]] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
-    Load series of `.pvtu` solution files.
+    Load series of ``.pvtu`` solution files.
 
     Parameters
     ----------
     results_folder
-        Path to the folder containing `solution_*.pvtu` files.
+        Path to the folder containing ``solution_*.pvtu`` files.
     base_file_name
         Base name of the solutions files.
     load_arrays
@@ -180,13 +180,13 @@ def load_solution_pvtu(
 
     Returns
     -------
-    solution
+    solution : SourceProxy
         A ParaView reader object with selected point arrays enabled.
 
     Raises
     ------
     FileNotFoundError
-        If no `.pvtu` files are found in the `results_folder`.
+        If no ``.pvtu`` files are found in the ``results_folder``.
 
     Notes
     -----
@@ -218,12 +218,12 @@ def load_solution_hdf5_with_xdmf(
     load_arrays: Optional[list[str]] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
-    Load series of `.hdf5` solution files from a `.xdmf` file.
+    Load series of ``.hdf5`` solution files from a ``.xdmf`` file.
 
     Parameters
     ----------
     results_folder
-        Path to the folder containing the `solution.xdmf` file.
+        Path to the folder containing the ``solution.xdmf`` file.
     base_file_name
         Base name of the solutions files.
     load_arrays
@@ -231,13 +231,13 @@ def load_solution_hdf5_with_xdmf(
 
     Returns
     -------
-    solution
+    solution : SourceProxy
         A ParaView reader object with selected point arrays enabled.
 
     Raises
     ------
     FileNotFoundError
-        If no  matching `.xdmf` file found in the `results_folder`.
+        If no  matching ``.xdmf`` file found in the ``results_folder``.
 
     Notes
     -----
@@ -282,7 +282,7 @@ def scale_time_steps(
 
     Returns
     -------
-    solution_temporal_scaled
+    solution_temporal_scaled: SourceProxy
         Solution with scaled time steps.
     """
     # create a new 'Temporal Shift Scale'
@@ -346,13 +346,13 @@ def load_solution(
 
     Returns
     -------
-    results_folder
+    results_folder : str
         The path to the results folder.
-    prm
+    prm : ParamDict
         Dictionary of the parameters.
-    solution
+    solution : SourceProxy
         A ParaView reader object with selected point arrays enabled.
-    animation_scene
+    animation_scene : Proxy
         The ParaView AnimationScene.
 
     Raises

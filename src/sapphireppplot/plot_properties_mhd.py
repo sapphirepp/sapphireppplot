@@ -125,7 +125,7 @@ class PlotPropertiesMHD(PlotProperties):
 
         Returns
         -------
-        quantity_name
+        quantity_name : str
             The ParaView Series name for the quantity.
         """
         indicators = [
@@ -184,7 +184,7 @@ class PlotPropertiesMHD(PlotProperties):
 
         Returns
         -------
-        quantity_label
+        quantity_label : str
             The label for the quantity.
         """
         tmp_postfix_1 = ""

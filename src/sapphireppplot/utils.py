@@ -42,7 +42,7 @@ def get_results_folder(
 
     Returns
     -------
-    results_folder
+    results_folder : str
         The path to the results folder.
     """
     global _results_folder_argv  # pylint: disable=global-statement
@@ -77,7 +77,7 @@ def prm_to_dict(prm_lines: list[str]) -> ParamDict:
 
     Returns
     -------
-    ParamDict
+    prm_dict : ParamDict
         Dictionary representing the parameter file structure.
         Values are always given as strings.
         Subsections are given as dicts.
@@ -109,7 +109,7 @@ def match_index(
     list_in: list[Any] | np.typing.NDArray[Any], target: Any
 ) -> int:
     """
-    Find index `i` where `list_in[i] = target`.
+    Find index ``i`` where ``list_in[i] = target``.
 
     Parameters
     ----------
@@ -120,13 +120,13 @@ def match_index(
 
     Returns
     -------
-    index
-        Index `i`.
+    index : int
+        Index ``i``.
 
     Raises
     ------
     ValueError
-        Raises an error if the `target` can not be found in `list_in`
+        Raises an error if the ``target`` can not be found in ``list_in``
         or multiple matches exist.
     """
     list_in = np.array(list_in)
@@ -148,7 +148,7 @@ def find_closest_index(
     print_index: bool = False,
 ) -> int:
     """
-    Find closest index `i` to `array[i] = target` in a sorted array.
+    Find closest index ``i`` to ``array[i] = target`` in a sorted array.
 
     Parameters
     ----------
@@ -161,8 +161,8 @@ def find_closest_index(
 
     Returns
     -------
-    index
-        Index `i`.
+    index : int
+        Index ``i``.
     """
     index = np.searchsorted(array, target, side="left")
     if index > 0 and (

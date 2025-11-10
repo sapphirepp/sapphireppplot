@@ -44,13 +44,13 @@ def load_solution(
 
     Returns
     -------
-    results_folder
+    results_folder : str
         The path to the results folder.
-    prm
+    prm : ParamDict
         Dictionary of the parameters.
-    solution
+    solution : SourceProxy
         A ParaView reader object with selected point arrays enabled.
-    animation_scene
+    animation_scene : Proxy
         The ParaView AnimationScene.
 
     Raises
@@ -129,16 +129,16 @@ def scale_distribution_function(
     plot_properties_in
         Properties of the source.
     lms_indices
-        The list of indices `[[l_1,m_1,s_1], [l_2,m_2,s_2]]` to scale.
+        The list of indices ``[[l_1,m_1,s_1], [l_2,m_2,s_2]]`` to scale.
         Only these indices will be active in the new solution.
     spectral_index
         Spectral index to scale the distributions function f.
 
     Returns
     -------
-    solution_scaled
+    solution_scaled : SourceProxy
         The scaled distribution function :math:`p^s f_{lms}` for lms_indices.
-    plot_properties
+    plot_properties : PlotPropertiesVFP
         Solution properties for the scaled distribution function.
     """
     if lms_indices is None:
@@ -208,13 +208,13 @@ def merge_input_function_vectors(
     plot_properties_in
         Properties of the source.
     prefix
-        Prefix for the `series_names`.
+        Prefix for the ``series_names``.
 
     Returns
     -------
-    solution_scaled
+    solution_scaled : SourceProxy
         Solution with the merged vectors.
-    plot_properties
+    plot_properties : PlotPropertiesVFP
         Solution properties for the merged vectors.
     """
     plot_properties = plot_properties_in.copy()
@@ -287,12 +287,12 @@ def plot_f_lms_1d(
     plot_properties
         Properties for plotting.
     lms_indices
-        The list of indices `[[l_1,m_1,s_1], [l_2,m_2,s_2]]` to plot.
+        The list of indices ``[[l_1,m_1,s_1], [l_2,m_2,s_2]]`` to plot.
     x_label
         Label for the bottom axis of the chart.
     value_range
-        Minimal (`value_range[0]`)
-        and maximal (`value_range[1]`) value for the y-axes.
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the y-axes.
     log_y_scale
         Use a logarithmic y-scale?
     save_animation
@@ -300,9 +300,9 @@ def plot_f_lms_1d(
 
     Returns
     -------
-    layout
+    layout : ViewLayoutProxy
         The layout object used for the plot.
-    line_chart_view
+    line_chart_view : XYChartViewProxy
         The configured XY chart view.
     """
     if lms_indices is None:
@@ -378,12 +378,12 @@ def plot_f_lms_2d(
     plot_properties
         Properties for plotting.
     lms_index
-        The index `[l,m,s]` to plot.
+        The index ``[l,m,s]`` to plot.
     prefix
         Prefix.
     value_range
-        Minimal (`value_range[0]`)
-        and maximal (`value_range[1]`) value for the y-axes.
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the y-axes.
     log_scale
         Use a logarithmic color scale?
     show_time
@@ -393,9 +393,9 @@ def plot_f_lms_2d(
 
     Returns
     -------
-    layout
+    layout : ViewLayoutProxy
         The layout object used for the plot.
-    render_view
+    render_view : RenderViewProxy
         The configured 2D render view.
     """
     if lms_index is None:
@@ -454,7 +454,7 @@ def plot_f_lms_over_x(
     plot_properties
         Properties for plotting.
     lms_indices
-        The list of indices `[[l_1,m_1,s_1], [l_2,m_2,s_2]]` to plot.
+        The list of indices ``[[l_1,m_1,s_1], [l_2,m_2,s_2]]`` to plot.
     direction
         Direction of the line.
     offset
@@ -464,8 +464,8 @@ def plot_f_lms_over_x(
     x_label
         Label for the bottom axis of the chart.
     value_range
-        Minimal (`value_range[0]`)
-        and maximal (`value_range[1]`) value for the y-axes.
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the y-axes.
     log_y_scale
         Use a logarithmic y-scale?
     save_animation
@@ -473,11 +473,11 @@ def plot_f_lms_over_x(
 
     Returns
     -------
-    plot_over_line_x
+    plot_over_line_x : SourceProxy
         The PlotOverLine source.
-    layout
+    layout : ViewLayoutProxy
         The layout object used for the plot.
-    line_chart_view
+    line_chart_view : XYChartViewProxy
         The configured XY chart view.
     """
     if lms_indices is None:
@@ -576,14 +576,14 @@ def plot_f_lms_over_p(
     plot_properties
         Properties for plotting.
     lms_indices
-        The list of indices `[[l_1,m_1,s_1], [l_2,m_2,s_2]]` to plot.
+        The list of indices ``[[l_1,m_1,s_1], [l_2,m_2,s_2]]`` to plot.
     direction
         Direction of the line.
     offset
         Offset of the line.
     value_range
-        Minimal (`value_range[0]`)
-        and maximal (`value_range[1]`) value for the y-axes.
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the y-axes.
     log_y_scale
         Use a logarithmic y-scale?
     save_animation
@@ -591,11 +591,11 @@ def plot_f_lms_over_p(
 
     Returns
     -------
-    plot_over_line_x
+    plot_over_line_x : SourceProxy
         The PlotOverLine source.
-    layout
+    layout : ViewLayoutProxy
         The layout object used for the plot.
-    line_chart_view
+    line_chart_view : XYChartViewProxy
         The configured XY chart view.
     """
     if lms_indices is None:

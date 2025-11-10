@@ -53,7 +53,7 @@ class PlotPropertiesAthena(PlotPropertiesMHD):
 
         Returns
         -------
-        quantity_name
+        quantity_name : str
             The ParaView Series name for the quantity.
         """
         quantity_names = {
