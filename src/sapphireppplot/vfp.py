@@ -278,7 +278,9 @@ def plot_f_lms_1d(
     plot_properties: PlotPropertiesVFP,
     lms_indices: Optional[list[list[int]]] = None,
     x_label: Optional[str] = None,
+    x_range: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
+    log_x_scale: bool = False,
     log_y_scale: bool = False,
     save_animation: bool = False,
 ) -> tuple[
@@ -301,9 +303,14 @@ def plot_f_lms_1d(
         The list of indices ``[[l_1,m_1,s_1], [l_2,m_2,s_2]]`` to plot.
     x_label
         Label for the bottom axis of the chart.
+    x_range
+        Minimal (``x_range[0]``)
+        and maximal (``x_range[1]``) value for the x-axes.
     value_range
         Minimal (``value_range[0]``)
         and maximal (``value_range[1]``) value for the y-axes.
+    log_x_scale
+        Use a logarithmic x-scale?
     log_y_scale
         Use a logarithmic y-scale?
     save_animation
@@ -353,7 +360,9 @@ def plot_f_lms_1d(
         x_label=x_label,
         y_label=y_label,
         visible_lines=visible_lines,
+        x_range=x_range,
         value_range=value_range,
+        log_x_scale=log_x_scale,
         log_y_scale=log_y_scale,
         plot_properties=plot_properties,
     )
@@ -452,7 +461,9 @@ def plot_f_lms_over_x(
     offset: Optional[list[float]] = None,
     x_axes_scale: Optional[float] = None,
     x_label: str = r"$x$",
+    x_range: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
+    log_x_scale: bool = False,
     log_y_scale: bool = False,
     save_animation: bool = False,
 ) -> tuple[
@@ -483,9 +494,14 @@ def plot_f_lms_over_x(
         Divide the x-axes coordinate by this scale.
     x_label
         Label for the bottom axis of the chart.
+    x_range
+        Minimal (``x_range[0]``)
+        and maximal (``x_range[1]``) value for the x-axes.
     value_range
         Minimal (``value_range[0]``)
         and maximal (``value_range[1]``) value for the y-axes.
+    log_x_scale
+        Use a logarithmic x-scale?
     log_y_scale
         Use a logarithmic y-scale?
     save_animation
@@ -544,6 +560,7 @@ def plot_f_lms_over_x(
     plot_over_line_x = transform.plot_over_line(
         solution,
         direction=direction,
+        x_range=x_range,
         offset=offset,
         x_axes_scale=x_axes_scale,
         results_folder=results_folder,
@@ -559,7 +576,9 @@ def plot_f_lms_over_x(
         y_label=y_label,
         x_array_name=x_array_name,
         visible_lines=visible_lines,
+        x_range=x_range,
         value_range=value_range,
+        log_x_scale=log_x_scale,
         log_y_scale=log_y_scale,
         plot_properties=plot_properties,
     )
@@ -579,7 +598,9 @@ def plot_f_lms_over_p(
     lms_indices: Optional[list[list[int]]] = None,
     direction: str | list[list[float]] = "",
     offset: Optional[list[float]] = None,
+    x_range: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
+    log_x_scale: bool = False,
     log_y_scale: bool = True,
     save_animation: bool = False,
 ) -> tuple[
@@ -606,9 +627,14 @@ def plot_f_lms_over_p(
         Direction of the line.
     offset
         Offset of the line.
+    x_range
+        Minimal (``x_range[0]``)
+        and maximal (``x_range[1]``) value for the x-axes.
     value_range
         Minimal (``value_range[0]``)
         and maximal (``value_range[1]``) value for the y-axes.
+    log_x_scale
+        Use a logarithmic x-scale?
     log_y_scale
         Use a logarithmic y-scale?
     save_animation
@@ -670,6 +696,7 @@ def plot_f_lms_over_p(
     plot_over_line_p = transform.plot_over_line(
         solution,
         direction=direction,
+        x_range=x_range,
         offset=offset,
         results_folder=results_folder,
         filename=name,
@@ -684,7 +711,9 @@ def plot_f_lms_over_p(
         y_label=y_label,
         x_array_name=x_array_name,
         visible_lines=visible_lines,
+        x_range=x_range,
         value_range=value_range,
+        log_x_scale=log_x_scale,
         log_y_scale=log_y_scale,
         plot_properties=plot_properties,
     )

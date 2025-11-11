@@ -13,6 +13,7 @@ _epsilon_d: float = 1e-10
 def plot_over_line(
     solution: paraview.servermanager.SourceProxy,
     direction: str | list[list[float]] = "x",
+    x_range: Optional[list[float]] = None,
     offset: Optional[list[float]] = None,
     x_axes_scale: Optional[float] = None,
     results_folder: str = "",
@@ -27,10 +28,20 @@ def plot_over_line(
     solution
         The data source.
     direction
-        Direction of the line.
-        Either "x", "y", "z", "d" or a list with start and end points.
+        Direction of the line for the line-out.
+        Can be either:
+
+        - ``"x"``, ``"y"``, ``"z"`` for a line along coordinate axes.
+        - ``"d"`` for a line along the diagonal.
+        - List with start and end points:
+          ``[[x_1,y_1,z_1], [x_2,y_2,z_2]]``.
+    x_range
+        Start (``x_range[0]``) and end-coordinate (``x_range[1]``)
+        for line-out along the coordinate axes.
+        Only used for ``direction = "x"/"y"/"z"``.
     offset
-        Offset of the line.
+        Offset of the line-out.
+        Only used for ``direction = "x"/"y"/"z"``.
     x_axes_scale
         Divide the x-axes coordinate by this scale.
         The scaled axes will be stored in a variable ``scaled_axes``.
@@ -72,21 +83,27 @@ def plot_over_line(
             plot_over_line_source.Point1 = direction[0]
             plot_over_line_source.Point2 = direction[1]
         case "x":
-            # Extract min_x and max_x from the solution_bounds
             min_x = solution_bounds[0]
             max_x = solution_bounds[1]
-
-            # Properties modified on plot_over_line_source
+            if x_range:
+                min_x = x_range[0]
+                max_y = x_range[1]
             plot_over_line_source.Point1 = [min_x, offset[1], offset[2]]
             plot_over_line_source.Point2 = [max_x, offset[1], offset[2]]
         case "y":
             min_y = solution_bounds[2]
             max_y = solution_bounds[3]
+            if x_range:
+                min_y = x_range[0]
+                max_y = x_range[1]
             plot_over_line_source.Point1 = [offset[0], min_y, offset[2]]
             plot_over_line_source.Point2 = [offset[0], max_y, offset[2]]
         case "z":
             min_z = solution_bounds[4]
             max_z = solution_bounds[5]
+            if x_range:
+                min_z = x_range[0]
+                max_z = x_range[1]
             plot_over_line_source.Point1 = [offset[0], offset[1], min_z]
             plot_over_line_source.Point2 = [offset[0], offset[1], max_z]
         case "d":
@@ -359,6 +376,7 @@ def stream_tracer(
     solution: paraview.servermanager.SourceProxy,
     quantity: str,
     direction: str | list[list[float]] = "d",
+    x_range: Optional[list[float]] = None,
     offset: Optional[list[float]] = None,
     n_lines: int = 30,
     plot_properties: PlotProperties = PlotProperties(),
@@ -376,10 +394,20 @@ def stream_tracer(
     quantity
         Name of the quantity for the stream tracer.
     direction
-        Direction of the line.
-        Either "x", "y", "z", "d" or a list with start and end points.
+        Direction of the tracer seed line.
+        Can be either:
+
+        - ``"x"``, ``"y"``, ``"z"`` for a line along coordinate axes.
+        - ``"d"`` for a line along the diagonal.
+        - List with start and end points:
+          ``[[x_1,y_1,z_1], [x_2,y_2,z_2]]``.
+    x_range
+        Start (``x_range[0]``) and end-coordinate (``x_range[1]``)
+        for tracer seed line along the coordinate axes.
+        Only used for ``direction = "x"/"y"/"z"``.
     offset
-        Offset of the line.
+        Offset of the tracer seed line.
+        Only used for ``direction = "x"/"y"/"z"``.
     n_lines
         Number of stream lines.
     plot_properties
@@ -422,21 +450,27 @@ def stream_tracer(
             stream_tracer_source.SeedType.Point1 = direction[0]
             stream_tracer_source.SeedType.Point2 = direction[1]
         case "x":
-            # Extract min_x and max_x from the solution_bounds
             min_x = solution_bounds[0]
             max_x = solution_bounds[1]
-
-            # Properties modified on stream_tracer_source
+            if x_range:
+                min_x = x_range[0]
+                max_y = x_range[1]
             stream_tracer_source.SeedType.Point1 = [min_x, offset[1], offset[2]]
             stream_tracer_source.SeedType.Point2 = [max_x, offset[1], offset[2]]
         case "y":
             min_y = solution_bounds[2]
             max_y = solution_bounds[3]
+            if x_range:
+                min_y = x_range[0]
+                max_y = x_range[1]
             stream_tracer_source.SeedType.Point1 = [offset[0], min_y, offset[2]]
             stream_tracer_source.SeedType.Point2 = [offset[0], max_y, offset[2]]
         case "z":
             min_z = solution_bounds[4]
             max_z = solution_bounds[5]
+            if x_range:
+                min_z = x_range[0]
+                max_z = x_range[1]
             stream_tracer_source.SeedType.Point1 = [offset[0], offset[1], min_z]
             stream_tracer_source.SeedType.Point2 = [offset[0], offset[1], max_z]
         case "d":

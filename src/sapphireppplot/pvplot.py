@@ -16,7 +16,9 @@ def plot_line_chart_view(
     y_label: str = "",
     x_array_name: str = "Points_X",
     visible_lines: Optional[list[str]] = None,
+    x_range: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
+    log_x_scale: bool = False,
     log_y_scale: bool = False,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
@@ -37,9 +39,14 @@ def plot_line_chart_view(
         Name of the array ot use as x-axes.
     visible_lines
         List of series names to display in the chart.
+    x_range
+        Minimal (``x_range[0]``)
+        and maximal (``x_range[1]``) value for the x-axes.
     value_range
         Minimal (``value_range[0]``)
         and maximal (``value_range[1]``) value for the y-axes.
+    log_x_scale
+        Use a logarithmic x-scale?
     log_y_scale
         Use a logarithmic y-scale?
     plot_properties
@@ -82,10 +89,16 @@ def plot_line_chart_view(
     if visible_lines:
         solution_display.SeriesVisibility = visible_lines
 
+    if x_range:
+        line_chart_view.BottomAxisUseCustomRange = 1
+        line_chart_view.BottomAxisRangeMinimum = x_range[0]
+        line_chart_view.BottomAxisRangeMaximum = x_range[1]
     if value_range:
         line_chart_view.LeftAxisUseCustomRange = 1
         line_chart_view.LeftAxisRangeMinimum = value_range[0]
         line_chart_view.LeftAxisRangeMaximum = value_range[1]
+    if log_x_scale:
+        line_chart_view.BottomAxisLogScale = 1
     if log_y_scale:
         line_chart_view.LeftAxisLogScale = 1
 

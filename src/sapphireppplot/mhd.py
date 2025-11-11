@@ -239,7 +239,10 @@ def plot_quantities_1d(
     quantities: list[str],
     name: str,
     plot_properties: PlotPropertiesMHD,
+    x_range: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
+    log_x_scale: bool = False,
+    log_y_scale: bool = False,
     save_animation: bool = False,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
@@ -259,9 +262,16 @@ def plot_quantities_1d(
         Name of the layout and image/animation files.
     plot_properties
         Properties for plotting.
+    x_range
+        Minimal (``x_range[0]``)
+        and maximal (``x_range[1]``) value for the x-axes.
     value_range
         Minimal (``value_range[0]``)
         and maximal (``value_range[1]``) value for the y-axes.
+    log_x_scale
+        Use a logarithmic x-scale?
+    log_y_scale
+        Use a logarithmic y-scale?
     save_animation
         Save an animation of the plot.
 
@@ -304,7 +314,10 @@ def plot_quantities_1d(
         layout,
         y_label=y_label,
         visible_lines=visible_lines,
+        x_range=x_range,
         value_range=value_range,
+        log_x_scale=log_x_scale,
+        log_y_scale=log_y_scale,
         plot_properties=plot_properties,
     )
 
@@ -322,7 +335,10 @@ def plot_split_view_1d(
     name: str,
     plot_properties_in: PlotPropertiesMHD,
     labels: Optional[list[str]] = None,
+    x_range: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
+    log_x_scale: bool = False,
+    log_y_scale: bool = False,
     save_animation: bool = False,
 ) -> paraview.servermanager.ViewLayoutProxy:
     """
@@ -342,9 +358,16 @@ def plot_split_view_1d(
         Properties for plotting.
     labels
         Labels for the numeric and projected/interpolated solution.
+    x_range
+        Minimal (``x_range[0]``)
+        and maximal (``x_range[1]``) value for the x-axes.
     value_range
         Minimal (``value_range[0]``)
         and maximal (``value_range[1]``) value for the y-axes.
+    log_x_scale
+        Use a logarithmic x-scale?
+    log_y_scale
+        Use a logarithmic y-scale?
     save_animation
         Save an animation of the plot.
 
@@ -407,7 +430,10 @@ def plot_split_view_1d(
             layout,
             y_label=y_label,
             visible_lines=visible_lines,
+            x_range=x_range,
             value_range=value_range,
+            log_x_scale=log_x_scale,
+            log_y_scale=log_y_scale,
             plot_properties=plot_properties,
         )
         line_chart_view.ShowLegend = 0
@@ -504,7 +530,9 @@ def plot_quantities_over_x(
     offset: Optional[list[float]] = None,
     x_axes_scale: Optional[float] = None,
     x_label: str = r"$x$",
+    x_range: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
+    log_x_scale: bool = False,
     log_y_scale: bool = False,
     save_animation: bool = False,
 ) -> tuple[
@@ -535,9 +563,14 @@ def plot_quantities_over_x(
         Divide the x-axes coordinate by this scale.
     x_label
         Label for the bottom axis of the chart.
+    x_range
+        Minimal (``x_range[0]``)
+        and maximal (``x_range[1]``) value for the x-axes.
     value_range
         Minimal (``value_range[0]``)
         and maximal (``value_range[1]``) value for the y-axes.
+    log_x_scale
+        Use a logarithmic x-scale?
     log_y_scale
         Use a logarithmic y-scale?
     save_animation
@@ -602,6 +635,7 @@ def plot_quantities_over_x(
     plot_over_line_x = transform.plot_over_line(
         solution,
         direction=direction,
+        x_range=x_range,
         offset=offset,
         x_axes_scale=x_axes_scale,
         results_folder=results_folder,
@@ -617,7 +651,9 @@ def plot_quantities_over_x(
         y_label=y_label,
         x_array_name=x_array_name,
         visible_lines=visible_lines,
+        x_range=x_range,
         value_range=value_range,
+        log_x_scale=log_x_scale,
         log_y_scale=log_y_scale,
         plot_properties=plot_properties,
     )
