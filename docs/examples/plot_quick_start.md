@@ -9,12 +9,20 @@ The script presented here can be found in the `examples` folder as
 
 ## Preamble
 
-First, import `numpy` and the `vfp` and `numpyify` modules from `sapphireppplot`.
+First, import `numpy` and
+{pv}`paraview.simple <paraview.simple.html>`.
+In this example,
+we use the
+{py:mod}`vfp <sapphireppplot.vfp>`,
+{py:mod}`pvplot <sapphireppplot.pvplot>` and
+{py:mod}`numpyify <sapphireppplot.numpyify>`
+modules from `sapphireppplot`.
 Then, define the `main` function to create the plots:
 
 ```python
 import numpy as np
-from sapphireppplot import vfp, numpyify
+import paraview.simple as ps
+from sapphireppplot import vfp, pvplot, numpyify
 
 
 def main() -> dict:
@@ -24,18 +32,23 @@ def main() -> dict:
 ## Loading Results
 
 Before loading the Sapphire++ results,
-we use the `PlotProperties` class to define general properties for the solution and plots.
+we use the
+{py:class}`PlotProperties <sapphireppplot.plot_properties.PlotProperties>` class
+to define general properties for the solution and plots.
 This data class helps to configure properties that are reused between plots,
 such as font size and text color,
 in a single place.
-Here, we use the `PlotPropertiesVFP` version,
+Here, we use the
+{py:class}`PlotPropertiesVFP <sapphireppplot.plot_properties_vfp.PlotPropertiesVFP>` version,
 which automatically sets labels for `f_lms` and axes
 for results produced by the Sapphire++ — VFP module.
 
 For the quick-start example,
 the reduced phase space is of dimension `2`,
 and momentum terms are activated in Sapphire++.
-We also set the `color_bar_position` and enable a transparent background for animations:
+We also set the
+{py:attr}`color_bar_position <sapphireppplot.plot_properties.PlotProperties.color_bar_position>`
+and enable a transparent background for animations:
 
 ```python
     plot_properties = vfp.PlotPropertiesVFP(
@@ -47,14 +60,18 @@ We also set the `color_bar_position` and enable a transparent background for ani
 ```
 
 To load the Sapphire++ results,
-use the `load_solution` function from the `vfp` module, which simplifies the process.
-This function retrieves the `results_folder`
+use the
+{py:func}`load_solution() <sapphireppplot.vfp.load_solution>`
+function from the
+{py:mod}`vfp <sapphireppplot.vfp>` module,
+which simplifies the process.
+This function retrieves the`results_folder`
 (which can be given as a relative path with respect to `path_prefix`)
 either from a command line argument or by prompting user input.
 Furthermore, it loads the parameter log file as a dictionary (`prm`),
 loads the solution data (`solution`),
 and sets the animation time to the last time step.
-The currently displayed time step can be changed using `animation_scene`.
+The currently displayed time step can be changed using`animation_scene`.
 
 It is recommended to set an environment variable `$SAPPHIREPP_RESULTS`
 to specify the path to Sapphire++ results
@@ -69,7 +86,8 @@ and to use subfolders for different examples, such as `quick-start`.
 
 ## Plotting a 2D Render View
 
-As a first plot, we show the 2D view of the data.
+As a first plot, we show the 2D view of the data
+using the {py:func}`vfp.plot_f_lms_2d() <sapphireppplot.vfp.plot_f_lms_2d>` function.
 The figure is named `quick-start-2D`
 and saved in the same `results_folder` as the Sapphire++ results.
 To display the $f_{000}$ component, set `lms_index=[0, 0, 0]`.
@@ -94,8 +112,8 @@ an animation is saved as a series of PNG files (`quick-start-2D.XXXX.png`).
 ## Plotting $f(x)$
 
 Next, we show the solution as a function of $x$ using the `PlotOverLine` tool in ParaView.
-The `vfp.plot_f_lms_over_x` function creates the `PlotOverLine`
-and displays it in a `LineChartView`,
+The {py:func}`vfp.plot_f_lms_over_x() <sapphireppplot.vfp.plot_f_lms_over_x>` function
+creates the `PlotOverLine` and displays it in a `LineChartView`,
 handling the ParaView internals.
 We specify the file name (`quick-start-f-x`),
 the $f_{000}$ and $f_{100}$ lines to plot (`lms_indices=[[0, 0, 0], [1, 0, 0]]`),
@@ -120,9 +138,11 @@ and use an offset to specify that the profile is shown at $\ln p = 0.05$
 
 ## Plotting $p^4 f(p)$
 
-As a final plot, we show the scaled spectrum $p^4 f_{000}$ at $x=0.1$.
-First, scale the distribution function to $p^4 f$ using `vfp.scale_distribution_function`.
-Then, plot the spectrum of the scaled solution (`solution_scaled`) using `vfp.plot_f_lms_over_p`,
+As second to final plot, we show the scaled spectrum $p^4 f_{000}$ at $x=0.1$.
+First, scale the distribution function to $p^4 f$ using
+{py:func}`vfp.scale_distribution_function() <sapphireppplot.vfp.scale_distribution_function>`.
+Then, plot the spectrum of the scaled solution (`solution_scaled`)
+using {py:func}`vfp.plot_f_lms_over_p() <sapphireppplot.vfp.plot_f_lms_over_p>`,
 showing only the $f_{000}$ component.
 
 ```python
@@ -143,10 +163,88 @@ showing only the $f_{000}$ component.
 
 ![Quick-start spectrum](figures/quick-start-f-p.png)
 
+## Advanced Plot: Ratio of $f_{100}$ to $f_{000}$
+
+So far we have only used predefined plots,
+but often we need custom plots.
+As an example we want to show the ratio of
+$|f_{100}(x) / f_{000}(x)|$,
+which should be zero in the downstream ($x>0$)
+and constant in the upstream ($x<0$).
+
+We first need to compute $|f_{100} / f_{000}|$
+using the {ps}`Calculator`.
+Since we want to view the result only on the outline along $x$,
+we can directly use `plot_over_line_x` as input.
+
+```python
+    solution_ratio = ps.Calculator(
+        registrationName="ratio", Input=plot_over_line_x
+    )
+    solution_ratio.ResultArrayName = "ratio"
+    solution_ratio.Function = "abs(f_100 / f_000)"
+```
+
+Next, we copy the `PlotProperties` and
+add a line new line `"ratio"` to the
+{py:attr}`series_names <sapphireppplot.plot_properties.PlotProperties.series_names>`
+and set its
+{py:attr}`label <sapphireppplot.plot_properties.PlotProperties.labels>`
+and
+{py:attr}`line_style <sapphireppplot.plot_properties.PlotProperties.line_styles>`
+to make it visible.
+We furthermore specify that the plot hides the legend,
+{py:attr}`legend_symbol_width = 0 <sapphireppplot.plot_properties.PlotProperties.legend_symbol_width>`,
+since we only show one quantity.
+
+```python
+    plot_properties_ratio = plot_properties.copy()
+    plot_properties_ratio.series_names += ["ratio"]
+    plot_properties_ratio.labels["ratio"] = r"$\| f_{100} / f_{000} \|$"
+    plot_properties_ratio.line_styles["ratio"] = "1"
+    plot_properties_ratio.legend_symbol_width = 0
+```
+
+Last, we create a new layout using
+{pv}`paraview.simple.CreateLayout() <paraview.simple.html#paraview.simple.CreateLayout>`,
+show 1D line chart view,
+{py:func}`pvplot.plot_line_chart_view() <sapphireppplot.pvplot.plot_line_chart_view>`,
+and save the figure using
+{py:func}`pvplot.save_screenshot() <sapphireppplot.pvplot.save_screenshot>`.
+
+```python
+    layout_ratio = ps.CreateLayout("quick-start-ratio")
+    line_chart_view_ratio = pvplot.plot_line_chart_view(
+        solution_ratio,
+        layout_ratio,
+        x_label=r"$x$",
+        y_label=r"$\| f_{100} / f_{000} \|$",
+        x_array_name="Points_X",
+        visible_lines=["ratio"],
+        log_y_scale=True,
+        plot_properties=plot_properties_ratio,
+    )
+    pvplot.save_screenshot(
+        layout_ratio, results_folder, "quick-start-ratio", plot_properties_ratio
+    )
+```
+
+This creates the figure shown below.
+For the Quick-start example the figure looks a bit clunky
+since it is optimized for speed rather than accuracy.
+But we can see the trend that
+$f_{100} / f_{000} = \mathrm{const.}$ for $x < 0$
+and
+$f_{100} / f_{000} = 0$ for $x > 0$.
+
+![Quick-start ratio](figures/quick-start-ratio.png)
+
 ## Using NumPy: Calculate the Spectral Index
 
-To extract NumPy arrays from the ParaView data, use the `numpyify` module.
-As an example, we use the spectrum retrieved from `plot_over_line_p`
+To extract NumPy arrays from the ParaView data,
+use the {py:mod}`numpyify <sapphireppplot.numpyify>` module.
+As an example, we retrieve the spectrum from `plot_over_line_p`
+using {py:func}`numpyify.to_numpy_1d() <sapphireppplot.numpyify.to_numpy_1d>`
 and calculate the spectral index $s$.
 To return the `ln_p` coordinates, specify `x_direction=1`,
 and select only `f_000` as the array to be returned.

@@ -1,7 +1,8 @@
 """Plot quick-start example."""
 
 import numpy as np
-from sapphireppplot import vfp, numpyify
+import paraview.simple as ps
+from sapphireppplot import vfp, pvplot, numpyify
 
 
 def main() -> dict:
@@ -51,6 +52,33 @@ def main() -> dict:
         lms_indices=[[0, 0, 0]],
         offset=[0.1, 0, 0],
         value_range=[1e-2, 16.0],
+    )
+
+    solution_ratio = ps.Calculator(
+        registrationName="ratio", Input=plot_over_line_x
+    )
+    solution_ratio.ResultArrayName = "ratio"
+    solution_ratio.Function = "abs(f_100 / f_000)"
+
+    plot_properties_ratio = plot_properties.copy()
+    plot_properties_ratio.series_names += ["ratio"]
+    plot_properties_ratio.labels["ratio"] = r"$\| f_{100} / f_{000} \|$"
+    plot_properties_ratio.line_styles["ratio"] = "1"
+    plot_properties_ratio.legend_symbol_width = 0
+
+    layout_ratio = ps.CreateLayout("quick-start-ratio")
+    line_chart_view_ratio = pvplot.plot_line_chart_view(
+        solution_ratio,
+        layout_ratio,
+        x_label=r"$x$",
+        y_label=r"$\| f_{100} / f_{000} \|$",
+        x_array_name="Points_X",
+        visible_lines=["ratio"],
+        log_y_scale=True,
+        plot_properties=plot_properties_ratio,
+    )
+    pvplot.save_screenshot(
+        layout_ratio, results_folder, "quick-start-ratio", plot_properties_ratio
     )
 
     ln_p, data = numpyify.to_numpy_1d(
