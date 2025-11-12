@@ -13,8 +13,8 @@ _epsilon_d: float = 1e-10
 def plot_over_line(
     solution: paraview.servermanager.SourceProxy,
     direction: str | list[list[float]] = "x",
-    x_range: Optional[list[float]] = None,
     offset: Optional[list[float]] = None,
+    x_range: Optional[list[float]] = None,
     x_axes_scale: Optional[float] = None,
     results_folder: str = "",
     filename: Optional[str] = None,
@@ -35,12 +35,12 @@ def plot_over_line(
         - ``"d"`` for a line along the diagonal.
         - List with start and end points:
           ``[[x_1,y_1,z_1], [x_2,y_2,z_2]]``.
+    offset
+        Offset of the line-out.
+        Only used for ``direction = "x"/"y"/"z"``.
     x_range
         Start (``x_range[0]``) and end-coordinate (``x_range[1]``)
         for line-out along the coordinate axes.
-        Only used for ``direction = "x"/"y"/"z"``.
-    offset
-        Offset of the line-out.
         Only used for ``direction = "x"/"y"/"z"``.
     x_axes_scale
         Divide the x-axes coordinate by this scale.
@@ -376,8 +376,8 @@ def stream_tracer(
     solution: paraview.servermanager.SourceProxy,
     quantity: str,
     direction: str | list[list[float]] = "d",
-    x_range: Optional[list[float]] = None,
     offset: Optional[list[float]] = None,
+    x_range: Optional[list[float]] = None,
     n_lines: int = 30,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.SourceProxy:
@@ -401,12 +401,12 @@ def stream_tracer(
         - ``"d"`` for a line along the diagonal.
         - List with start and end points:
           ``[[x_1,y_1,z_1], [x_2,y_2,z_2]]``.
+    offset
+        Offset of the tracer seed line.
+        Only used for ``direction = "x"/"y"/"z"``.
     x_range
         Start (``x_range[0]``) and end-coordinate (``x_range[1]``)
         for tracer seed line along the coordinate axes.
-        Only used for ``direction = "x"/"y"/"z"``.
-    offset
-        Offset of the tracer seed line.
         Only used for ``direction = "x"/"y"/"z"``.
     n_lines
         Number of stream lines.

@@ -19,6 +19,7 @@ def main() -> dict:
         path_prefix="$SAPPHIREPP_RESULTS/quick-start",
     )
 
+    # region Plot 2D render view
     layout_2d, render_view_2d = vfp.plot_f_lms_2d(
         solution,
         results_folder,
@@ -28,7 +29,9 @@ def main() -> dict:
         value_range=[1e-2, 10.0],
         save_animation=True,
     )
+    # endregion
 
+    # region Plot f(x)
     plot_over_line_x, layout_x, line_chart_view_x = vfp.plot_f_lms_over_x(
         solution,
         results_folder,
@@ -39,7 +42,9 @@ def main() -> dict:
         offset=[0, 0.05, 0],
         x_label=r"$x$",
     )
+    # endregion
 
+    # Plot p^4 f(p)
     solution_scaled, plot_properties_scaled = vfp.scale_distribution_function(
         solution, plot_properties
     )
@@ -53,7 +58,9 @@ def main() -> dict:
         offset=[0.1, 0, 0],
         value_range=[1e-2, 16.0],
     )
+    # endregion
 
+    # region Plot f_100 / f_000
     solution_ratio = ps.Calculator(
         registrationName="ratio", Input=plot_over_line_x
     )
@@ -80,7 +87,9 @@ def main() -> dict:
     pvplot.save_screenshot(
         layout_ratio, results_folder, "quick-start-ratio", plot_properties_ratio
     )
+    # endregion
 
+    # region Calculate spectral index
     ln_p, data = numpyify.to_numpy_1d(
         plot_over_line_p,
         array_names=["f_000"],
@@ -94,6 +103,7 @@ def main() -> dict:
     spectral_index = (ln_f[-1] - ln_f[0]) / (ln_p[-1] - ln_p[0])
 
     print(f"Spectral Index: s = {spectral_index}")
+    # endregion
 
     return locals()
 

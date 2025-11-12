@@ -4,6 +4,7 @@ numpyify
 pvload
 pvplot
 sapphireppplot
+sapplot
 utils
 vfp
 
@@ -73,6 +74,7 @@ xdmf
 Xdmf3
 
 # Python
+endregion
 expandvars
 globals
 isabs
@@ -80,6 +82,7 @@ locals
 maxsplit
 normpath
 pylint
+region
 removeprefix
 scipy
 
