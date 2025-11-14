@@ -453,6 +453,85 @@ def plot_f_lms_2d(
     return layout, render_view
 
 
+def plot_f_lms_3d(
+    solution: paraview.servermanager.SourceProxy,
+    results_folder: str,
+    name: str,
+    plot_properties: PlotPropertiesVFP,
+    lms_index: Optional[list[int]] = None,
+    prefix: str = "",
+    value_range: Optional[list[float]] = None,
+    log_scale: bool = True,
+    show_time: bool = False,
+    save_animation: bool = False,
+) -> tuple[
+    paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
+]:
+    """
+    Plot and save visualization of the specified f_lms in 3D.
+
+    Parameters
+    ----------
+    solution
+        The simulation or computation result containing the data to plot.
+    results_folder
+        Path to the folder where results (images/animations) will be saved.
+    name
+        Name of the layout and image/animation files.
+    plot_properties
+        Properties for plotting.
+    lms_index
+        The index ``[l,m,s]`` to plot.
+    prefix
+        Prefix for quantity name.
+    value_range
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the y-axes.
+    log_scale
+        Use a logarithmic color scale?
+    show_time
+        Display the simulation time in the render view.
+    save_animation
+        Save an animation of the plot.
+
+    Returns
+    -------
+    layout : ViewLayoutProxy
+        The layout object used for the plot.
+    render_view : RenderViewProxy
+        The configured 3D render view.
+
+    See Also
+    --------
+    sapphireppplot.pvplot.plot_render_view_3d : Plot 3D RenderView.
+    sapphireppplot.pvplot.display_time : Display time.
+    """
+    if lms_index is None:
+        lms_index = [0, 0, 0]
+    if plot_properties.prefix_numeric and prefix == "":
+        prefix = "numeric_"
+
+    # create new layout object
+    layout = ps.CreateLayout(name)
+    render_view = pvplot.plot_render_view_2d(
+        solution,
+        layout,
+        plot_properties.f_lms_name(lms_index, prefix=prefix),
+        value_range=value_range,
+        log_scale=log_scale,
+        plot_properties=plot_properties,
+    )
+
+    if show_time:
+        pvplot.display_time(render_view, plot_properties=plot_properties)
+
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
+    if save_animation:
+        pvplot.save_animation(layout, results_folder, name, plot_properties)
+
+    return layout, render_view
+
+
 def plot_f_lms_over_x(
     solution: paraview.servermanager.SourceProxy,
     results_folder: str,

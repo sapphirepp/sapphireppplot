@@ -526,6 +526,85 @@ def plot_quantity_2d(
     return layout, render_view
 
 
+def plot_quantity_3d(
+    solution: paraview.servermanager.SourceProxy,
+    results_folder: str,
+    quantity: str,
+    name: str,
+    plot_properties: PlotPropertiesMHD,
+    prefix: str = "",
+    value_range: Optional[list[float]] = None,
+    log_scale: bool = False,
+    show_time: bool = False,
+    save_animation: bool = False,
+) -> tuple[
+    paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
+]:
+    """
+    Plot and save visualization of specified physical quantity in 3D.
+
+    Parameters
+    ----------
+    solution
+        The simulation or computation result containing the data to plot.
+    results_folder
+        Path to the folder where results (images/animations) will be saved.
+    quantity
+        The physical quantity to plot.
+    plot_properties
+        Properties for plotting.
+    name
+        Name of the layout and image/animation files.
+    prefix
+        Prefix for quantity name.
+    value_range
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the y-axes.
+    log_scale
+        Use a logarithmic color scale?
+    show_time
+        Display the simulation time in the render view.
+    save_animation
+        Save an animation of the plot.
+
+    Returns
+    -------
+    layout : ViewLayoutProxy
+        The layout object used for the plot.
+    render_view : RenderViewProxy
+        The configured 3D render view.
+
+    See Also
+    --------
+    sapphireppplot.pvplot.plot_render_view_3d : Plot 3D RenderView.
+    sapphireppplot.pvplot.display_time : Display time.
+    """
+    if plot_properties.prefix_numeric and prefix == "":
+        prefix = "numeric_"
+
+    # create new layout object
+    layout = ps.CreateLayout(name)
+    render_view = pvplot.plot_render_view_3d(
+        solution,
+        layout,
+        plot_properties.quantity_name(quantity, prefix=prefix),
+        value_range=value_range,
+        log_scale=log_scale,
+        plot_properties=plot_properties,
+    )
+
+    if show_time:
+        pvplot.display_time(render_view, plot_properties=plot_properties)
+
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
+    if save_animation:
+        pvplot.save_animation(layout, results_folder, name, plot_properties)
+
+    # Exit preview mode
+    # layout.PreviewMode = [0, 0]
+    return layout, render_view
+
+
 def plot_quantities_over_x(
     solution: paraview.servermanager.SourceProxy,
     results_folder: str,
