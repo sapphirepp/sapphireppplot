@@ -111,6 +111,7 @@ def plot_render_view_2d(
     quantity: str,
     value_range: Optional[list[float]] = None,
     log_scale: bool = False,
+    camera_direction: Optional[list[float]] = None,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
@@ -129,6 +130,8 @@ def plot_render_view_2d(
         and maximal (``value_range[1]``) value for the color bar.
     log_scale
         Use a logarithmic color scale?
+    camera_direction
+        Direction of the camera.
     plot_properties
         Properties for plotting like the labels.
 
@@ -136,6 +139,11 @@ def plot_render_view_2d(
     -------
     render_view : RenderViewProxy
         The configured 2D render view.
+
+    See Also
+    --------
+    :pv:`paraview.simple.ResetCameraToDirection <paraview.simple.html#paraview.simple.ResetCameraToDirection>` :
+        ParaView method to set camera direction.
     """
     # Create a new 'Render View'
     render_view = ps.CreateView("RenderView")
@@ -161,6 +169,8 @@ def plot_render_view_2d(
 
     # update the view to ensure updated data information
     render_view.Update()
+
+    ps.ResetCameraToDirection(direction=camera_direction, view=render_view)
 
     # reset view to fit data
     render_view.ResetCamera(*plot_properties.camera_view_2d)
@@ -188,13 +198,10 @@ def plot_render_view_2d(
     # update the view to ensure updated data information
     render_view.Update()
 
-    # ----------------------
-    # Create color bar plot
-    # ----------------------
-
     # set scalar coloring
     ps.ColorBy(solution_display, (plot_properties.data_type, quantity))
 
+    # region Configure color bar
     # show color bar/color legend
     solution_display.SetScalarBarVisibility(render_view, True)
 
@@ -230,6 +237,7 @@ def plot_render_view_2d(
         color_bar.Title = quantity
     color_bar_visible = plot_properties.configure_color_bar(color_bar)
     solution_display.SetScalarBarVisibility(render_view, color_bar_visible)
+    # endregion
 
     return render_view
 
@@ -240,6 +248,7 @@ def plot_render_view_3d(
     quantity: str,
     value_range: Optional[list[float]] = None,
     log_scale: bool = False,
+    camera_direction: Optional[list[float]] = None,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
@@ -258,6 +267,9 @@ def plot_render_view_3d(
         and maximal (``value_range[1]``) value for the color bar.
     log_scale
         Use a logarithmic color scale?
+    camera_direction
+        Direction of the camera.
+        Uses isometric view by default.
     plot_properties
         Properties for plotting like the labels.
 
@@ -265,6 +277,11 @@ def plot_render_view_3d(
     -------
     render_view : RenderViewProxy
         The configured 3D render view.
+
+    See Also
+    --------
+    :pv:`paraview.simple.ResetCameraToDirection <paraview.simple.html#paraview.simple.ResetCameraToDirection>` :
+        ParaView method to set camera direction.
     """
     # Create a new 'Render View'
     render_view = ps.CreateView("RenderView")
@@ -291,7 +308,10 @@ def plot_render_view_3d(
     # update the view to ensure updated data information
     render_view.Update()
 
-    render_view.ApplyIsometricView()
+    if camera_direction:
+        ps.ResetCameraToDirection(direction=camera_direction, view=render_view)
+    else:
+        render_view.ApplyIsometricView()
 
     # reset view to fit data
     render_view.ResetCamera(*plot_properties.camera_view_3d)
@@ -319,13 +339,10 @@ def plot_render_view_3d(
     # update the view to ensure updated data information
     render_view.Update()
 
-    # ----------------------
-    # Create color bar plot
-    # ----------------------
-
     # set scalar coloring
     ps.ColorBy(solution_display, (plot_properties.data_type, quantity))
 
+    # region Configure color bar
     # show color bar/color legend
     solution_display.SetScalarBarVisibility(render_view, True)
 
@@ -361,6 +378,7 @@ def plot_render_view_3d(
         color_bar.Title = quantity
     color_bar_visible = plot_properties.configure_color_bar(color_bar)
     solution_display.SetScalarBarVisibility(render_view, color_bar_visible)
+    # endregion
 
     return render_view
 
@@ -400,6 +418,10 @@ def show_stream_tracer(
     -------
     render_view : RenderViewProxy
         The configured 2D render view.
+
+    See Also
+    --------
+    sapphireppplot.transform.stream_tracer : Create stream tracer.
     """
     # set active view
     ps.SetActiveView(render_view)
@@ -411,16 +433,13 @@ def show_stream_tracer(
     # update the view to ensure updated data information
     render_view.Update()
 
-    # ----------------------
-    # Create color bar plot
-    # ----------------------
-
     # set scalar coloring
     ps.ColorBy(solution_display, (plot_properties.data_type, quantity))
 
     if quantity is None:
         return render_view
 
+    # region Configure color bar
     # show color bar/color legend
     solution_display.SetScalarBarVisibility(render_view, True)
 
@@ -456,6 +475,7 @@ def show_stream_tracer(
         color_bar.Title = quantity
     plot_properties.configure_color_bar(color_bar)
     solution_display.SetScalarBarVisibility(render_view, color_bar_visible)
+    # endregion
 
     return render_view
 

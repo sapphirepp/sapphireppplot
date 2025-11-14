@@ -30,6 +30,11 @@ class PlotProperties:
     The view for 2D render view.
     Can be any kind and number of arguments
     that will be passed to the ``render_view.ResetCamera()`` method.
+
+    See Also
+    --------
+    :pv:`paraview.simple.ResetCamera <paraview.simple.html#paraview.simple.ResetCamera>` :
+        ParaView method to reset camera view.
     """
     preview_size_3d: list[float] = field(default_factory=lambda: [1024, 1024])
     """Preview window size in 3D."""
@@ -40,6 +45,11 @@ class PlotProperties:
     The view for 3D render view.
     Can be any kind and number of arguments
     that will be passed to the ``render_view.ResetCamera()`` method.
+
+    See Also
+    --------
+    :pv:`paraview.simple.ResetCamera <paraview.simple.html#paraview.simple.ResetCamera>` :
+        ParaView method to reset camera view.
     """
 
     screenshot_transparent_background: bool = True
@@ -290,19 +300,24 @@ class PlotProperties:
         render_view.AxesGrid.Visibility = 1
         render_view.AxesGrid.XTitle = self.grid_labels[0]
         render_view.AxesGrid.YTitle = self.grid_labels[1] + "  "
+        render_view.AxesGrid.ZTitle = self.grid_labels[2] + "  "
         # Only show Axes Min-X//Y/Z
         render_view.AxesGrid.AxesToLabel = 7
         # render_view.AxesGrid.FacesToRender = 7
         # Set default font size
         render_view.AxesGrid.XTitleFontSize = self.text_size
         render_view.AxesGrid.YTitleFontSize = self.text_size
+        render_view.AxesGrid.ZTitleFontSize = self.text_size
         render_view.AxesGrid.XLabelFontSize = self.label_size
         render_view.AxesGrid.YLabelFontSize = self.label_size
+        render_view.AxesGrid.ZLabelFontSize = self.label_size
         # Use gray color for label for good visibility in both light and dark mode
         render_view.AxesGrid.XTitleColor = self.grid_color
         render_view.AxesGrid.YTitleColor = self.grid_color
+        render_view.AxesGrid.ZTitleColor = self.grid_color
         render_view.AxesGrid.XLabelColor = self.grid_color
         render_view.AxesGrid.YLabelColor = self.grid_color
+        render_view.AxesGrid.ZLabelColor = self.grid_color
         render_view.AxesGrid.GridColor = self.grid_color
         # scale axes
         solution_display.Scale = self.axes_stretch

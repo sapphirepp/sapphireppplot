@@ -22,6 +22,7 @@ dx
 f0
 f1
 f2
+FFT
 func
 hd
 inj
@@ -38,6 +39,15 @@ rg
 tmp
 vec
 x0
+xx
+xy
+xz
+yx
+yy
+yz
+zx
+zy
+zz
 
 # ParaView
 AxesGrid

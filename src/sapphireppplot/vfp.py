@@ -383,6 +383,7 @@ def plot_f_lms_2d(
     prefix: str = "",
     value_range: Optional[list[float]] = None,
     log_scale: bool = True,
+    camera_direction: Optional[list[float]] = None,
     show_time: bool = False,
     save_animation: bool = False,
 ) -> tuple[
@@ -410,6 +411,8 @@ def plot_f_lms_2d(
         and maximal (``value_range[1]``) value for the y-axes.
     log_scale
         Use a logarithmic color scale?
+    camera_direction
+        Direction of the camera.
     show_time
         Display the simulation time in the render view.
     save_animation
@@ -440,6 +443,7 @@ def plot_f_lms_2d(
         plot_properties.f_lms_name(lms_index, prefix=prefix),
         value_range=value_range,
         log_scale=log_scale,
+        camera_direction=camera_direction,
         plot_properties=plot_properties,
     )
 
@@ -462,6 +466,7 @@ def plot_f_lms_3d(
     prefix: str = "",
     value_range: Optional[list[float]] = None,
     log_scale: bool = True,
+    camera_direction: Optional[list[float]] = None,
     show_time: bool = False,
     save_animation: bool = False,
 ) -> tuple[
@@ -489,6 +494,8 @@ def plot_f_lms_3d(
         and maximal (``value_range[1]``) value for the y-axes.
     log_scale
         Use a logarithmic color scale?
+    camera_direction
+        Direction of the camera.
     show_time
         Display the simulation time in the render view.
     save_animation
@@ -519,6 +526,7 @@ def plot_f_lms_3d(
         plot_properties.f_lms_name(lms_index, prefix=prefix),
         value_range=value_range,
         log_scale=log_scale,
+        camera_direction=camera_direction,
         plot_properties=plot_properties,
     )
 
