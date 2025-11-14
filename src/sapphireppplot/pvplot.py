@@ -137,7 +137,7 @@ def plot_render_view_2d(
     render_view : RenderViewProxy
         The configured 2D render view.
     """
-    # Create a new 'Line Chart View'
+    # Create a new 'Render View'
     render_view = ps.CreateView("RenderView")
 
     # assign view to a particular cell in the layout
@@ -184,6 +184,137 @@ def plot_render_view_2d(
 
     # reset view to fit data
     render_view.ResetCamera(*plot_properties.camera_view_2d)
+
+    # update the view to ensure updated data information
+    render_view.Update()
+
+    # ----------------------
+    # Create color bar plot
+    # ----------------------
+
+    # set scalar coloring
+    ps.ColorBy(solution_display, (plot_properties.data_type, quantity))
+
+    # show color bar/color legend
+    solution_display.SetScalarBarVisibility(render_view, True)
+
+    # get color transfer function/color map
+    transfer_color = ps.GetColorTransferFunction(quantity)
+    # get opacity transfer function/opacity map
+    transfer_opacity = ps.GetOpacityTransferFunction(quantity)
+    # get 2D transfer function
+    transfer_function = ps.GetTransferFunction2D(quantity)
+
+    # Rescale transfer function
+    if value_range:
+        transfer_color.RescaleTransferFunction(value_range[0], value_range[1])
+        transfer_opacity.RescaleTransferFunction(value_range[0], value_range[1])
+        transfer_function.RescaleTransferFunction(
+            value_range[0], value_range[1], 0.0, 1.0
+        )
+
+    # convert to log space
+    if log_scale:
+        transfer_color.MapControlPointsToLogSpace()
+        transfer_color.UseLogScale = 1
+
+    transfer_color.ApplyPreset(plot_properties.color_map, True)
+
+    # get color bar
+    color_bar = ps.GetScalarBar(transfer_color, render_view)
+
+    # Properties modified on color_bar
+    if quantity in plot_properties.labels.keys():
+        color_bar.Title = plot_properties.labels[quantity]
+    else:
+        color_bar.Title = quantity
+    color_bar_visible = plot_properties.configure_color_bar(color_bar)
+    solution_display.SetScalarBarVisibility(render_view, color_bar_visible)
+
+    return render_view
+
+
+def plot_render_view_3d(
+    solution: paraview.servermanager.SourceProxy,
+    layout: paraview.servermanager.ViewLayoutProxy,
+    quantity: str,
+    value_range: Optional[list[float]] = None,
+    log_scale: bool = False,
+    plot_properties: PlotProperties = PlotProperties(),
+) -> paraview.servermanager.Proxy:
+    """
+    Create and configure 3D render view in ParaView.
+
+    Parameters
+    ----------
+    solution
+        The data source to visualize, typically a ParaView data object.
+    layout
+        ParaView layout to use for the plot.
+    quantity
+        Name of the quantity to plot.
+    value_range
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the color bar.
+    log_scale
+        Use a logarithmic color scale?
+    plot_properties
+        Properties for plotting like the labels.
+
+    Returns
+    -------
+    render_view : RenderViewProxy
+        The configured 3D render view.
+    """
+    # Create a new 'Render View'
+    render_view = ps.CreateView("RenderView")
+
+    # assign view to a particular cell in the layout
+    ps.AssignViewToLayout(view=render_view, layout=layout, hint=0)
+
+    # set active view
+    ps.SetActiveView(render_view)
+    # set active source
+    ps.SetActiveSource(solution)
+
+    # show data in view
+    solution_display = ps.Show(
+        solution, render_view, "UnstructuredGridRepresentation"
+    )
+    # Enter preview mode
+    layout.PreviewMode = plot_properties.preview_size_3d
+    # layout/tab size in pixels
+    layout.SetSize(
+        plot_properties.preview_size_3d[0], plot_properties.preview_size_3d[1]
+    )
+
+    # update the view to ensure updated data information
+    render_view.Update()
+
+    render_view.ApplyIsometricView()
+
+    # reset view to fit data
+    render_view.ResetCamera(*plot_properties.camera_view_3d)
+
+    # Hide orientation axes
+    render_view.OrientationAxesVisibility = 0
+
+    # changing interaction mode based on data extents
+    render_view.InteractionMode = "3D"
+
+    # Properties modified on render_view
+    render_view.UseColorPaletteForBackground = 0
+    render_view.BackgroundColorMode = "Single Color"
+    render_view.Background = [1.0, 1.0, 1.0]
+
+    # Properties modified on solution_display
+    solution_display.DisableLighting = 1
+    solution_display.Diffuse = 1.0
+
+    plot_properties.configure_grid_3d(render_view, solution_display)
+
+    # reset view to fit data
+    render_view.ResetCamera(*plot_properties.camera_view_3d)
 
     # update the view to ensure updated data information
     render_view.Update()

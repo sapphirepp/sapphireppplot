@@ -31,6 +31,16 @@ class PlotProperties:
     Can be any kind and number of arguments
     that will be passed to the ``render_view.ResetCamera()`` method.
     """
+    preview_size_3d: list[float] = field(default_factory=lambda: [1024, 1024])
+    """Preview window size in 3D."""
+    camera_view_3d: tuple[bool, float] | Any = field(
+        default_factory=lambda: (False, 0.9)
+    )
+    """
+    The view for 3D render view.
+    Can be any kind and number of arguments
+    that will be passed to the ``render_view.ResetCamera()`` method.
+    """
 
     screenshot_transparent_background: bool = True
     """Use a transparent background for screenshots?"""
@@ -293,6 +303,54 @@ class PlotProperties:
         render_view.AxesGrid.YTitleColor = self.grid_color
         render_view.AxesGrid.XLabelColor = self.grid_color
         render_view.AxesGrid.YLabelColor = self.grid_color
+        render_view.AxesGrid.GridColor = self.grid_color
+        # scale axes
+        solution_display.Scale = self.axes_stretch
+        render_view.AxesGrid.DataScale = [
+            self.axes_stretch[0] * self.axes_scale[0],
+            self.axes_stretch[1] * self.axes_scale[1],
+            self.axes_stretch[2] * self.axes_scale[2],
+        ]
+
+    def configure_grid_3d(
+        self,
+        render_view: paraview.servermanager.Proxy,
+        solution_display: paraview.servermanager.Proxy,
+    ) -> None:
+        """
+        Configure display properties to show the grid in 3d.
+
+        Parameters
+        ----------
+        render_view
+            Render view.
+        solution_display
+            Solution display.
+        """
+        if self.show_grid:
+            solution_display.SetRepresentationType("Surface With Edges")
+        render_view.AxesGrid.Visibility = 1
+        render_view.AxesGrid.XTitle = self.grid_labels[0]
+        render_view.AxesGrid.YTitle = " " + self.grid_labels[1] + "  "
+        render_view.AxesGrid.ZTitle = " " + self.grid_labels[2] + " "
+        # Show all Axes Min/Max-X//Y/Z
+        render_view.AxesGrid.AxesToLabel = 63
+        # render_view.AxesGrid.FacesToRender = 63
+        render_view.AxesGrid.LabelUniqueEdgesOnly = 1
+        # Set default font size
+        render_view.AxesGrid.XTitleFontSize = self.text_size
+        render_view.AxesGrid.YTitleFontSize = self.text_size
+        render_view.AxesGrid.ZTitleFontSize = self.text_size
+        render_view.AxesGrid.XLabelFontSize = self.label_size
+        render_view.AxesGrid.YLabelFontSize = self.label_size
+        render_view.AxesGrid.ZLabelFontSize = self.label_size
+        # Use gray color for label for good visibility in both light and dark mode
+        render_view.AxesGrid.XTitleColor = self.grid_color
+        render_view.AxesGrid.YTitleColor = self.grid_color
+        render_view.AxesGrid.ZTitleColor = self.grid_color
+        render_view.AxesGrid.XLabelColor = self.grid_color
+        render_view.AxesGrid.YLabelColor = self.grid_color
+        render_view.AxesGrid.ZLabelColor = self.grid_color
         render_view.AxesGrid.GridColor = self.grid_color
         # scale axes
         solution_display.Scale = self.axes_stretch
