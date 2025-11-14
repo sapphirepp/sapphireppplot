@@ -198,6 +198,61 @@ def plot_over_line(
     return plot_over_line_source
 
 
+def slice_plane(
+    solution: paraview.servermanager.SourceProxy,
+    normal: list[float],
+    origin: Optional[list[float]] = None,
+    plot_properties: PlotProperties = PlotProperties(),  # noqa: U100
+) -> paraview.servermanager.SourceProxy:
+    """
+    Slice a 2D plane from a 3D solution.
+
+    Parameters
+    ----------
+    solution
+        The data source.
+    normal
+        Normal of the plane.
+    origin
+        Origin of the plane.
+        Defaults to ``[0, 0, 0]``.
+    plot_properties
+        Properties of the solution.
+
+    Returns
+    -------
+    slice_plane : SourceProxy
+        The 2D slice of the solution.
+
+    See Also
+    --------
+    :ps:`Slice` : ParaView Slice filter.
+
+    Note
+    ----
+    When using the
+    :py:func:`sapphireppplot.pvplot.plot_render_view_2d`
+    function to visualize the slice,
+    the ``camera_direction`` parameter can be used
+    to adjust set the view in the ``normal`` direction.
+    """
+    if origin is None:
+        origin = [0.0, 0.0, 0.0]
+
+    # create a new 'Slice'
+    sliced_plane = ps.Slice(registrationName="SlicePlane", Input=solution)
+
+    sliced_plane.SliceType.Normal = normal
+    sliced_plane.SliceType.Origin = origin
+    # Use small offset to ensure data is within slice plane
+    sliced_plane.SliceType.Offset = _epsilon_d
+
+    ps.HideInteractiveWidgets(proxy=sliced_plane.SliceType)
+    sliced_plane.UpdatePipeline()
+
+    return sliced_plane
+
+
 def plot_over_time(
     solution: paraview.servermanager.SourceProxy,
     point: list[float],
