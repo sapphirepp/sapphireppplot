@@ -380,8 +380,8 @@ def plot_f_lms_2d(
     name: str,
     plot_properties: PlotPropertiesVFP,
     lms_index: Optional[list[int]] = None,
-    value_range: Optional[list[float]] = None,
     prefix: str = "",
+    value_range: Optional[list[float]] = None,
     log_scale: bool = True,
     show_time: bool = False,
     save_animation: bool = False,
@@ -404,7 +404,7 @@ def plot_f_lms_2d(
     lms_index
         The index ``[l,m,s]`` to plot.
     prefix
-        Prefix.
+        Prefix for quantity name.
     value_range
         Minimal (``value_range[0]``)
         and maximal (``value_range[1]``) value for the y-axes.
@@ -429,6 +429,8 @@ def plot_f_lms_2d(
     """
     if lms_index is None:
         lms_index = [0, 0, 0]
+    if plot_properties.prefix_numeric and prefix == "":
+        prefix = "numeric_"
 
     # create new layout object
     layout = ps.CreateLayout(name)

@@ -453,6 +453,7 @@ def plot_quantity_2d(
     quantity: str,
     name: str,
     plot_properties: PlotPropertiesMHD,
+    prefix: str = "",
     value_range: Optional[list[float]] = None,
     log_scale: bool = False,
     show_time: bool = False,
@@ -475,6 +476,8 @@ def plot_quantity_2d(
         Properties for plotting.
     name
         Name of the layout and image/animation files.
+    prefix
+        Prefix for quantity name.
     value_range
         Minimal (``value_range[0]``)
         and maximal (``value_range[1]``) value for the y-axes.
@@ -497,12 +500,15 @@ def plot_quantity_2d(
     sapphireppplot.pvplot.plot_render_view_2d : Plot 2D RenderView.
     sapphireppplot.pvplot.display_time : Display time.
     """
+    if plot_properties.prefix_numeric and prefix == "":
+        prefix = "numeric_"
+
     # create new layout object
     layout = ps.CreateLayout(name)
     render_view = pvplot.plot_render_view_2d(
         solution,
         layout,
-        plot_properties.quantity_name(quantity),
+        plot_properties.quantity_name(quantity, prefix=prefix),
         value_range=value_range,
         log_scale=log_scale,
         plot_properties=plot_properties,
