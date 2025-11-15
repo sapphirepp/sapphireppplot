@@ -70,12 +70,12 @@ def to_numpy_1d(
     return x_values, data
 
 
-def to_numpy_2d(
+def to_numpy_point_list(
     solution: paraview.servermanager.SourceProxy,
     array_names: list[str],
 ) -> tuple[np.ndarray, np.ndarray]:
     """
-    Convert 2D data to a numpy array with the data evaluated at the cell centers.
+    Convert data to a numpy arrays with the data evaluated at the cell centers.
 
     Parameters
     ----------
@@ -87,13 +87,12 @@ def to_numpy_2d(
     Returns
     -------
     points : np.ndarray
-        The x/y/z-values of the points organized in a 2D grid:
-        ``points[i][j] = [x, y, z]``.
-        Sorted so that ``x`` corresponds to ``i`` and ``y`` to ``j``.
+        The x/y/z-values of the points as a list:
+        ``points[i] = [x, y, z]``.
     data : np.ndarray
-        3D array ``data[c][i][j]`` with the data from the solution.
+        2D array ``data[c][i]`` with the data from the solution.
         The first index ``c`` corresponds to ``array_names[c]``,
-        the second index and third corresponds to ``points[i][j]``.
+        the second index to the point ``points[i]``.
 
     See Also
     --------
@@ -132,8 +131,42 @@ def to_numpy_2d(
         array_vtk = cell_values_data.GetCellData().GetArray(array_name)
         # Convert data to numpy array
         array = numpy_support.vtk_to_numpy(array_vtk)
-        # Filter out masked data
+        # Sort data
         data[i] = array[sorted_indices]
+
+    return points, data
+
+
+def to_numpy_2d(
+    solution: paraview.servermanager.SourceProxy,
+    array_names: list[str],
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Convert 2D data to a numpy array with the data evaluated at the cell centers.
+
+    Parameters
+    ----------
+    solution
+        ParaView solution data.
+    array_names
+        List of array names that should be extracted.
+
+    Returns
+    -------
+    points : np.ndarray
+        The x/y/z-values of the points organized in a 2D grid:
+        ``points[i][j] = [x, y, z]``.
+        Sorted so that ``x`` corresponds to ``i`` and ``y`` to ``j``.
+    data : np.ndarray
+        3D array ``data[c][i][j]`` with the data from the solution.
+        The first index ``c`` corresponds to ``array_names[c]``,
+        the second index and third corresponds to ``points[i][j]``.
+
+    See Also
+    --------
+    to_numpy_point_list : Get numpy arrays of data as point list.
+    """
+    points, data = to_numpy_point_list(solution, array_names)
 
     # Reshape arrays to 2D arrays
     indices_x = np.argwhere(points[:, 1] == points[0, 1])  # y constant
@@ -142,5 +175,57 @@ def to_numpy_2d(
     size_y = indices_y.shape[0]
     points = points.reshape((size_x, size_y, 3))
     data = data.reshape((len(array_names), size_x, size_y))
+
+    return points, data
+
+
+def to_numpy_3d(
+    solution: paraview.servermanager.SourceProxy,
+    array_names: list[str],
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Convert 3D data to a numpy array with the data evaluated at the cell centers.
+
+    Parameters
+    ----------
+    solution
+        ParaView solution data.
+    array_names
+        List of array names that should be extracted.
+
+    Returns
+    -------
+    points : np.ndarray
+        The x/y/z-values of the points organized in a 3D grid:
+        ``points[i][j][k] = [x, y, z]``.
+        Sorted so that ``x`` corresponds to ``i``,
+        ``y`` to ``j``
+        and ``z`` to ``k``.
+    data : np.ndarray
+        4D array ``data[c][i][j][k]`` with the data from the solution.
+        The first index ``c`` corresponds to ``array_names[c]``,
+        the second, third and forth index corresponds to ``points[i][j][k]``.
+
+    See Also
+    --------
+    to_numpy_point_list : Get numpy arrays of data as point list.
+    """
+    points, data = to_numpy_point_list(solution, array_names)
+
+    # Reshape arrays to 2D arrays
+    indices_x = np.argwhere(
+        (points[:, 1] == points[0, 1]) & (points[:, 2] == points[0, 2])
+    )  # y,z constant
+    indices_y = np.argwhere(
+        (points[:, 0] == points[0, 0]) & (points[:, 2] == points[0, 2])
+    )  # x,z constant
+    indices_z = np.argwhere(
+        (points[:, 0] == points[0, 0]) & (points[:, 1] == points[0, 1])
+    )  # y,z constant
+    size_x = indices_x.shape[0]
+    size_y = indices_y.shape[0]
+    size_z = indices_z.shape[0]
+    points = points.reshape((size_x, size_y, size_z, 3))
+    data = data.reshape((len(array_names), size_x, size_y, size_z))
 
     return points, data
