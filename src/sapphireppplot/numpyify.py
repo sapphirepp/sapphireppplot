@@ -229,3 +229,100 @@ def to_numpy_3d(
     data = data.reshape((len(array_names), size_x, size_y, size_z))
 
     return points, data
+
+
+def to_numpy_time_steps(
+    solution: paraview.servermanager.SourceProxy,
+    array_names: list[str],
+    time_steps: Optional[list[float]] = None,
+) -> tuple[list[float], list[np.ndarray], list[np.ndarray]]:
+    """
+    Retrieve data at given time steps and converts them to cell-centred numpy arrays.
+
+    Makes no assumption on the grid.
+    It can be irregular and change over time.
+
+    Parameters
+    ----------
+    solution
+        ParaView solution data.
+    array_names
+        List of array names that should be extracted.
+    time_steps
+        List of time steps to extract the data.
+        Defaults to using all time steps.
+
+    Returns
+    -------
+    time_steps : list[float]
+        The time steps:
+        ``time_steps[t] = time``
+        where ``t`` is the index of the time step.
+    points : list[np.ndarray]
+        The x/y/z-values of the points as a list at time ``t``:
+        ``points[t][i] = [x, y, z]``.
+    data : list[np.ndarray]
+        List of 2D arrays ``data[t][c][i]`` with the data from the solution.
+        The first index corresponds to ``time_step[t]``,
+        the second index ``c`` to ``array_names[c]``,
+        the third index to the point ``points[t][i]``.
+
+    See Also
+    --------
+    :ps:`CellCenters` :
+        ParaView CellCenters filter.
+    :ps:`PointDatatoCellData` :
+        ParaView PointDatatoCellData filter.
+    :pv:`paraview.simple.proxy.UpdatePipeline <paraview.simple.proxy.html#paraview.simple.proxy.UpdatePipeline>` :
+        ParaView method to set the time.
+    """
+    if not time_steps:
+        time_steps = solution.TimestepValues
+
+    # create a new 'Cell Centers'
+    cell_centers = ps.CellCenters(
+        registrationName="CellCenters", Input=solution
+    )
+
+    # create a new 'Point Data to Cell Data'
+    cell_values = ps.PointDatatoCellData(
+        registrationName="PointDatatoCellData", Input=solution
+    )
+
+    points_array = [np.empty(0)] * len(time_steps)
+    data_array = [np.empty(0)] * len(time_steps)
+    for i, time in enumerate(time_steps):
+        # Set to time
+        # animation_scene.AnimationTime = time
+        cell_centers.UpdatePipeline(time=time)
+        cell_values.UpdatePipeline(time=time)
+
+        # Fetch the data from the cell_centers object
+        cell_center_data = paraview.servermanager.Fetch(cell_centers)
+
+        # Get the point array
+        points_vtk = cell_center_data.GetPoints()
+        # Convert points to numpy array
+        points = numpy_support.vtk_to_numpy(points_vtk.GetData())
+
+        # Sort arrays according to x,y,z coordinate
+        sorted_indices = np.lexsort((points[:, 2], points[:, 1], points[:, 0]))
+        points = points[sorted_indices]
+
+        # Fetch the data from the cell_values object
+        cell_values_data = paraview.servermanager.Fetch(cell_values)
+
+        data = np.empty((len(array_names), points.shape[0]))
+
+        for j, array_name in enumerate(array_names):
+            # Get the data array
+            array_vtk = cell_values_data.GetCellData().GetArray(array_name)
+            # Convert data to numpy array
+            array = numpy_support.vtk_to_numpy(array_vtk)
+            # Sort data
+            data[j] = array[sorted_indices]
+
+        points_array[i] = points
+        data_array[i] = data
+
+    return time_steps, points_array, data_array
