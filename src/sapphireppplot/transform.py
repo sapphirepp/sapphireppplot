@@ -87,7 +87,7 @@ def plot_over_line(
             max_x = solution_bounds[1]
             if x_range:
                 min_x = x_range[0]
-                max_y = x_range[1]
+                max_x = x_range[1]
             plot_over_line_source.Point1 = [min_x, offset[1], offset[2]]
             plot_over_line_source.Point2 = [max_x, offset[1], offset[2]]
         case "y":
