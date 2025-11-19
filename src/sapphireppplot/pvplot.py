@@ -198,19 +198,34 @@ def plot_render_view_2d(
     # update the view to ensure updated data information
     render_view.Update()
 
+    vec_component = ""
+    base_quantity = quantity
+    if quantity.endswith("_X"):
+        vec_component = "X"
+        base_quantity = quantity.removesuffix("_X")
+    if quantity.endswith("_Y"):
+        vec_component = "Y"
+        base_quantity = quantity.removesuffix("_Y")
+    if quantity.endswith("_Z"):
+        vec_component = "Z"
+        base_quantity = quantity.removesuffix("_Z")
+
     # set scalar coloring
-    ps.ColorBy(solution_display, (plot_properties.data_type, quantity))
+    ps.ColorBy(
+        solution_display,
+        (plot_properties.data_type, base_quantity, vec_component),
+    )
 
     # region Configure color bar
     # show color bar/color legend
     solution_display.SetScalarBarVisibility(render_view, True)
 
     # get color transfer function/color map
-    transfer_color = ps.GetColorTransferFunction(quantity)
+    transfer_color = ps.GetColorTransferFunction(base_quantity)
     # get opacity transfer function/opacity map
-    transfer_opacity = ps.GetOpacityTransferFunction(quantity)
+    transfer_opacity = ps.GetOpacityTransferFunction(base_quantity)
     # get 2D transfer function
-    transfer_function = ps.GetTransferFunction2D(quantity)
+    transfer_function = ps.GetTransferFunction2D(base_quantity)
 
     # Rescale transfer function
     if value_range:
@@ -235,6 +250,7 @@ def plot_render_view_2d(
         color_bar.Title = plot_properties.labels[quantity]
     else:
         color_bar.Title = quantity
+    color_bar.ComponentTitle = ""
     color_bar_visible = plot_properties.configure_color_bar(color_bar)
     solution_display.SetScalarBarVisibility(render_view, color_bar_visible)
     # endregion
@@ -339,19 +355,34 @@ def plot_render_view_3d(
     # update the view to ensure updated data information
     render_view.Update()
 
+    vec_component = ""
+    base_quantity = quantity
+    if quantity.endswith("_X"):
+        vec_component = "X"
+        base_quantity = quantity.removesuffix("_X")
+    if quantity.endswith("_Y"):
+        vec_component = "Y"
+        base_quantity = quantity.removesuffix("_Y")
+    if quantity.endswith("_Z"):
+        vec_component = "Z"
+        base_quantity = quantity.removesuffix("_Z")
+
     # set scalar coloring
-    ps.ColorBy(solution_display, (plot_properties.data_type, quantity))
+    ps.ColorBy(
+        solution_display,
+        (plot_properties.data_type, base_quantity, vec_component),
+    )
 
     # region Configure color bar
     # show color bar/color legend
     solution_display.SetScalarBarVisibility(render_view, True)
 
     # get color transfer function/color map
-    transfer_color = ps.GetColorTransferFunction(quantity)
+    transfer_color = ps.GetColorTransferFunction(base_quantity)
     # get opacity transfer function/opacity map
-    transfer_opacity = ps.GetOpacityTransferFunction(quantity)
+    transfer_opacity = ps.GetOpacityTransferFunction(base_quantity)
     # get 2D transfer function
-    transfer_function = ps.GetTransferFunction2D(quantity)
+    transfer_function = ps.GetTransferFunction2D(base_quantity)
 
     # Rescale transfer function
     if value_range:
@@ -376,6 +407,7 @@ def plot_render_view_3d(
         color_bar.Title = plot_properties.labels[quantity]
     else:
         color_bar.Title = quantity
+    color_bar.ComponentTitle = ""
     color_bar_visible = plot_properties.configure_color_bar(color_bar)
     solution_display.SetScalarBarVisibility(render_view, color_bar_visible)
     # endregion
