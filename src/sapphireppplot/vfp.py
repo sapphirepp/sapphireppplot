@@ -249,6 +249,10 @@ def merge_input_function_vectors(
     plot_properties.line_styles[prefix + "B"] = plot_properties.line_styles[
         prefix + "B_x"
     ]
+    plot_properties.labels[prefix + "B_Magnitude"] = r"$\|B\|$"
+    plot_properties.line_styles[prefix + "B_Magnitude"] = (
+        plot_properties.line_styles[prefix + "B_x"]
+    )
 
     merge_vector_components_b.UpdatePipeline()
 
@@ -265,6 +269,10 @@ def merge_input_function_vectors(
     plot_properties.line_styles[prefix + "u"] = plot_properties.line_styles[
         prefix + "u_x"
     ]
+    plot_properties.labels[prefix + "u_Magnitude"] = r"$\|u\|$"
+    plot_properties.line_styles[prefix + "u_Magnitude"] = (
+        plot_properties.line_styles[prefix + "u_x"]
+    )
 
     merge_vector_components_u.UpdatePipeline()
 

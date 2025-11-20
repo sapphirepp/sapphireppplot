@@ -95,6 +95,7 @@ normpath
 pylint
 region
 removeprefix
+removesuffix
 scipy
 
 # numpy

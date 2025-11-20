@@ -200,13 +200,16 @@ def plot_render_view_2d(
 
     vec_component = ""
     base_quantity = quantity
-    if quantity.endswith("_X"):
+    if quantity.endswith("_Magnitude"):
+        vec_component = "Magnitude"
+        base_quantity = quantity.removesuffix("_Magnitude")
+    elif quantity.endswith("_X"):
         vec_component = "X"
         base_quantity = quantity.removesuffix("_X")
-    if quantity.endswith("_Y"):
+    elif quantity.endswith("_Y"):
         vec_component = "Y"
         base_quantity = quantity.removesuffix("_Y")
-    if quantity.endswith("_Z"):
+    elif quantity.endswith("_Z"):
         vec_component = "Z"
         base_quantity = quantity.removesuffix("_Z")
 
@@ -357,13 +360,16 @@ def plot_render_view_3d(
 
     vec_component = ""
     base_quantity = quantity
-    if quantity.endswith("_X"):
+    if quantity.endswith("_Magnitude"):
+        vec_component = "Magnitude"
+        base_quantity = quantity.removesuffix("_Magnitude")
+    elif quantity.endswith("_X"):
         vec_component = "X"
         base_quantity = quantity.removesuffix("_X")
-    if quantity.endswith("_Y"):
+    elif quantity.endswith("_Y"):
         vec_component = "Y"
         base_quantity = quantity.removesuffix("_Y")
-    if quantity.endswith("_Z"):
+    elif quantity.endswith("_Z"):
         vec_component = "Z"
         base_quantity = quantity.removesuffix("_Z")
 
