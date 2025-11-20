@@ -94,6 +94,11 @@ def to_numpy_point_list(
         The first index ``c`` corresponds to ``array_names[c]``,
         the second index to the point ``points[i]``.
 
+    Raises
+    ------
+    KeyError
+        Throws an error if the ``array_name`` is not available.
+
     See Also
     --------
     :ps:`CellCenters` : ParaView CellCenters filter.
@@ -273,6 +278,11 @@ def to_numpy_time_steps(
     time_steps
         List of time steps to extract the data.
         Defaults to using all time steps.
+
+    Raises
+    ------
+    KeyError
+        Throws an error if the ``array_name`` is not available.
 
     Returns
     -------
@@ -500,3 +510,114 @@ def to_numpy_time_steps_3d(
     )
 
     return time_steps_out, points, data
+
+
+def to_numpy_integrate_variables(
+    solution: paraview.servermanager.SourceProxy,
+    array_names: list[str],
+    time_steps: Optional[list[float]] = None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Integrate variables over the grid at given time steps and return as numpy arrays.
+
+    Parameters
+    ----------
+    solution
+        ParaView solution data.
+    array_names
+        List of array names that should be integrated and extracted.
+    time_steps
+        List of time steps to extract the data.
+        Defaults to using all time steps.
+
+    Returns
+    -------
+    time_steps : np.ndarray
+        The time steps:
+        ``time_steps[t] = time``
+        where ``t`` is the index of the time step.
+    volume : np.ndarray
+        The volume
+        (length/area/volume in 1D/2D/3D)
+        of the grid at time ``t``.
+    integrated_variables : np.ndarray
+        2D array ``integrated_variables[t][c]`` with the integrated variables.
+        The first index corresponds to ``time_steps[t]``,
+        the second index ``c`` to ``array_names[c]``.
+        The integrated variables are **not** divided by the volume.
+
+    Raises
+    ------
+    KeyError
+        Throws an error if the ``array_name`` is not available.
+
+    See Also
+    --------
+    :ps:`IntegrateVariables` :
+        ParaView IntegrateVariables filter.
+    :pv:`paraview.simple.proxy.UpdatePipeline <paraview.simple.proxy.html#paraview.simple.proxy.UpdatePipeline>` :
+        ParaView method to set the time.
+    """
+    if not time_steps:
+        time_steps = solution.TimestepValues
+    time_steps = np.array(time_steps)
+
+    integrate_variables = ps.IntegrateVariables(
+        registrationName="IntegrateVariables", Input=solution
+    )
+    # Only used for CellData, not Point Data:
+    # integrate_variables.DivideCellDataByVolume = 1
+
+    volume = np.zeros_like(time_steps)
+    integrated_variables = np.zeros(shape=(time_steps.size, len(array_names)))
+
+    for i, time in enumerate(time_steps):
+        # Set to time
+        integrate_variables.UpdatePipeline(time=time)
+
+        # Fetch the data from the integrate_variables object
+        integrate_variables_data = paraview.servermanager.Fetch(
+            integrate_variables
+        )
+
+        # Get the volume
+        volume_vtk = integrate_variables_data.GetCellData().GetAbstractArray(
+            "Volume"
+        )
+        volume[i] = numpy_support.vtk_to_numpy(volume_vtk)[0]
+
+        for j, array_name in enumerate(array_names):
+            vec_component = -1
+            base_array_name = array_name
+            if array_name.endswith("_Magnitude"):
+                raise KeyError(
+                    f"{array_name}: "
+                    "Vector magnitudes can not be extracted to numpy."
+                )
+            if array_name.endswith("_X"):
+                vec_component = 0
+                base_array_name = array_name.removesuffix("_X")
+            elif array_name.endswith("_Y"):
+                vec_component = 1
+                base_array_name = array_name.removesuffix("_Y")
+            elif array_name.endswith("_Z"):
+                vec_component = 2
+                base_array_name = array_name.removesuffix("_Z")
+
+            # Get the data array
+            integrated_value_vtk = (
+                integrate_variables_data.GetPointData().GetAbstractArray(
+                    base_array_name
+                )
+            )
+            # Convert data to numpy array
+            integrated_value = numpy_support.vtk_to_numpy(integrated_value_vtk)[
+                0
+            ]
+            # Select component and sort data
+            if vec_component < 0:
+                integrated_variables[i, j] = integrated_value
+            else:
+                integrated_variables[i, j] = integrated_value[vec_component]
+
+    return time_steps, volume, integrated_variables
