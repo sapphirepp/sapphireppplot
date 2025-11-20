@@ -127,12 +127,34 @@ def to_numpy_point_list(
     data = np.empty((len(array_names), points.shape[0]))
 
     for i, array_name in enumerate(array_names):
+        vec_component = -1
+        base_array_name = array_name
+        if array_name.endswith("_Magnitude"):
+            raise KeyError(
+                f"{array_name}: "
+                "Vector magnitudes can not be extracted to numpy."
+            )
+        if array_name.endswith("_X"):
+            vec_component = 0
+            base_array_name = array_name.removesuffix("_X")
+        elif array_name.endswith("_Y"):
+            vec_component = 1
+            base_array_name = array_name.removesuffix("_Y")
+        elif array_name.endswith("_Z"):
+            vec_component = 2
+            base_array_name = array_name.removesuffix("_Z")
+
         # Get the data array
-        array_vtk = cell_values_data.GetCellData().GetArray(array_name)
+        array_vtk = cell_values_data.GetCellData().GetAbstractArray(
+            base_array_name
+        )
         # Convert data to numpy array
         array = numpy_support.vtk_to_numpy(array_vtk)
-        # Sort data
-        data[i] = array[sorted_indices]
+        # Select component and sort data
+        if vec_component < 0:
+            data[i] = array[sorted_indices]
+        else:
+            data[i] = array[sorted_indices, vec_component]
 
     return points, data
 
@@ -315,12 +337,34 @@ def to_numpy_time_steps(
         data = np.empty((len(array_names), points.shape[0]))
 
         for j, array_name in enumerate(array_names):
+            vec_component = -1
+            base_array_name = array_name
+            if array_name.endswith("_Magnitude"):
+                raise KeyError(
+                    f"{array_name}: "
+                    "Vector magnitudes can not be extracted to numpy."
+                )
+            if array_name.endswith("_X"):
+                vec_component = 0
+                base_array_name = array_name.removesuffix("_X")
+            elif array_name.endswith("_Y"):
+                vec_component = 1
+                base_array_name = array_name.removesuffix("_Y")
+            elif array_name.endswith("_Z"):
+                vec_component = 2
+                base_array_name = array_name.removesuffix("_Z")
+
             # Get the data array
-            array_vtk = cell_values_data.GetCellData().GetArray(array_name)
+            array_vtk = cell_values_data.GetCellData().GetAbstractArray(
+                base_array_name
+            )
             # Convert data to numpy array
             array = numpy_support.vtk_to_numpy(array_vtk)
-            # Sort data
-            data[j] = array[sorted_indices]
+            # Select component and sort data
+            if vec_component < 0:
+                data[j] = array[sorted_indices]
+            else:
+                data[j] = array[sorted_indices, vec_component]
 
         points_array[i] = points
         data_array[i] = data
