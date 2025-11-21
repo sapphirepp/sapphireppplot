@@ -300,21 +300,18 @@ def plot_point_over_time(
     plot_properties.labels = {}
     plot_properties.line_colors = {}
     plot_properties.line_styles = {}
-    for series_name in plot_properties_in.series_names:
-        new_series_name = series_name + " (id=0)"
-        plot_properties.series_names += [new_series_name]
-        if plot_properties_in.labels:
-            plot_properties.labels[new_series_name] = plot_properties_in.labels[
-                series_name
-            ]
-        if plot_properties_in.line_colors:
-            plot_properties.line_colors[new_series_name] = (
-                plot_properties_in.line_colors[series_name]
-            )
-        if plot_properties_in.line_styles:
-            plot_properties.line_styles[new_series_name] = (
-                plot_properties_in.line_styles[series_name]
-            )
+    for key in plot_properties_in.series_names:
+        plot_properties.series_names += [key + " (id=0)"]
+    for key in plot_properties_in.labels.keys():
+        plot_properties.labels[key + " (id=0)"] = plot_properties_in.labels[key]
+    for key in plot_properties_in.line_colors.keys():
+        plot_properties.line_colors[key + " (id=0)"] = (
+            plot_properties_in.line_colors[key]
+        )
+    for key in plot_properties_in.line_styles.keys():
+        plot_properties.line_styles[key + " (id=0)"] = (
+            plot_properties_in.line_styles[key]
+        )
 
     # create a new 'ProbeLocation'
     probe_location_source = ps.ProbeLocation(
@@ -355,8 +352,8 @@ def plot_point_over_time(
         print(f"Save data '{file_path}'")
 
         series_names = ["Point Coordinates", "Time"]
-        if plot_properties.series_names:
-            series_names += plot_properties.series_names
+        if plot_properties_in.series_names:
+            series_names += plot_properties_in.series_names
         if t_axes_scale is not None:
             series_names += ["scaled_t_axes"]
 
@@ -365,7 +362,7 @@ def plot_point_over_time(
             proxy=plot_over_time_source,
             location=PARAVIEW_DATA_SERVER_LOCATION,
             ChooseArraysToWrite=(
-                1 if plot_properties.series_names is not None else 0
+                1 if plot_properties_in.series_names is not None else 0
             ),
             FieldAssociation="Row Data",
             RowDataArrays=series_names,
@@ -417,21 +414,18 @@ def plot_integrated_variables_over_time(
     plot_properties.labels = {}
     plot_properties.line_colors = {}
     plot_properties.line_styles = {}
-    for series_name in plot_properties_in.series_names:
-        new_series_name = series_name + " (id=0)"
-        plot_properties.series_names += [new_series_name]
-        if plot_properties_in.labels:
-            plot_properties.labels[new_series_name] = plot_properties_in.labels[
-                series_name
-            ]
-        if plot_properties_in.line_colors:
-            plot_properties.line_colors[new_series_name] = (
-                plot_properties_in.line_colors[series_name]
-            )
-        if plot_properties_in.line_styles:
-            plot_properties.line_styles[new_series_name] = (
-                plot_properties_in.line_styles[series_name]
-            )
+    for key in plot_properties_in.series_names:
+        plot_properties.series_names += [key + " (id=0)"]
+    for key in plot_properties_in.labels.keys():
+        plot_properties.labels[key + " (id=0)"] = plot_properties_in.labels[key]
+    for key in plot_properties_in.line_colors.keys():
+        plot_properties.line_colors[key + " (id=0)"] = (
+            plot_properties_in.line_colors[key]
+        )
+    for key in plot_properties_in.line_styles.keys():
+        plot_properties.line_styles[key + " (id=0)"] = (
+            plot_properties_in.line_styles[key]
+        )
 
     cell_data = ps.PointDatatoCellData(
         registrationName="PointDatatoCellData", Input=solution
@@ -470,8 +464,8 @@ def plot_integrated_variables_over_time(
         print(f"Save data '{file_path}'")
 
         series_names = ["Time", "Volume"]
-        if plot_properties.series_names:
-            series_names += plot_properties.series_names
+        if plot_properties_in.series_names:
+            series_names += plot_properties_in.series_names
         if t_axes_scale is not None:
             series_names += ["scaled_t_axes"]
 
@@ -480,7 +474,7 @@ def plot_integrated_variables_over_time(
             proxy=plot_over_time_source,
             location=PARAVIEW_DATA_SERVER_LOCATION,
             ChooseArraysToWrite=(
-                1 if plot_properties.series_names is not None else 0
+                1 if plot_properties_in.series_names is not None else 0
             ),
             FieldAssociation="Row Data",
             RowDataArrays=series_names,
