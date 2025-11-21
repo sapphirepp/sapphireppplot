@@ -97,7 +97,7 @@ def to_numpy_point_list(
     Raises
     ------
     KeyError
-        Throws an error if the ``array_name`` is not available.
+        If ``array_name`` is not available.
 
     See Also
     --------
@@ -279,11 +279,6 @@ def to_numpy_time_steps(
         List of time steps to extract the data.
         Defaults to using all time steps.
 
-    Raises
-    ------
-    KeyError
-        Throws an error if the ``array_name`` is not available.
-
     Returns
     -------
     time_steps : list[float]
@@ -298,6 +293,16 @@ def to_numpy_time_steps(
         The first index corresponds to ``time_steps[t]``,
         the second index ``c`` to ``array_names[c]``,
         the third index to the point ``points[t][i]``.
+
+    Raises
+    ------
+    KeyError
+        Throws an error if the ``array_name`` is not available.
+    AttributeError
+        If ``solution.TimestepValues`` is not a property of the ``solution`` object.
+        This commonly occurs, if the ``solution`` is a derived object,
+        e.g. a :ps:`Calculator`.
+        To fix parse the ``time_steps`` argument explicitly.
 
     See Also
     --------
@@ -549,7 +554,12 @@ def to_numpy_integrate_variables(
     Raises
     ------
     KeyError
-        Throws an error if the ``array_name`` is not available.
+        If ``array_name`` is not available.
+    AttributeError
+        If ``solution.TimestepValues`` is not a property of the ``solution`` object.
+        This commonly occurs, if the ``solution`` is a derived object,
+        e.g. a :ps:`Calculator`.
+        To fix parse the ``time_steps`` argument explicitly.
 
     See Also
     --------
