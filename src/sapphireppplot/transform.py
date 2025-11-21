@@ -253,7 +253,7 @@ def slice_plane(
     return sliced_plane
 
 
-def plot_over_time(
+def plot_point_over_time(
     solution: paraview.servermanager.SourceProxy,
     point: list[float],
     t_axes_scale: Optional[float] = None,
