@@ -214,7 +214,7 @@ class PlotPropertiesMHD(PlotProperties):
             "u_x": r"$u_{x" + tmp_postfix_2 + r"}$",
             "u_y": r"$u_{y" + tmp_postfix_2 + r"}$",
             "u_z": r"$u_{z" + tmp_postfix_2 + r"}$",
-            "psi": r"$\psi" + tmp_postfix_1 + "r$",
+            "psi": r"$\psi" + tmp_postfix_1 + r"$",
             "magnetic_divergence": r"$\nabla \cdot \mathbf{B}$",
             "magnetic_divergence_cells": r"$\nabla \cdot \mathbf{B} \mid_{\mathrm{Cell}}$",
             "magnetic_divergence_faces": r"$\nabla \cdot \mathbf{B} \mid_{\mathrm{Face}}$",
