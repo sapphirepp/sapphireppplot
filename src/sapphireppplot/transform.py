@@ -374,6 +374,121 @@ def plot_over_time(
     return plot_over_time_source, plot_properties
 
 
+def plot_integrated_variables_over_time(
+    solution: paraview.servermanager.SourceProxy,
+    t_axes_scale: Optional[float] = None,
+    results_folder: str = "",
+    filename: Optional[str] = None,
+    plot_properties_in: PlotProperties = PlotProperties(),
+) -> tuple[paraview.servermanager.SourceProxy, PlotProperties]:
+    """
+    Integrate variables over the grid and get their temporal evolution.
+
+    Parameters
+    ----------
+    solution
+        The data source.
+    t_axes_scale
+        Divide the time-axes by this scale.
+        The scaled axes will be stored in a variable ``scaled_t_axes``.
+    results_folder
+        The directory path where the data will be saved as ``.csv``.
+    filename
+        The base name for the saved data file (without extension).
+        If no filename is given, the data is not saved.
+    plot_properties
+        Properties of the solution, like the sampling pattern.
+
+    Returns
+    -------
+    plot_over_time_source : SourceProxy
+        The PlotOverTime source.
+    plot_properties : PlotProperties
+        The PlotProperties for PlotOverTime.
+
+    See Also
+    --------
+    :ps:`IntegrateVariables` : ParaView filter to integrate variables.
+    :ps:`PlotDataOverTime` : ParaView PlotDataOverTime filter.
+    :ps:`PointDatatoCellData` : ParaView filter to convert point data to cell data.
+    """
+    plot_properties = plot_properties_in.copy()
+    plot_properties.series_names = []
+    plot_properties.labels = {}
+    plot_properties.line_colors = {}
+    plot_properties.line_styles = {}
+    for series_name in plot_properties_in.series_names:
+        new_series_name = series_name + " (id=0)"
+        plot_properties.series_names += [new_series_name]
+        if plot_properties_in.labels:
+            plot_properties.labels[new_series_name] = plot_properties_in.labels[
+                series_name
+            ]
+        if plot_properties_in.line_colors:
+            plot_properties.line_colors[new_series_name] = (
+                plot_properties_in.line_colors[series_name]
+            )
+        if plot_properties_in.line_styles:
+            plot_properties.line_styles[new_series_name] = (
+                plot_properties_in.line_styles[series_name]
+            )
+
+    cell_data = ps.PointDatatoCellData(
+        registrationName="PointDatatoCellData", Input=solution
+    )
+
+    # create a new 'Integrate Variables'
+    integrate_variables = ps.IntegrateVariables(
+        registrationName="IntegrateVariables",
+        Input=cell_data,
+        DivideCellDataByVolume=1,
+    )
+
+    # create a new 'Plot Over Time'
+    plot_over_time_source = ps.PlotDataOverTime(
+        registrationName="PlotOverTime",
+        Input=integrate_variables,
+        OnlyReportSelectionStatistics=0,
+        FieldAssociation="Cells",
+    )
+    plot_over_time_source.UpdatePipeline()
+
+    if t_axes_scale is not None:
+        plot_over_time_source = ps.Calculator(
+            registrationName="ScaleTimeAxes", Input=plot_over_time_source
+        )
+        plot_over_time_source.ResultArrayName = "scaled_t_axes"
+        plot_over_time_source.ResultTCoords = True
+
+        x_array_name = "Time"
+        plot_over_time_source.Function = f"{x_array_name} / {t_axes_scale}"
+        plot_over_time_source.UpdatePipeline()
+
+    # Save data if a file is given
+    if filename:
+        file_path = os.path.join(results_folder, filename + ".csv")
+        print(f"Save data '{file_path}'")
+
+        series_names = ["Time", "Volume"]
+        if plot_properties.series_names:
+            series_names += plot_properties.series_names
+        if t_axes_scale is not None:
+            series_names += ["scaled_t_axes"]
+
+        ps.SaveData(
+            filename=file_path,
+            proxy=plot_over_time_source,
+            location=PARAVIEW_DATA_SERVER_LOCATION,
+            ChooseArraysToWrite=(
+                1 if plot_properties.series_names is not None else 0
+            ),
+            FieldAssociation="Row Data",
+            RowDataArrays=series_names,
+        )
+
+    return plot_over_time_source, plot_properties
+
+
 def clip_area(
     solution: paraview.servermanager.SourceProxy,
     min_x: float = -10,
