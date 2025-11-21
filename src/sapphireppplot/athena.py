@@ -1,5 +1,6 @@
 """Module for Athena++ specific plotting."""
 
+from typing import Optional
 import copy
 import paraview.simple as ps
 import paraview.servermanager
@@ -16,6 +17,7 @@ def load_solution(
     results_folder: str = "",
     t_start: float = 0.0,
     t_end: float = 1.0,
+    animation_time: Optional[float] = None,
 ) -> tuple[
     str,
     ParamDict,
@@ -30,7 +32,7 @@ def load_solution(
     1. Retrieves the folder containing simulation results.
     2. Loads the solution data from the files in the results folder.
     3. Adds time step information if necessary.
-    4. Updates the animation scene to the last available time step.
+    4. Updates the animation scene to the specified animation time.
 
     Parameters
     ----------
@@ -46,6 +48,9 @@ def load_solution(
         Simulation start time.
     t_end
         Simulation end time.
+    animation_time
+        Set the time at which the animation scene is displayed.
+        Defaults to the last time step.
 
     Returns
     -------
@@ -86,7 +91,10 @@ def load_solution(
 
     animation_scene = ps.GetAnimationScene()
     animation_scene.UpdateAnimationUsingDataTimeSteps()
-    animation_scene.GoToLast()
+    if animation_time is not None:
+        animation_scene.AnimationTime = animation_time
+    else:
+        animation_scene.GoToLast()
 
     return results_folder, prm, solution, animation_scene
 

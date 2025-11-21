@@ -15,6 +15,7 @@ def load_solution(
     path_prefix: str = "",
     results_folder: str = "",
     base_file_name: str = "",
+    animation_time: Optional[float] = None,
 ) -> tuple[
     str,
     ParamDict,
@@ -30,7 +31,7 @@ def load_solution(
     2. Loads the parameter file.
     3. Loads the solution data from the files in the results folder.
     4. Adds time step information if necessary.
-    5. Updates the animation scene to the last available time step.
+    5. Updates the animation scene to the specified animation time.
 
     Parameters
     ----------
@@ -42,6 +43,9 @@ def load_solution(
         The path to the results folder.
     base_file_name
         Overwrite base name of the solutions files.
+    animation_time
+        Set the time at which the animation scene is displayed.
+        Defaults to the last time step.
 
     Returns
     -------
@@ -108,7 +112,10 @@ def load_solution(
 
     animation_scene = ps.GetAnimationScene()
     animation_scene.UpdateAnimationUsingDataTimeSteps()
-    animation_scene.GoToLast()
+    if animation_time is not None:
+        animation_scene.AnimationTime = animation_time
+    else:
+        animation_scene.GoToLast()
 
     return results_folder, prm, solution, animation_scene
 
