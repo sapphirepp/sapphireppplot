@@ -293,6 +293,58 @@ def slice_plane(
     return sliced_plane
 
 
+def probe_location(
+    solution: paraview.servermanager.SourceProxy,
+    point: list[float],
+    plot_properties: PlotProperties = PlotProperties(),
+) -> paraview.servermanager.SourceProxy:
+    """
+    Probe location at one point.
+
+    Parameters
+    ----------
+    solution
+        The data source.
+    point
+        The point where to evaluate the time evolution.
+    plot_properties_in
+        Properties of the solution, like the sampling resolution.
+
+    Returns
+    -------
+    probe_location_source : SourceProxy
+        The ProbeLocation source.
+    plot_properties : PlotProperties
+        The PlotProperties for ProbeLocation.
+
+    See Also
+    --------
+    :ps:`ProbeLocation` : ParaView ProbeLocation filter.
+    sapphireppplot.plot_properties.PlotProperties.sampling_resolution :
+        Sampling resolution.
+    """
+    plot_properties = plot_properties_in.copy()
+
+    probe_location_source = ps.ProbeLocation(
+        registrationName="PointEvaluation",
+        Input=solution,
+        ProbeType="Fixed Radius Point Source",
+    )
+    probe_location_source.ProbeType.Center = point
+    probe_location_source.ProbeType.Radius = 0
+    ps.HideInteractiveWidgets(proxy=probe_location_source.ProbeType)
+
+    if plot_properties.sampling_resolution:
+        probe_location_source.ComputeTolerance = False
+        probe_location_source.Tolerance = plot_properties.sampling_resolution
+
+    if plot_properties.series_names:
+        plot_properties.series_names += ["Point Coordinates"]
+    plot_properties.data_type = "POINTS"
+
+    return probe_location_source, plot_properties
+
+
 def plot_point_over_time(
     solution: paraview.servermanager.SourceProxy,
     point: list[float],
@@ -335,6 +387,10 @@ def plot_point_over_time(
     sapphireppplot.plot_properties.PlotProperties.sampling_resolution :
         Sampling resolution.
     """
+    probe_location_source = probe_location(
+        solution, point, plot_properties=plot_properties_in
+    )
+
     plot_properties = plot_properties_in.copy()
     plot_properties.series_names = []
     plot_properties.labels = {}
@@ -352,20 +408,6 @@ def plot_point_over_time(
         plot_properties.line_styles[key + " (id=0)"] = (
             plot_properties_in.line_styles[key]
         )
-
-    # create a new 'ProbeLocation'
-    probe_location_source = ps.ProbeLocation(
-        registrationName="PointEvaluation",
-        Input=solution,
-        ProbeType="Fixed Radius Point Source",
-    )
-    probe_location_source.ProbeType.Center = point
-    probe_location_source.ProbeType.Radius = 0
-    ps.HideInteractiveWidgets(proxy=probe_location_source.ProbeType)
-
-    if plot_properties.sampling_resolution:
-        probe_location_source.ComputeTolerance = False
-        probe_location_source.Tolerance = plot_properties.sampling_resolution
 
     # create a new 'Plot Over Time'
     plot_over_time_source = ps.PlotDataOverTime(
