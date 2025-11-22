@@ -345,6 +345,57 @@ def probe_location(
     return probe_location_source, plot_properties
 
 
+def integrate_variables(
+    solution: paraview.servermanager.SourceProxy,
+    plot_properties_in: PlotProperties = PlotProperties(),
+) -> tuple[paraview.servermanager.SourceProxy, PlotProperties]:
+    """
+    Integrate variables over the grid.
+
+    Divide the result by the grid volume.
+    For this, the solution is converted to cell data.
+
+    Parameters
+    ----------
+    solution
+        The data source.
+    plot_properties_in
+        Properties of the solution.
+
+    Returns
+    -------
+    integrate_variables_source : SourceProxy
+        The IntegrateVariables source.
+    plot_properties : PlotProperties
+        The PlotProperties for IntegrateVariables.
+
+    See Also
+    --------
+    :ps:`IntegrateVariables` : ParaView filter to integrate variables.
+    point_data_to_cell_data : Convert point data to cell data.
+    """
+    cell_data, plot_properties = point_data_to_cell_data(
+        solution, plot_properties_in=plot_properties_in
+    )
+
+    integrate_variables_source = ps.IntegrateVariables(
+        registrationName="IntegrateVariables",
+        Input=cell_data,
+        DivideCellDataByVolume=1,
+    )
+
+    if plot_properties.series_names:
+        plot_properties.series_names += ["Volume"]
+    if plot_properties.labels:
+        plot_properties.labels["Volume"] = r"$V$"
+    if plot_properties.line_colors:
+        plot_properties.line_colors["Volume"] = ["0", "0", "0"]
+    if plot_properties.line_styles:
+        plot_properties.line_styles["Volume"] = "1"
+
+    return integrate_variables_source, plot_properties
+
+
 def plot_point_over_time(
     solution: paraview.servermanager.SourceProxy,
     point: list[float],
@@ -491,7 +542,7 @@ def plot_integrated_variables_over_time(
     :ps:`IntegrateVariables` : ParaView filter to integrate variables.
     :ps:`PlotDataOverTime` : ParaView PlotDataOverTime filter.
     """
-    cell_data, plot_properties = point_data_to_cell_data(
+    integrate_variables_source, plot_properties = integrate_variables(
         solution, plot_properties_in=plot_properties_in
     )
 
@@ -512,17 +563,10 @@ def plot_integrated_variables_over_time(
             plot_properties_in.line_styles[key]
         )
 
-    # create a new 'Integrate Variables'
-    integrate_variables = ps.IntegrateVariables(
-        registrationName="IntegrateVariables",
-        Input=cell_data,
-        DivideCellDataByVolume=1,
-    )
-
     # create a new 'Plot Over Time'
     plot_over_time_source = ps.PlotDataOverTime(
         registrationName="PlotOverTime",
-        Input=integrate_variables,
+        Input=integrate_variables_source,
         OnlyReportSelectionStatistics=0,
         FieldAssociation="Cells",
     )
@@ -544,7 +588,7 @@ def plot_integrated_variables_over_time(
         file_path = os.path.join(results_folder, filename + ".csv")
         print(f"Save data '{file_path}'")
 
-        series_names = ["Time", "Volume"]
+        series_names = ["Time"]
         if plot_properties_in.series_names:
             series_names += plot_properties_in.series_names
         if t_axes_scale is not None:
