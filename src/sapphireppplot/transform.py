@@ -10,6 +10,46 @@ from sapphireppplot.pvplot import PARAVIEW_DATA_SERVER_LOCATION
 _epsilon_d: float = 1e-10
 
 
+def point_data_to_cell_data(
+    solution: paraview.servermanager.SourceProxy,
+    plot_properties_in: PlotProperties = PlotProperties(),
+) -> tuple[paraview.servermanager.SourceProxy, PlotProperties]:
+    """
+    Convert point data to cell data.
+
+    Parameters
+    ----------
+    solution
+        The data source with point data.
+    plot_properties_in
+        Properties of the solution.
+
+    Returns
+    -------
+    cell_data : SourceProxy
+        The solution as cell data.
+    plot_properties : PlotProperties
+        The PlotProperties for the cell data.
+
+    See Also
+    --------
+    :ps:`PointDatatoCellData` : ParaView filter to convert point data to cell data.
+    sapphireppplot.plot_properties.PlotProperties.data_type :
+        Solution data type.
+    """
+    plot_properties = plot_properties_in.copy()
+
+    if plot_properties.data_type == "CELLS":
+        return solution, plot_properties
+
+    cell_data = ps.PointDatatoCellData(
+        registrationName="PointDatatoCellData", Input=solution
+    )
+    plot_properties.data_type = "CELLS"
+
+    return cell_data, plot_properties
+
+
 def plot_over_line(
     solution: paraview.servermanager.SourceProxy,
     direction: str | list[list[float]] = "x",
@@ -278,7 +318,7 @@ def plot_point_over_time(
     filename
         The base name for the saved data file (without extension).
         If no filename is given, the data is not saved.
-    plot_properties
+    plot_properties_in
         Properties of the solution, like the sampling pattern.
 
     Returns
@@ -393,7 +433,7 @@ def plot_integrated_variables_over_time(
     filename
         The base name for the saved data file (without extension).
         If no filename is given, the data is not saved.
-    plot_properties
+    plot_properties_in
         Properties of the solution, like the sampling pattern.
 
     Returns
@@ -405,11 +445,14 @@ def plot_integrated_variables_over_time(
 
     See Also
     --------
+    point_data_to_cell_data : Convert point data to cell data.
     :ps:`IntegrateVariables` : ParaView filter to integrate variables.
     :ps:`PlotDataOverTime` : ParaView PlotDataOverTime filter.
-    :ps:`PointDatatoCellData` : ParaView filter to convert point data to cell data.
     """
-    plot_properties = plot_properties_in.copy()
+    cell_data, plot_properties = point_data_to_cell_data(
+        solution, plot_properties_in=plot_properties_in
+    )
+
     plot_properties.series_names = []
     plot_properties.labels = {}
     plot_properties.line_colors = {}
@@ -426,10 +469,6 @@ def plot_integrated_variables_over_time(
         plot_properties.line_styles[key + " (id=0)"] = (
             plot_properties_in.line_styles[key]
         )
-
-    cell_data = ps.PointDatatoCellData(
-        registrationName="PointDatatoCellData", Input=solution
-    )
 
     # create a new 'Integrate Variables'
     integrate_variables = ps.IntegrateVariables(
