@@ -1,6 +1,7 @@
 """Convert ParaView data to numpy arrays."""
 
 from typing import Optional
+from warnings import deprecated
 import numpy as np
 import paraview.simple as ps
 import paraview.servermanager
@@ -38,6 +39,11 @@ def to_numpy_1d(
         2D array ``data[c][i]`` with the data from the solution.
         The first index ``c`` corresponds to ``array_names[c]``,
         the second index corresponds to the ``x_array[i]``.
+
+    Raises
+    ------
+    KeyError
+        If ``array_name`` is not available.
     """
     # Fetch the data from the solution
     solution_data = paraview.servermanager.Fetch(solution)
@@ -60,12 +66,32 @@ def to_numpy_1d(
     data = np.empty((len(array_names), x_values.size))
 
     for i, array_name in enumerate(array_names):
+        vec_component = -1
+        base_array_name = array_name
+        if array_name.endswith("_Magnitude"):
+            raise KeyError(
+                f"{array_name}: "
+                "Vector magnitudes can not be extracted to numpy."
+            )
+        if array_name.endswith("_X"):
+            vec_component = 0
+            base_array_name = array_name.removesuffix("_X")
+        elif array_name.endswith("_Y"):
+            vec_component = 1
+            base_array_name = array_name.removesuffix("_Y")
+        elif array_name.endswith("_Z"):
+            vec_component = 2
+            base_array_name = array_name.removesuffix("_Z")
+
         # Get the data array
-        array_vtk = solution_data.GetPointData().GetArray(array_name)
+        array_vtk = solution_data.GetPointData().GetArray(base_array_name)
         # Convert data to numpy array
         array = numpy_support.vtk_to_numpy(array_vtk)
-        # Filter out masked data
-        data[i] = array[mask]
+        # Select component and filter out masked data
+        if vec_component < 0:
+            data[i] = array[mask]
+        else:
+            data[i] = array[mask, vec_component]
 
     return x_values, data
 
@@ -517,6 +543,7 @@ def to_numpy_time_steps_3d(
     return time_steps_out, points, data
 
 
+@deprecated("Use to_numpy_over_time instead.")
 def to_numpy_integrate_variables(
     solution: paraview.servermanager.SourceProxy,
     array_names: list[str],
@@ -631,3 +658,79 @@ def to_numpy_integrate_variables(
                 integrated_variables[i, j] = integrated_value[vec_component]
 
     return time_steps, volume, integrated_variables
+
+
+def to_numpy_over_time(
+    solution: paraview.servermanager.SourceProxy,
+    array_names: list[str],
+    time_array_name: str = "Time",
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Convert PlotOverTime data to a numpy array.
+
+    Parameters
+    ----------
+    solution
+        ParaView solution data.
+    array_names
+        List of array names that should be extracted.
+    time_array_name
+        Name of the time array.
+
+    Returns
+    -------
+    time_steps : np.ndarray
+        The time steps as ``np.ndarray``.
+    data : np.ndarray
+        2D array ``data[c][i]`` with the data from the solution.
+        The first index ``c`` corresponds to ``array_names[c]``,
+        the second index corresponds to the ``time_steps[i]``.
+
+    Raises
+    ------
+    KeyError
+        If ``array_name`` is not available.
+
+    See Also
+    --------
+    sapphireppplot.transform.plot_over_time :
+        Get temporal evolution of the solution.
+    """
+    # Fetch the data from the solution
+    solution_data = paraview.servermanager.Fetch(solution)
+    table = solution_data.GetBlock(0)
+
+    time_steps_vtk = table.GetColumnByName(time_array_name)
+    time_steps = numpy_support.vtk_to_numpy(time_steps_vtk)
+
+    data = np.empty((len(array_names), time_steps.size))
+
+    for i, array_name in enumerate(array_names):
+        vec_component = -1
+        base_array_name = array_name
+        if array_name.endswith("_Magnitude"):
+            raise KeyError(
+                f"{array_name}: "
+                "Vector magnitudes can not be extracted to numpy."
+            )
+        if array_name.endswith("_X"):
+            vec_component = 0
+            base_array_name = array_name.removesuffix("_X")
+        elif array_name.endswith("_Y"):
+            vec_component = 1
+            base_array_name = array_name.removesuffix("_Y")
+        elif array_name.endswith("_Z"):
+            vec_component = 2
+            base_array_name = array_name.removesuffix("_Z")
+
+        # Get the data array
+        array_vtk = table.GetColumnByName(base_array_name)
+        # Convert data to numpy array
+        array = numpy_support.vtk_to_numpy(array_vtk)
+        # Select component and sort data
+        if vec_component < 0:
+            data[i] = array[:]
+        else:
+            data[i] = array[:, vec_component]
+
+    return time_steps, data
