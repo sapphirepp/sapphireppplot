@@ -104,11 +104,14 @@ scipy
 
 # numpy
 arange
+arccos
 argmin
 argwhere
 dtype
 lexsort
 linspace
+loadtxt
+meshgrid
 ndarray
 npz
 numpy
@@ -118,25 +121,43 @@ searchsorted
 sqrt
 
 # matplotlib
+antialiased
+Axes3
+Axes3D
 bbox
 cmap
+colorbar
+cstride
+facecolors
 figsize
 linestyle
+linewidth
 loc
+mappable
 matplotlib
+mpl
+mplot3d
 Params
 plt
 pyplot
+RGBA
+rstride
 savefig
 seaborn
 sns
+toolkits
 usetex
+viridis
+vmax
+vmin
 xlabel
 xlim
 xscale
 ylabel
 ylim
 yscale
+zlabel
+zlim
 
 # sphinx
 autodoc
