@@ -763,3 +763,127 @@ def plot_quantities_over_x(
         pvplot.save_animation(layout, results_folder, name, plot_properties)
 
     return plot_over_line_x, layout, line_chart_view
+
+
+def plot_integrated_quantities_over_time(
+    solution: paraview.servermanager.SourceProxy,
+    results_folder: str,
+    quantities: list[str],
+    name: str,
+    plot_properties_in: PlotPropertiesMHD,
+    t_axes_scale: Optional[float] = None,
+    t_label: str = r"$t$",
+    t_range: Optional[list[float]] = None,
+    value_range: Optional[list[float]] = None,
+    log_x_scale: bool = False,
+    log_y_scale: bool = False,
+) -> tuple[
+    paraview.servermanager.SourceProxy,
+    paraview.servermanager.ViewLayoutProxy,
+    paraview.servermanager.Proxy,
+    PlotPropertiesMHD,
+]:
+    """
+    Integrate quantities over the grid and plot over time.
+
+    Parameters
+    ----------
+    solution
+        The simulation or computation result containing the data to plot.
+    results_folder
+        Path to the folder where results (images/animations) will be saved.
+    quantities
+        List of physical quantity to plot.
+    name
+        Name of the layout and image/animation files.
+    plot_properties
+        Properties for plotting.
+    t_axes_scale
+        Divide the time-axes by this scale.
+        The scaled axes will be stored in a variable ``scaled_t_axes``.
+    t_label
+        Label for the bottom axis of the chart.
+    t_range
+        Minimal (``t_range[0]``)
+        and maximal (``t_range[1]``) value for the t-axes.
+    value_range
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the y-axes.
+    log_t_scale
+        Use a logarithmic t-scale?
+    log_y_scale
+        Use a logarithmic y-scale?
+
+    Returns
+    -------
+    solution_integrated : SourceProxy
+        The PlotOverLine source.
+    layout : ViewLayoutProxy
+        The layout object used for the plot.
+    line_chart_view : XYChartViewProxy
+        The configured XY chart view.
+    plot_properties : PlotPropertiesMHD
+        The PlotProperties for PlotOverTime.
+
+    See Also
+    --------
+    sapphireppplot.transform.integrate_variables : Integrate variables.
+    sapphireppplot.transform.plot_over_time : PlotOverTine.
+    sapphireppplot.pvplot.plot_line_chart_view : Plot LineChartView.
+    """
+    solution_integrated, plot_properties = transform.integrate_variables(
+        solution, plot_properties_in=plot_properties_in
+    )
+
+    solution_integrated, plot_properties = transform.plot_over_time(
+        solution_integrated,
+        results_folder=results_folder,
+        filename=name,
+        plot_properties_in=plot_properties,
+    )
+
+    y_label = r"$\mathbf{w}(t)$"
+    if len(quantities) == 1:
+        y_label = plot_properties.quantity_label(quantities[0])
+
+    visible_lines = []
+    for quantity in quantities:
+        if plot_properties.prefix_numeric:
+            visible_lines += [
+                plot_properties.quantity_name(quantity, "numeric_") + " (id=0)"
+            ]
+        else:
+            visible_lines += [
+                plot_properties.quantity_name(quantity) + " (id=0)"
+            ]
+        if plot_properties.project:
+            visible_lines += [
+                plot_properties.quantity_name(quantity, "project_") + " (id=0)"
+            ]
+        if plot_properties.interpol:
+            visible_lines += [
+                plot_properties.quantity_name(quantity, "interpol_") + " (id=0)"
+            ]
+
+    t_array_name = "Time"
+    if t_axes_scale is not None:
+        t_array_name = "scaled_t_axes"
+
+    layout = ps.CreateLayout(name)
+    line_chart_view = pvplot.plot_line_chart_view(
+        solution_integrated,
+        layout,
+        x_label=t_label,
+        y_label=y_label,
+        x_array_name=t_array_name,
+        visible_lines=visible_lines,
+        x_range=t_range,
+        value_range=value_range,
+        log_x_scale=log_x_scale,
+        log_y_scale=log_y_scale,
+        plot_properties=plot_properties,
+    )
+
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
+
+    return solution_integrated, layout, line_chart_view, plot_properties
