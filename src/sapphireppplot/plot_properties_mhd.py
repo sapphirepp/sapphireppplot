@@ -106,7 +106,7 @@ class PlotPropertiesMHD(PlotProperties):
                 "magnetic_divergence_faces",
                 "shock_indicator",
                 "positivity_limiter",
-                "subdomian",
+                "subdomain",
             ]
             self.series_names += indicators
             for quantity in indicators:
@@ -137,7 +137,7 @@ class PlotPropertiesMHD(PlotProperties):
             "magnetic_divergence_faces",
             "shock_indicator",
             "positivity_limiter",
-            "subdomian",
+            "subdomain",
         ]
         if quantity in indicators:
             return quantity
@@ -220,7 +220,7 @@ class PlotPropertiesMHD(PlotProperties):
             "magnetic_divergence_faces": r"$\nabla \cdot \mathbf{B} \mid_{\mathrm{Face}}$",
             "shock_indicator": "Shock Indicator",
             "positivity_limiter": "Pos. Limiter",
-            "subdomian": "Subdomain",
+            "subdomain": "Subdomain",
         }
 
         if quantity in quantity_labels:
