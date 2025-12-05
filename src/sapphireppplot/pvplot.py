@@ -125,6 +125,10 @@ def plot_render_view_2d(
         ParaView layout to use for the plot.
     quantity
         Name of the quantity to plot.
+        For vector quantities, the shown component can be selected by the suffix
+        ``_X/Y/Z`` or ``_Magnitude``.
+        Note, in the interactive session,
+        ParaView will switch all other render views of this quantity to the same component.
     value_range
         Minimal (``value_range[0]``)
         and maximal (``value_range[1]``) value for the color bar.
@@ -281,6 +285,10 @@ def plot_render_view_3d(
         ParaView layout to use for the plot.
     quantity
         Name of the quantity to plot.
+        For vector quantities, the shown component can be selected by the suffix
+        ``_X/Y/Z`` or ``_Magnitude``.
+        Note, in the interactive session,
+        ParaView will switch all other render views of this quantity to the same component.
     value_range
         Minimal (``value_range[0]``)
         and maximal (``value_range[1]``) value for the color bar.
