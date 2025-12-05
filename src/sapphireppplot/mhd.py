@@ -120,6 +120,53 @@ def load_solution(
     return results_folder, prm, solution, animation_scene
 
 
+def compute_kinetic_energy(
+    solution: paraview.servermanager.SourceProxy,
+    plot_properties_in: PlotPropertiesMHD,
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
+    """
+    Compute kinetic energy for the solution.
+
+    Parameters
+    ----------
+    solution
+        The the source data.
+    plot_properties_in
+        Properties of the source.
+
+    Returns
+    -------
+    calculator : SourceProxy
+        Solution with kinetic energy.
+    plot_properties : PlotPropertiesMHD
+        Solution properties for the including the kinetic energy.
+    """
+    plot_properties = plot_properties_in.copy()
+
+    # Add a new 'Calculator' to the pipeline
+    calculator = ps.Calculator(registrationName="E_kin", Input=solution)
+    calculator.ResultArrayName = "E_kin"
+
+    function_p2 = (
+        f"({plot_properties.quantity_name("p_x")}^2"
+        + f"{plot_properties.quantity_name("p_y")}^2"
+        + f"{plot_properties.quantity_name("p_z")}^2)"
+    )
+    calculator.Function = f"1 / (2 * rho) * {function_p2}/2"
+
+    if plot_properties.series_names:
+        plot_properties.series_names += ["E_kin"]
+    plot_properties.labels["E_kin"] = r"$E_{\rm kin}$"
+    if plot_properties.line_styles:
+        plot_properties.line_styles["E_kin"] = "1"
+    if plot_properties.line_colors:
+        plot_properties.line_colors["E_kin"] = ["0", "0", "0"]
+
+    calculator.UpdatePipeline()
+
+    return calculator, plot_properties
+
+
 def compute_magnetic_pressure(
     solution: paraview.servermanager.SourceProxy,
     plot_properties_in: PlotPropertiesMHD,
