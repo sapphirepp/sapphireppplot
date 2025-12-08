@@ -1,6 +1,6 @@
 """Transform the solution, e.g. by PlotOverLine or Calculator."""
 
-from typing import Optional
+from typing import Optional, TypeVar
 import os
 import paraview.simple as ps
 import paraview.servermanager
@@ -8,6 +8,7 @@ from sapphireppplot.plot_properties import PlotProperties
 from sapphireppplot.pvplot import PARAVIEW_DATA_SERVER_LOCATION
 
 _epsilon_d: float = 1e-10
+PlotPropertiesVar = TypeVar("PlotPropertiesVar", bound=PlotProperties)
 
 
 def calculator(
@@ -17,8 +18,8 @@ def calculator(
     label: Optional[str] = None,
     line_style: str = "1",
     line_color: Optional[list[str]] = None,
-    plot_properties_in: PlotProperties = PlotProperties(),
-) -> tuple[paraview.servermanager.SourceProxy, PlotProperties]:
+    plot_properties_in: PlotPropertiesVar = PlotProperties(),
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
     """
     Create a ParaView Calculator and add the new quantity to the PlotProperties.
 
@@ -45,7 +46,7 @@ def calculator(
     -------
     calculator_source : SourceProxy
         The calculator source.
-    plot_properties : PlotProperties
+    plot_properties : PlotPropertiesVar
         The PlotProperties including the new quantity.
 
     See Also
@@ -80,8 +81,8 @@ def calculator(
 
 def point_data_to_cell_data(
     solution: paraview.servermanager.SourceProxy,
-    plot_properties_in: PlotProperties = PlotProperties(),
-) -> tuple[paraview.servermanager.SourceProxy, PlotProperties]:
+    plot_properties_in: PlotPropertiesVar = PlotProperties(),
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
     """
     Convert point data to cell data.
 
@@ -96,7 +97,7 @@ def point_data_to_cell_data(
     -------
     cell_data : SourceProxy
         The solution as cell data.
-    plot_properties : PlotProperties
+    plot_properties : PlotPropertiesVar
         The PlotProperties for the cell data.
 
     See Also
@@ -126,7 +127,7 @@ def plot_over_line(
     x_axes_scale: Optional[float] = None,
     results_folder: str = "",
     filename: Optional[str] = None,
-    plot_properties: PlotProperties = PlotProperties(),
+    plot_properties: PlotPropertiesVar = PlotProperties(),
 ) -> paraview.servermanager.SourceProxy:
     """
     Create and configure plot over line from solution.
@@ -310,7 +311,7 @@ def slice_plane(
     solution: paraview.servermanager.SourceProxy,
     normal: list[float],
     origin: Optional[list[float]] = None,
-    plot_properties: PlotProperties = PlotProperties(),  # noqa: U100
+    plot_properties: PlotPropertiesVar = PlotProperties(),  # noqa: U100
 ) -> paraview.servermanager.SourceProxy:
     """
     Slice a 2D plane from a 3D solution.
@@ -364,8 +365,8 @@ def slice_plane(
 def probe_location(
     solution: paraview.servermanager.SourceProxy,
     point: list[float],
-    plot_properties_in: PlotProperties = PlotProperties(),
-) -> tuple[paraview.servermanager.SourceProxy, PlotProperties]:
+    plot_properties_in: PlotPropertiesVar = PlotProperties(),
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
     """
     Probe location at one point.
 
@@ -382,7 +383,7 @@ def probe_location(
     -------
     probe_location_source : SourceProxy
         The ProbeLocation source.
-    plot_properties : PlotProperties
+    plot_properties : PlotPropertiesVar
         The PlotProperties for ProbeLocation.
 
     See Also
@@ -415,8 +416,8 @@ def probe_location(
 
 def integrate_variables(
     solution: paraview.servermanager.SourceProxy,
-    plot_properties_in: PlotProperties = PlotProperties(),
-) -> tuple[paraview.servermanager.SourceProxy, PlotProperties]:
+    plot_properties_in: PlotPropertiesVar = PlotProperties(),
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
     """
     Integrate variables over the grid.
 
@@ -434,7 +435,7 @@ def integrate_variables(
     -------
     integrate_variables_source : SourceProxy
         The IntegrateVariables source.
-    plot_properties : PlotProperties
+    plot_properties : PlotPropertiesVar
         The PlotProperties for IntegrateVariables.
 
     See Also
@@ -469,8 +470,8 @@ def plot_over_time(
     t_axes_scale: Optional[float] = None,
     results_folder: str = "",
     filename: Optional[str] = None,
-    plot_properties_in: PlotProperties = PlotProperties(),
-) -> tuple[paraview.servermanager.SourceProxy, PlotProperties]:
+    plot_properties_in: PlotPropertiesVar = PlotProperties(),
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
     """
     Get temporal evolution of the solution.
 
@@ -500,7 +501,7 @@ def plot_over_time(
     -------
     plot_over_time_source : SourceProxy
         The PlotOverTime source.
-    plot_properties : PlotProperties
+    plot_properties : PlotPropertiesVar
         The PlotProperties for PlotOverTime.
 
     See Also
@@ -587,7 +588,7 @@ def clip_area(
     solution: paraview.servermanager.SourceProxy,
     min_x: float = -10,
     max_x: float = 10,
-    plot_properties: PlotProperties = PlotProperties(),  # noqa: U100
+    plot_properties: PlotPropertiesVar = PlotProperties(),  # noqa: U100
 ) -> paraview.servermanager.SourceProxy:
     """
     Clip area from solution.
@@ -643,7 +644,7 @@ def stream_tracer(
     offset: Optional[list[float]] = None,
     x_range: Optional[list[float]] = None,
     n_lines: int = 30,
-    plot_properties: PlotProperties = PlotProperties(),
+    plot_properties: PlotPropertiesVar = PlotProperties(),
 ) -> paraview.servermanager.SourceProxy:
     """
     Create stream tracer of a quantity from the solution.
