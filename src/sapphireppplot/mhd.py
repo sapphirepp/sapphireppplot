@@ -131,8 +131,11 @@ def compute_kinetic_energy(
     solution: paraview.servermanager.SourceProxy,
     plot_properties_in: PlotPropertiesMHD,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
-    """
-    Compute kinetic energy for the solution.
+    r"""
+    Compute kinetic energy :math:`E_{\rm kin}` for the solution.
+
+    .. math::
+        E_{\rm kin} = \frac{p^2}{2 \rho}
 
     Parameters
     ----------
@@ -159,7 +162,7 @@ def compute_kinetic_energy(
         + f"{plot_properties.quantity_name("p_y")}^2"
         + f"{plot_properties.quantity_name("p_z")}^2)"
     )
-    calculator.Function = f"1 / (2 * rho) * {function_p2}/2"
+    calculator.Function = f"1 / (2 * rho) * {function_p2}"
 
     if plot_properties.series_names:
         plot_properties.series_names += ["E_kin"]
@@ -174,13 +177,65 @@ def compute_kinetic_energy(
     return calculator, plot_properties
 
 
+def compute_sound_speed(
+    solution: paraview.servermanager.SourceProxy,
+    plot_properties_in: PlotPropertiesMHD,
+    gamma: float = 5.0 / 3.0,
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
+    r"""
+    Compute sound speed :math:`a_s` for the solution.
+
+    .. math::
+        a_s = \sqrt{\frac{\gamma P}{\rho}}
+
+    Parameters
+    ----------
+    solution
+        The the source data.
+    plot_properties_in
+        Properties of the source.
+    gamma
+        The adiabatic index.
+
+    Returns
+    -------
+    calculator : SourceProxy
+        Solution with sound speed.
+    plot_properties : PlotPropertiesMHD
+        Solution properties for the including the sound speed.
+    """
+    plot_properties = plot_properties_in.copy()
+
+    # Add a new 'Calculator' to the pipeline
+    calculator = ps.Calculator(registrationName="a_s", Input=solution)
+    calculator.ResultArrayName = "a_s"
+
+    calculator.Function = f"sqrt({gamma} * P / rho)"
+
+    if plot_properties.series_names:
+        plot_properties.series_names += ["a_s"]
+    plot_properties.labels["a_s"] = r"$a_s$"
+    if plot_properties.line_styles:
+        plot_properties.line_styles["a_s"] = "1"
+    if plot_properties.line_colors:
+        plot_properties.line_colors["a_s"] = ["0", "0", "0"]
+
+    calculator.UpdatePipeline()
+
+    return calculator, plot_properties
+
+
 def compute_magnetic_pressure(
     solution: paraview.servermanager.SourceProxy,
     plot_properties_in: PlotPropertiesMHD,
     gamma: float = 5.0 / 3.0,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
-    """
-    Compute magnetic pressure for the solution.
+    r"""
+    Compute magnetic pressure :math:`P_B` for the solution.
+
+    .. math::
+        P_B = (\gamma -1) b^2
+
 
     Parameters
     ----------
@@ -205,7 +260,13 @@ def compute_magnetic_pressure(
 
     # Properties modified on calculator
     calculator.ResultArrayName = "P_B"
-    calculator.Function = f"({gamma}-1) * (b_X^2 + b_Y^2)/2"
+
+    function_b2 = (
+        f"({plot_properties.quantity_name("b_x")}^2"
+        + f"{plot_properties.quantity_name("b_y")}^2"
+        + f"{plot_properties.quantity_name("b_z")}^2)"
+    )
+    calculator.Function = f"({gamma}-1) * {function_b2}/2"
 
     if plot_properties.series_names:
         plot_properties.series_names += ["P_B"]
