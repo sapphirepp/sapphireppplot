@@ -10,6 +10,74 @@ from sapphireppplot.pvplot import PARAVIEW_DATA_SERVER_LOCATION
 _epsilon_d: float = 1e-10
 
 
+def calculator(
+    solution: paraview.servermanager.SourceProxy,
+    quantity: str,
+    formula: str,
+    label: Optional[str] = None,
+    line_style: str = "1",
+    line_color: Optional[list[str]] = None,
+    plot_properties_in: PlotProperties = PlotProperties(),
+) -> tuple[paraview.servermanager.SourceProxy, PlotProperties]:
+    """
+    Create a ParaView Calculator and add the new quantity to the PlotProperties.
+
+    Parameters
+    ----------
+    solution
+        The data source.
+    quantity
+        Name of the quantity to compute.
+    formula
+        Formula to compute the quantity as ParaView Function.
+    label
+        Label for the quantity.
+        Default to ``quantity``.
+    line_style
+        Line style for the new quantity.
+    line_color
+        Line color for the new quantity.
+        Default to ``["0", "0", "0"]``.
+    plot_properties_in
+        Properties of the solution.
+
+    Returns
+    -------
+    calculator_source : SourceProxy
+        The calculator source.
+    plot_properties : PlotProperties
+        The PlotProperties including the new quantity.
+
+    See Also
+    --------
+    :ps:`Calculator` : ParaView Calculator filter.
+    """
+    if not line_color:
+        line_color = ["0", "0", "0"]
+    if not label:
+        label = quantity
+
+    plot_properties = plot_properties_in.copy()
+
+    # Add a new 'Calculator' to the pipeline
+    calculator_source = ps.Calculator(registrationName=quantity, Input=solution)
+    calculator_source.ResultArrayName = quantity
+    calculator_source.Function = formula
+
+    if plot_properties.series_names:
+        plot_properties.series_names += [quantity]
+    plot_properties.labels[quantity] = quantity
+    if plot_properties.line_styles:
+        plot_properties.line_styles[quantity] = line_style
+
+    if plot_properties.line_colors:
+        plot_properties.line_colors[quantity] = line_color
+
+    calculator_source.UpdatePipeline()
+
+    return calculator_source, plot_properties
+
+
 def point_data_to_cell_data(
     solution: paraview.servermanager.SourceProxy,
     plot_properties_in: PlotProperties = PlotProperties(),
