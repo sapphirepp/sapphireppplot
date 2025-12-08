@@ -150,29 +150,25 @@ def compute_kinetic_energy(
         Solution with kinetic energy.
     plot_properties : PlotPropertiesMHD
         Solution properties for the including the kinetic energy.
+
+    See Also
+    --------
+    sapphireppplot.transform.calculator : Create Calculator.
     """
-    plot_properties = plot_properties_in.copy()
-
-    # Add a new 'Calculator' to the pipeline
-    calculator = ps.Calculator(registrationName="E_kin", Input=solution)
-    calculator.ResultArrayName = "E_kin"
-
-    function_p2 = (
-        f"({plot_properties.quantity_name("p_x")}^2"
-        + f"{plot_properties.quantity_name("p_y")}^2"
-        + f"{plot_properties.quantity_name("p_z")}^2)"
+    formula_p2 = (
+        f"({plot_properties_in.quantity_name("p_x")}^2"
+        + f"{plot_properties_in.quantity_name("p_y")}^2"
+        + f"{plot_properties_in.quantity_name("p_z")}^2)"
     )
-    calculator.Function = f"1 / (2 * rho) * {function_p2}"
+    formula = f"1 / (2 * rho) * {formula_p2}"
 
-    if plot_properties.series_names:
-        plot_properties.series_names += ["E_kin"]
-    plot_properties.labels["E_kin"] = r"$E_{\rm kin}$"
-    if plot_properties.line_styles:
-        plot_properties.line_styles["E_kin"] = "1"
-    if plot_properties.line_colors:
-        plot_properties.line_colors["E_kin"] = ["0", "0", "0"]
-
-    calculator.UpdatePipeline()
+    calculator, plot_properties = transform.calculator(
+        solution,
+        quantity="E_kin",
+        formula=formula,
+        label=r"$E_{\rm kin}$",
+        plot_properties_in=plot_properties_in,
+    )
 
     return calculator, plot_properties
 
@@ -203,24 +199,20 @@ def compute_sound_speed(
         Solution with sound speed.
     plot_properties : PlotPropertiesMHD
         Solution properties for the including the sound speed.
+
+    See Also
+    --------
+    sapphireppplot.transform.calculator : Create Calculator.
     """
-    plot_properties = plot_properties_in.copy()
+    formula = f"sqrt({gamma} * P / rho)"
 
-    # Add a new 'Calculator' to the pipeline
-    calculator = ps.Calculator(registrationName="a_s", Input=solution)
-    calculator.ResultArrayName = "a_s"
-
-    calculator.Function = f"sqrt({gamma} * P / rho)"
-
-    if plot_properties.series_names:
-        plot_properties.series_names += ["a_s"]
-    plot_properties.labels["a_s"] = r"$a_s$"
-    if plot_properties.line_styles:
-        plot_properties.line_styles["a_s"] = "1"
-    if plot_properties.line_colors:
-        plot_properties.line_colors["a_s"] = ["0", "0", "0"]
-
-    calculator.UpdatePipeline()
+    calculator, plot_properties = transform.calculator(
+        solution,
+        quantity="a_s",
+        formula=formula,
+        label=r"$a_s$",
+        plot_properties_in=plot_properties_in,
+    )
 
     return calculator, plot_properties
 
@@ -252,31 +244,25 @@ def compute_magnetic_pressure(
         Solution with magnetic pressure.
     plot_properties : PlotPropertiesMHD
         Solution properties for the including the magnetic pressure.
+
+    See Also
+    --------
+    sapphireppplot.transform.calculator : Create Calculator.
     """
-    plot_properties = plot_properties_in.copy()
-
-    # Add a new 'Calculator' to the pipeline
-    calculator = ps.Calculator(registrationName="P_B", Input=solution)
-
-    # Properties modified on calculator
-    calculator.ResultArrayName = "P_B"
-
-    function_b2 = (
-        f"({plot_properties.quantity_name("b_x")}^2"
-        + f"{plot_properties.quantity_name("b_y")}^2"
-        + f"{plot_properties.quantity_name("b_z")}^2)"
+    formula_b2 = (
+        f"({plot_properties_in.quantity_name("b_x")}^2"
+        + f"{plot_properties_in.quantity_name("b_y")}^2"
+        + f"{plot_properties_in.quantity_name("b_z")}^2)"
     )
-    calculator.Function = f"({gamma}-1) * {function_b2}/2"
+    formula = f"({gamma}-1) * {formula_b2}/2"
 
-    if plot_properties.series_names:
-        plot_properties.series_names += ["P_B"]
-    plot_properties.labels["P_B"] = r"$P_B$"
-    if plot_properties.line_styles:
-        plot_properties.line_styles["P_B"] = "1"
-    if plot_properties.line_colors:
-        plot_properties.line_colors["P_B"] = ["0", "0", "0"]
-
-    calculator.UpdatePipeline()
+    calculator, plot_properties = transform.calculator(
+        solution,
+        quantity="P_B",
+        formula=formula,
+        label=r"$P_B$",
+        plot_properties_in=plot_properties_in,
+    )
 
     return calculator, plot_properties
 
@@ -296,7 +282,7 @@ def compute_normalized_magnetic_divergence(
     plot_properties_in
         Properties of the source.
     divergence_type
-        ."total", "cells" or "faces" divergence.
+        "total", "cells" or "faces" divergence.
 
     Returns
     -------
@@ -304,6 +290,10 @@ def compute_normalized_magnetic_divergence(
         Solution with normalized magnetic divergence.
     plot_properties : PlotPropertiesMHD
         Solution properties for the including the log magnetic divergence.
+
+    See Also
+    --------
+    sapphireppplot.transform.calculator : Create Calculator.
     """
     plot_properties = plot_properties_in.copy()
 
@@ -316,7 +306,7 @@ def compute_normalized_magnetic_divergence(
     solution_bounds = solution_data.GetBounds()
     dx = (solution_bounds[1] - solution_bounds[0]) / n_cells_x
 
-    name = "normalized_magnetic_divergence"
+    quantity = "normalized_magnetic_divergence"
     quantity_in = "magnetic_divergence"
     label = r"\mid \nabla \cdot B \mid / \mid B \mid \Delta x"
     label_postfix = ""
@@ -325,32 +315,25 @@ def compute_normalized_magnetic_divergence(
         case "total":
             pass
         case "cells":
-            name += "_cells"
+            quantity += "_cells"
             quantity_in += "_cells"
             label_postfix = r"\mid_{\mathrm{Cell}}"
         case "faces":
-            name += "_faces"
+            quantity += "_faces"
             quantity_in += "_faces"
             label_postfix = r"\mid_{\mathrm{Face}}"
         case _:
             raise ValueError(f"Unknown case {type}.")
 
-    # Add a new 'Calculator' to the pipeline
-    calculator = ps.Calculator(registrationName=name, Input=solution)
+    formula = f"abs({quantity_in}) / sqrt(b_X^2 + b_Y^2) * {dx}"
 
-    # Properties modified on calculator
-    calculator.ResultArrayName = name
-    calculator.Function = f"abs({quantity_in}) / sqrt(b_X^2 + b_Y^2) * {dx}"
-
-    if plot_properties.series_names:
-        plot_properties.series_names += [name]
-    plot_properties.labels[name] = f"${label} {label_postfix}$"
-    if plot_properties.line_styles:
-        plot_properties.line_styles[name] = "1"
-    if plot_properties.line_colors:
-        plot_properties.line_colors[name] = ["0", "0", "0"]
-
-    calculator.UpdatePipeline()
+    calculator, plot_properties = transform.calculator(
+        solution,
+        quantity=quantity,
+        formula=formula,
+        label=f"${label} {label_postfix}$",
+        plot_properties_in=plot_properties,
+    )
 
     return calculator, plot_properties
 
