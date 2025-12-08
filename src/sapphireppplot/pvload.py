@@ -267,6 +267,7 @@ def scale_time_steps(
     solution: paraview.servermanager.SourceProxy,
     t_start: float = 0.0,
     t_end: float = 1.0,
+    scale: Optional[float] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
     Scale time steps to match start and end time.
@@ -279,6 +280,9 @@ def scale_time_steps(
         Simulation start time.
     t_end
         Simulation end time.
+    scale
+        Time scaling factor.
+        If set, ``t_end`` is ignored and this scaling is used instead.
 
     Returns
     -------
@@ -293,6 +297,8 @@ def scale_time_steps(
     num = len(solution.GetProperty("TimestepValues"))
     # Properties modified on solution_temporal_scaled
     solution_temporal_scaled.Scale = (t_end - t_start) / (num - 1)
+    if scale:
+        solution_temporal_scaled.Scale = scale
     solution_temporal_scaled.PreShift = 0
     solution_temporal_scaled.PostShift = t_start
 

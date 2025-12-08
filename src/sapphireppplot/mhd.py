@@ -82,6 +82,12 @@ def load_solution(
         base_file_name = prm["Output"]["Base file name"]
     t_start = 0.0
     t_end = float(prm["MHD"]["Time stepping"]["Final time"])
+    # Use Output time step if possible
+    t_scale = None
+    try:
+        t_scale = float(prm["Output"]["Output time step"])
+    except KeyError:
+        pass
 
     match file_format:
         case "vtu":
@@ -100,6 +106,7 @@ def load_solution(
                 solution_without_time,
                 t_start=t_start,
                 t_end=t_end,
+                scale=t_scale,
             )
         case "hdf5":
             solution = pvload.load_solution_hdf5_with_xdmf(
