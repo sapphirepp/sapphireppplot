@@ -48,6 +48,10 @@ class PlotPropertiesMHD(PlotProperties):
             "u_x",
             "u_y",
             "u_z",
+            "B_Magnitude",
+            "B_x",
+            "B_y",
+            "B_z",
             "psi",
         ]
 
@@ -76,6 +80,7 @@ class PlotPropertiesMHD(PlotProperties):
                 prefix + "b",
                 prefix + "P",
                 prefix + "u",
+                prefix + "B",
                 prefix + "psi",
             ]
             if self.dimension <= 1:
@@ -83,12 +88,14 @@ class PlotPropertiesMHD(PlotProperties):
                     prefix + "p_y",
                     prefix + "b_y",
                     prefix + "u_y",
+                    prefix + "B_y",
                 ]
             if self.dimension <= 2:
                 self.series_names += [
                     prefix + "p_z",
                     prefix + "b_z",
                     prefix + "u_z",
+                    prefix + "B_z",
                 ]
 
             for quantity in quantities:
@@ -160,16 +167,22 @@ class PlotPropertiesMHD(PlotProperties):
             "u_x": "u_X",
             "u_y": "u_Y",
             "u_z": "u_Z",
+            "B_Magnitude": "B_Magnitude",
+            "B_x": "B_X",
+            "B_y": "B_Y",
+            "B_z": "B_Z",
             "psi": "psi",
         }
         if self.dimension <= 1:
             quantity_names["p_y"] = "p_y"
             quantity_names["b_y"] = "b_y"
             quantity_names["u_y"] = "u_y"
+            quantity_names["B_y"] = "B_y"
         if self.dimension <= 2:
             quantity_names["p_z"] = "p_z"
             quantity_names["b_z"] = "b_z"
             quantity_names["u_z"] = "u_z"
+            quantity_names["B_z"] = "B_z"
 
         if quantity in quantity_names:
             return prefix + quantity_names[quantity]
@@ -207,19 +220,23 @@ class PlotPropertiesMHD(PlotProperties):
             "p_x": r"$p_{x" + tmp_postfix_2 + r"}$",
             "p_y": r"$p_{y" + tmp_postfix_2 + r"}$",
             "p_z": r"$p_{z" + tmp_postfix_2 + r"}$",
-            "b_Magnitude": r"$\|B" + tmp_postfix_1 + r"\|$",
-            "b_x": r"$B_{x" + tmp_postfix_2 + r"}$",
-            "b_y": r"$B_{y" + tmp_postfix_2 + r"}$",
-            "b_z": r"$B_{z" + tmp_postfix_2 + r"}$",
+            "b_Magnitude": r"$\|b" + tmp_postfix_1 + r"\|$",
+            "b_x": r"$b_{x" + tmp_postfix_2 + r"}$",
+            "b_y": r"$b_{y" + tmp_postfix_2 + r"}$",
+            "b_z": r"$b_{z" + tmp_postfix_2 + r"}$",
             "P": r"$P" + tmp_postfix_1 + r"$",
             "u_Magnitude": r"$\|u" + tmp_postfix_1 + r"\|$",
             "u_x": r"$u_{x" + tmp_postfix_2 + r"}$",
             "u_y": r"$u_{y" + tmp_postfix_2 + r"}$",
             "u_z": r"$u_{z" + tmp_postfix_2 + r"}$",
+            "B_Magnitude": r"$\|B" + tmp_postfix_1 + r"\|$",
+            "B_x": r"$B_{x" + tmp_postfix_2 + r"}$",
+            "B_y": r"$B_{y" + tmp_postfix_2 + r"}$",
+            "B_z": r"$B_{z" + tmp_postfix_2 + r"}$",
             "psi": r"$\psi" + tmp_postfix_1 + r"$",
-            "magnetic_divergence": r"$\nabla \cdot \mathbf{B}$",
-            "magnetic_divergence_cells": r"$\nabla \cdot \mathbf{B} \mid_{\mathrm{Cell}}$",
-            "magnetic_divergence_faces": r"$\nabla \cdot \mathbf{B} \mid_{\mathrm{Face}}$",
+            "magnetic_divergence": r"$\nabla \cdot \mathbf{b}$",
+            "magnetic_divergence_cells": r"$\nabla \cdot \mathbf{b} \mid_{\mathrm{Cell}}$",
+            "magnetic_divergence_faces": r"$\nabla \cdot \mathbf{b} \mid_{\mathrm{Face}}$",
             "shock_indicator": "Shock Indicator",
             "positivity_limiter": "Pos. Limiter",
             "cell_dt": r"$\Delta t_{\rm cell}$",
