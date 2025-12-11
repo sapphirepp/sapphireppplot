@@ -73,9 +73,11 @@ Point1
 Point2
 PointArrays
 pointEvaluation
+Polydata
 ProbeType
 pvbatch
 pvpython
+pvtp
 pvtu
 Rescale
 ResultArrayName

@@ -212,6 +212,53 @@ def load_solution_pvtu(
     return solution
 
 
+def load_solution_pvtp(
+    results_folder: str,
+    base_file_name: str = "solution",
+    load_arrays: Optional[list[str]] = None,
+) -> paraview.servermanager.SourceProxy:
+    """
+    Load series of ``.pvtp`` solution files.
+
+    Parameters
+    ----------
+    results_folder
+        Path to the folder containing ``solution_*.pvtp`` files.
+    base_file_name
+        Base name of the solutions files.
+    load_arrays
+        The name of the arrays in the solution that should be loaded.
+
+    Returns
+    -------
+    solution : SourceProxy
+        A ParaView reader object with selected point arrays enabled.
+
+    Raises
+    ------
+    FileNotFoundError
+        If no ``.pvtp`` files are found in the ``results_folder``.
+    """
+    search_pattern = os.path.join(results_folder, base_file_name + "*.pvtp")
+    pvtp_files = paraview.util.Glob(search_pattern)
+    if not pvtp_files:
+        raise FileNotFoundError(
+            f"No .pvtp files found matching '{search_pattern}'"
+        )
+    print(f"Load results in '{search_pattern}'")
+
+    # create a new 'XML Partitioned Unstructured Grid Reader'
+    solution = ps.XMLPartitionedPolydataReader(
+        registrationName=base_file_name,
+        FileName=pvtp_files,
+    )
+    solution.UpdatePipelineInformation()
+    if load_arrays:
+        solution.PointArrayStatus = load_arrays
+    solution.TimeArray = "TIME"
+    return solution
+
+
 def load_solution_hdf5_with_xdmf(
     results_folder: str,
     base_file_name: str = "solution",
