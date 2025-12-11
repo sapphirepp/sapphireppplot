@@ -483,3 +483,93 @@ def load_solution(
         animation_scene.GoToLast()
 
     return results_folder, prm, solution, animation_scene
+
+
+def load_extract(
+    base_file_name: str,
+    plot_properties: PlotProperties,
+    path_prefix: str = "",
+    results_folder: str = "",
+    subfolder: str = "extracts",
+    animation_time: Optional[float] = None,
+    parameter_file_name: str = "log.prm",
+) -> tuple[
+    str,
+    ParamDict,
+    paraview.servermanager.SourceProxy,
+    paraview.servermanager.Proxy,
+]:
+    """
+    Load extract of a solution.
+
+    This function performs the following steps:
+
+    1. Retrieves the folder containing simulation results.
+    2. Loads the parameter file.
+    3. Loads the solution data from the files in the results subfolder.
+    4. Updates the animation scene to the specified animation time.
+
+    Parameters
+    ----------
+    base_file_name
+        Filename of the extract.
+    plot_properties
+        Properties of the solution to load.
+    path_prefix
+        Prefix for relative path.
+    results_folder
+        The path to the results folder.
+    subfolder
+        Subfolder with the extracts.
+    animation_time
+        Set the time at which the animation scene is displayed.
+        Defaults to the last time step.
+    parameter_file_name
+        File name of the parameter file including file extension.
+
+    Returns
+    -------
+    results_folder : str
+        The path to the results folder.
+    prm : ParamDict
+        Dictionary of the parameters.
+    solution : SourceProxy
+        A ParaView reader object with selected point arrays enabled.
+    animation_scene : Proxy
+        The ParaView AnimationScene.
+
+    Raises
+    ------
+    ValueError
+        If no matching files are found.
+
+    See Also
+    --------
+    sapphireppplot.utils.get_results_folder : Prompt for results folder.
+    sapphireppplot.plot_properties.PlotProperties.series_names :
+        Series names list to load.
+    sapphireppplot.transform.save_extracts : Save extracts.
+    """
+    results_folder = utils.get_results_folder(
+        path_prefix=path_prefix, results_folder=results_folder
+    )
+
+    prm_file = read_parameter_file(
+        results_folder, file_name=parameter_file_name
+    )
+    prm = utils.prm_to_dict(prm_file)
+
+    solution = load_solution_pvtp(
+        os.path.join(results_folder, subfolder),
+        base_file_name=base_file_name,
+        load_arrays=plot_properties.series_names,
+    )
+
+    animation_scene = ps.GetAnimationScene()
+    animation_scene.UpdateAnimationUsingDataTimeSteps()
+    if animation_time is not None:
+        animation_scene.AnimationTime = animation_time
+    else:
+        animation_scene.GoToLast()
+
+    return results_folder, prm, solution, animation_scene
