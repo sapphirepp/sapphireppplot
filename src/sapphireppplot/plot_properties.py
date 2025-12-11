@@ -269,16 +269,38 @@ class PlotProperties:
         """
         if self.labels:
             flat_dict = []
+            default_keys = list(
+                set(self.series_names) - set(self.labels.keys())
+            )
+            for key in default_keys:
+                flat_dict += [key, key]
             for key, value in self.labels.items():
                 flat_dict += [key, value]
             solution_display.SeriesLabel = flat_dict
         if self.line_colors:
             flat_dict = []
+            default_color = ["0", "0", "0"]
+            default_keys = list(
+                set(self.series_names) - set(self.line_colors.keys())
+            )
+            for key in default_keys:
+                flat_dict += [
+                    key,
+                    default_color[0],
+                    default_color[1],
+                    default_color[2],
+                ]
             for key, value in self.line_colors.items():
                 flat_dict += [key, value[0], value[1], value[2]]
             solution_display.SeriesColor = flat_dict
         if self.line_styles:
             flat_dict = []
+            default_style = "1"
+            default_keys = list(
+                set(self.series_names) - set(self.line_colors.keys())
+            )
+            for key in default_keys:
+                flat_dict += [key, default_style]
             for key, value in self.line_styles.items():
                 flat_dict += [key, value]
             solution_display.SeriesLineStyle = flat_dict
