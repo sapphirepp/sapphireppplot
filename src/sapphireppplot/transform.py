@@ -86,7 +86,7 @@ def save_extracts(
     results_folder
         The parent directory path where the extracts will be saved.
     subfolder
-        The subfolder to save the extracts in.
+        The subfolder to save the extracts.
     plot_properties
         Properties of the solution.
 
