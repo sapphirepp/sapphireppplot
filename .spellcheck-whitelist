@@ -55,6 +55,7 @@ zy
 zz
 
 # ParaView
+AnimationScene
 AnimationTime
 AxesGrid
 ComputeTolerance
@@ -80,12 +81,14 @@ Rescale
 ResultArrayName
 ResultTCoords
 servermanager
+Subdirectory
 timestep
 UpdatePipeline
 UpdatePipelineInformation
 util
 vtk
 vtkconsole
+vtp
 vtu
 xdmf
 Xdmf3

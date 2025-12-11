@@ -11,6 +11,82 @@ _epsilon_d: float = 1e-10
 PlotPropertiesVar = TypeVar("PlotPropertiesVar", bound=PlotProperties)
 
 
+def save_extracts(
+    solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,  # noqa: U100
+    results_folder: str,
+    filename: str,
+    plot_properties: PlotPropertiesVar = PlotProperties(),
+) -> paraview.servermanager.Proxy:
+    """
+    Save the extracts of the solution.
+
+    Assumes that the solution is already an extract of the full data,
+    e.g. as a result of
+    :py:func:`slice_plane`.
+
+    Parameters
+    ----------
+    solution
+        The extract of the full solution to save.
+    animation_scene
+        The ParaView AnimationScene.
+    results_folder
+        The parent directory path where the extracts will be saved.
+        The extracts will be saved in a subfolder called ``extracts``.
+    filename
+        The base name for the extracts (without extension).
+    plot_properties
+        Properties of the solution.
+
+    Returns
+    -------
+    vtp_extractor : Proxy
+        The extractor to VTP files.
+
+    See Also
+    --------
+    :ps:`ExtractSurface` : ParaView ExtractSurface filter.
+    :pv:`paraview.simple.CreateExtractor <paraview.simple.__init__.html#paraview.simple.__init__.CreateExtractor>` :
+        ParaView filter to save extracts to files.
+    :pv:`paraview.simple.SaveExtracts <paraview.simple.__init__.html#paraview.simple.__init__.SaveExtracts>` :
+        ParaView method to save extracts.
+    sapphireppplot.plot_properties.PlotProperties.extracts_frame_stride :
+        Frame stride.
+    """
+    # create a new 'Extract Surface'
+    extract_surface = ps.ExtractSurface(
+        registrationName="ExtractSurface", Input=solution
+    )
+
+    # create extractor
+    vtp_extractor = ps.CreateExtractor(
+        "VTP", extract_surface, registrationName="VTP"
+    )
+    vtp_extractor.Enable = 1
+    vtp_extractor.Writer.FileName = filename + r"_{timestep:06d}.pvtp"
+    vtp_extractor.Writer.UseSubdirectory = 0
+    # vtp_extractor.Trigger.Set(
+    #     UseEndTimeStep=0,
+    #     Frequency=1,
+    # )
+
+    file_path = os.path.join(results_folder, "extracts")
+    print(f"Save extracts '{file_path}/{filename}_*.pvtp'")
+
+    # save extracts
+    ps.SaveExtracts(
+        ExtractsOutputDirectory=file_path,
+        # AnimationScene=animation_scene, # This leads to a segmentation fault
+        FrameStride=plot_properties.extracts_frame_stride,
+    )
+
+    # Disable extractor for future extractions
+    vtp_extractor.Enable = 0
+
+    return vtp_extractor
+
+
 def calculator(
     solution: paraview.servermanager.SourceProxy,
     quantity: str,

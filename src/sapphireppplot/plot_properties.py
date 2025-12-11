@@ -65,6 +65,9 @@ class PlotProperties:
     animation_frame_stride: int = 1
     """Frame stride for the animation snapshots."""
 
+    extracts_frame_stride: int = 1
+    """Frame stride for the saving extracts."""
+
     text_color: list[float] = field(default_factory=lambda: [0.5, 0.5, 0.5])
     """The text color for labels and legends."""
     label_size: int = 18
