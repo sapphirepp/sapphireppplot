@@ -11,29 +11,26 @@ _epsilon_d: float = 1e-10
 PlotPropertiesVar = TypeVar("PlotPropertiesVar", bound=PlotProperties)
 
 
-def save_extracts(
+def create_extractor(
     solution: paraview.servermanager.SourceProxy,
-    animation_scene: paraview.servermanager.Proxy,  # noqa: U100
-    results_folder: str,
     filename: str,
-    plot_properties: PlotPropertiesVar = PlotProperties(),
+    plot_properties: PlotPropertiesVar = PlotProperties(),  # noqa: U100
 ) -> paraview.servermanager.Proxy:
     """
-    Save the extracts of the solution.
+    Create a extractor of the solution.
 
-    Assumes that the solution is already an extract of the full data,
-    e.g. as a result of
-    :py:func:`slice_plane`.
+    .. important::
+       This function only prepares the extracts,
+       it does not save them.
+       To save the extracts call :py:func:`save_extracts()`.
+
+    This function assumes that the solution is already an extract of the full data,
+    e.g. as a result of :py:func:`slice_plane`.
 
     Parameters
     ----------
     solution
         The extract of the full solution to save.
-    animation_scene
-        The ParaView AnimationScene.
-    results_folder
-        The parent directory path where the extracts will be saved.
-        The extracts will be saved in a subfolder called ``extracts``.
     filename
         The base name for the extracts (without extension).
     plot_properties
@@ -46,13 +43,12 @@ def save_extracts(
 
     See Also
     --------
-    :ps:`ExtractSurface` : ParaView ExtractSurface filter.
+    :py:func:`sapphireppplot.transform.save_extracts` :
+        Save extracts.
+    :ps:`ExtractSurface` :
+        ParaView ExtractSurface filter.
     :pv:`paraview.simple.CreateExtractor <paraview.simple.__init__.html#paraview.simple.__init__.CreateExtractor>` :
         ParaView filter to save extracts to files.
-    :pv:`paraview.simple.SaveExtracts <paraview.simple.__init__.html#paraview.simple.__init__.SaveExtracts>` :
-        ParaView method to save extracts.
-    sapphireppplot.plot_properties.PlotProperties.extracts_frame_stride :
-        Frame stride.
     """
     # create a new 'Extract Surface'
     extract_surface = ps.ExtractSurface(
@@ -71,20 +67,45 @@ def save_extracts(
     #     Frequency=1,
     # )
 
-    file_path = os.path.join(results_folder, "extracts")
-    print(f"Save extracts '{file_path}/{filename}_*.pvtp'")
+    return vtp_extractor
 
-    # save extracts
+
+def save_extracts(
+    results_folder: str,
+    subfolder: str = "extracts",
+    plot_properties: PlotPropertiesVar = PlotProperties(),
+) -> None:
+    """
+    Save the extracts of the solution created with :py:func:`create_extractor`.
+
+    Note, this function is expensive as it iterates over all time steps.
+    Note, sets the animation time to the last time step.
+
+    Parameters
+    ----------
+    results_folder
+        The parent directory path where the extracts will be saved.
+    subfolder
+        The subfolder to save the extracts in.
+    plot_properties
+        Properties of the solution.
+
+    See Also
+    --------
+    :py:func:`sapphireppplot.transform.create_extractor` :
+        Create extracts.
+    :pv:`paraview.simple.SaveExtracts <paraview.simple.__init__.html#paraview.simple.__init__.SaveExtracts>` :
+        ParaView method to save extracts.
+    :py:attr:`sapphireppplot.plot_properties.PlotProperties.extracts_frame_stride` :
+        Frame stride.
+    """
+    file_path = os.path.join(results_folder, subfolder)
+    print(f"Save extracts in '{file_path}'")
     ps.SaveExtracts(
         ExtractsOutputDirectory=file_path,
         # AnimationScene=animation_scene, # This leads to a segmentation fault
         FrameStride=plot_properties.extracts_frame_stride,
     )
-
-    # Disable extractor for future extractions
-    vtp_extractor.Enable = 0
-
-    return vtp_extractor
 
 
 def calculator(
