@@ -114,7 +114,12 @@ arange
 arccos
 argmin
 argwhere
+concat
+df
+dfs
 dtype
+genfromtxt
+isnan
 lexsort
 linspace
 loadtxt
@@ -138,6 +143,7 @@ cstride
 facecolors
 figsize
 linestyle
+linestyles
 linewidth
 loc
 mappable
