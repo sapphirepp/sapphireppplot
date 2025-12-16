@@ -18,6 +18,8 @@ class PlotProperties:
     """Labels for the series quantities in the chart."""
     data_type: str = "POINTS"
     """Specifies if solution has DG ("POINTS") or FV ("CELLS") data."""
+    representation_type: str = "UnstructuredGridRepresentation"
+    """Specifies ParaView representation type for RenderView."""
 
     preview_size_1d: list[float] = field(default_factory=lambda: [1280, 720])
     """Preview window size in 1D."""

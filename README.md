@@ -1,3 +1,5 @@
+![logo](/docs/_static/logo.png)
+
 # Sapphire++ — Plot
 
 A [ParaView](https://www.paraview.org/)

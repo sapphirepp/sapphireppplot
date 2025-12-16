@@ -74,6 +74,10 @@ myst_enable_extensions = [
 
 html_theme = "sphinx_rtd_theme"
 
+html_static_path = ["_static"]
+# html_logo = "_static/logo.png"
+html_favicon = "_static/favicon.ico"
+
 # -- Options for sphinx-multiversion -----------------------------------------
 # https://sphinx-contrib.github.io/multiversion/main/configuration.html
 

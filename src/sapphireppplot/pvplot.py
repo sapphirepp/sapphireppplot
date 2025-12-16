@@ -162,7 +162,7 @@ def plot_render_view_2d(
 
     # show data in view
     solution_display = ps.Show(
-        solution, render_view, "UnstructuredGridRepresentation"
+        solution, render_view, plot_properties.representation_type
     )
     # Enter preview mode
     layout.PreviewMode = plot_properties.preview_size_2d
@@ -323,7 +323,7 @@ def plot_render_view_3d(
 
     # show data in view
     solution_display = ps.Show(
-        solution, render_view, "UnstructuredGridRepresentation"
+        solution, render_view, plot_properties.representation_type
     )
     # Enter preview mode
     layout.PreviewMode = plot_properties.preview_size_3d
@@ -474,7 +474,7 @@ def show_stream_tracer(
 
     # show data in view
     solution_display = ps.Show(
-        stream_tracer, render_view, "UnstructuredGridRepresentation"
+        stream_tracer, render_view, plot_properties.representation_type
     )
     # update the view to ensure updated data information
     render_view.Update()

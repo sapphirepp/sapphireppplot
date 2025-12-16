@@ -176,6 +176,8 @@ zlim
 autodoc
 autosummary
 extlinks
+favicon
+magick
 multiversion
 rtype
 smv
