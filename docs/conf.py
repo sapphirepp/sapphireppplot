@@ -32,6 +32,7 @@ extensions = [
     "sphinx.ext.extlinks",
     "myst_parser",
     "nbsphinx",
+    "sphinx_copybutton",
     "sphinx_multiversion",
 ]
 
