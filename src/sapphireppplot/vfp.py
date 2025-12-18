@@ -232,7 +232,10 @@ def load_probe_location_spherical_density(
     Assumes that the phase space distribution was reconstructed in Sapphire++
     using ``Probe location``.
 
-    Note that the result is not a solid surface, but a point cloud.
+    Note, this function is very inefficient and should be avoided.
+    In order to get a solid surface,
+    this function first creates a full 3D volume
+    and then slices out a sphere.
 
     Parameters
     ----------
@@ -261,11 +264,13 @@ def load_probe_location_spherical_density(
     --------
     sapphireppplot.pvload : Module to load ParaView files.
     :ps:`TableToPoints` : Convert table to point data.
+    :ps:`PointVolumeInterpolator` : Convert point cloud to grid data.
+    :ps:`Slice` : Slice sphere from volume data.
     """
     plot_properties = plot_properties_in.copy()
     plot_properties.series_names = ["f"]
     plot_properties.labels = {"f": r"$f$"}
-    plot_properties.representation_type = "GeometryRepresentation"
+    plot_properties.representation_type = "UniformGridRepresentation"
     plot_properties.camera_view_3d = (True, 0.9)
     plot_properties.grid_labels = [
         r"$\hat{p}_x$",
@@ -294,13 +299,29 @@ def load_probe_location_spherical_density(
         scale=(t_end - t_start) / (num - 1),
     )
 
-    solution = ps.TableToPoints(
+    point_data = ps.TableToPoints(
         registrationName="TableToPoints",
         Input=time_scaled_tabular_data,
         XColumn="n_px",
         YColumn="n_py",
         ZColumn="n_pz",
     )
+
+    volume_data = ps.PointVolumeInterpolator(
+        registrationName="PointVolumeInterpolator",
+        Input=point_data,
+        Source="Bounded Volume",
+    )
+    volume_data.Source.Origin = [-1.0, -1.0, -1.0]
+    volume_data.Source.Scale = [2.0, 2.0, 2.0]
+    volume_data.Source.Resolution = [100, 100, 100]
+    ps.HideInteractiveWidgets(proxy=volume_data.Source)
+
+    solution = ps.Slice(registrationName="SliceSphere", Input=volume_data)
+    solution.SliceType = "Sphere"
+    solution.SliceType.Center = [0.0, 0.0, 0.0]
+    solution.SliceType.Radius = 1.0
+    ps.HideInteractiveWidgets(proxy=solution.SliceType)
 
     solution.UpdatePipeline()
 
@@ -1139,8 +1160,6 @@ def plot_phase_space_spherical_density_map(
         log_scale=log_scale,
         plot_properties=plot_properties,
     )
-    solution_display = ps.GetRepresentation(solution, view=render_view)
-    solution_display.PointSize = 18.0
 
     if show_time:
         pvplot.display_time(render_view, plot_properties=plot_properties)
