@@ -324,6 +324,8 @@ class PlotProperties:
         """
         if self.show_grid:
             solution_display.SetRepresentationType("Surface With Edges")
+        else:
+            solution_display.SetRepresentationType("Surface")
         render_view.AxesGrid.Visibility = 1
         render_view.AxesGrid.XTitle = self.grid_labels[0]
         render_view.AxesGrid.YTitle = self.grid_labels[1] + "  "
@@ -371,6 +373,8 @@ class PlotProperties:
         """
         if self.show_grid:
             solution_display.SetRepresentationType("Surface With Edges")
+        else:
+            solution_display.SetRepresentationType("Surface")
         render_view.AxesGrid.Visibility = 1
         render_view.AxesGrid.XTitle = self.grid_labels[0]
         render_view.AxesGrid.YTitle = " " + self.grid_labels[1] + "  "

@@ -923,3 +923,72 @@ def plot_f_lms_over_p(
         pvplot.save_animation(layout, results_folder, name, plot_properties)
 
     return plot_over_line_p, layout, line_chart_view
+
+
+def plot_phase_space_surface(
+    solution: paraview.servermanager.SourceProxy,
+    results_folder: str,
+    name: str,
+    plot_properties: PlotProperties,
+    value_range: Optional[list[float]] = None,
+    log_scale: bool = True,
+    show_time: bool = False,
+    save_animation: bool = False,
+) -> tuple[
+    paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
+]:
+    r"""
+    Plot and save a :math:`\cos(\theta) - \phi` plot of the phase space distribution.
+
+    Parameters
+    ----------
+    solution
+        The simulation or computation result containing the data to plot.
+    results_folder
+        Path to the folder where results (images/animations) will be saved.
+    name
+        Name of the layout and image/animation files.
+    plot_properties
+        Properties for plotting.
+    value_range
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the color bar.
+    log_scale
+        Use a logarithmic color scale?
+    show_time
+        Display the simulation time in the render view.
+    save_animation
+        Save an animation of the plot.
+
+    Returns
+    -------
+    layout : ViewLayoutProxy
+        The layout object used for the plot.
+    render_view : RenderViewProxy
+        The configured 2D render view.
+
+    See Also
+    --------
+    load_probe_location_surface : Load phase space surface.
+    sapphireppplot.pvplot.plot_render_view_2d : Plot 2D RenderView.
+    sapphireppplot.pvplot.display_time : Display time.
+    """
+    # create new layout object
+    layout = ps.CreateLayout(name)
+    render_view = pvplot.plot_render_view_2d(
+        solution,
+        layout,
+        "f",
+        value_range=value_range,
+        log_scale=log_scale,
+        plot_properties=plot_properties,
+    )
+
+    if show_time:
+        pvplot.display_time(render_view, plot_properties=plot_properties)
+
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
+    if save_animation:
+        pvplot.save_animation(layout, results_folder, name, plot_properties)
+
+    return layout, render_view
