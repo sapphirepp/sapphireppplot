@@ -220,6 +220,93 @@ def load_probe_location_surface(
     return solution, coordinates, plot_properties
 
 
+def load_probe_location_spherical_density(
+    results_folder: str,
+    prm: ParamDict,
+    point_id: int = 0,
+    plot_properties_in: PlotProperties = PlotProperties(),
+) -> tuple[paraview.servermanager.SourceProxy, list[float], PlotProperties]:
+    """
+    Load spherical density map of phase space distribution at a probed location.
+
+    Assumes that the phase space distribution was reconstructed in Sapphire++
+    using ``Probe location``.
+
+    Note that the result is not a solid surface, but a point cloud.
+
+    Parameters
+    ----------
+    results_folder
+        The path to the results folder.
+    prm
+        Dictionary of the parameters.
+    point_id
+        Index of the
+
+    Returns
+    -------
+    solution : SourceProxy
+        ParaView source for the phase space spherical density map.
+    coordinates : list[float]
+        Coordinate of the point in reduced phase space.
+    plot_properties : PlotProperties
+        Properties of the spherical density map.
+
+    Raises
+    ------
+    ValueError
+        If no matching files are found.
+
+    See Also
+    --------
+    sapphireppplot.pvload : Module to load ParaView files.
+    :ps:`TableToPoints` : Convert table to point data.
+    """
+    plot_properties = plot_properties_in.copy()
+    plot_properties.series_names = ["f"]
+    plot_properties.labels = {"f": r"$f$"}
+    plot_properties.representation_type = "GeometryRepresentation"
+    plot_properties.camera_view_3d = (True, 0.9)
+    plot_properties.grid_labels = [
+        r"$\hat{p}_x$",
+        r"$\hat{p}_y$",
+        r"$\hat{p}_z$",
+    ]
+
+    coordinates = prm["VFP"]["Probe location"]["points"].split(";")[point_id]
+    coordinates = [float(s) for s in coordinates.split(",")]
+    print(f"Load probe location spherical density map at x = {coordinates}")
+
+    tabular_data = pvload.load_csv(
+        results_folder,
+        f"spherical_density_map_point_{point_id:02d}_t_*.dat",
+        delimiter=" ",
+        array_names=["n_px", "n_py", "n_pz", "f"],
+    )
+
+    t_start = 0.0
+    t_end = float(prm["VFP"]["Time stepping"]["Final time"])
+    num = len(tabular_data.Input.GetProperty("TimestepValues"))
+    time_scaled_tabular_data = pvload.scale_time_steps(
+        tabular_data,
+        t_start=t_start,
+        t_end=t_end,
+        scale=(t_end - t_start) / (num - 1),
+    )
+
+    solution = ps.TableToPoints(
+        registrationName="TableToPoints",
+        Input=time_scaled_tabular_data,
+        XColumn="n_px",
+        YColumn="n_py",
+        ZColumn="n_pz",
+    )
+
+    solution.UpdatePipeline()
+
+    return solution, coordinates, plot_properties
+
+
 def scale_distribution_function(
     solution: paraview.servermanager.SourceProxy,
     plot_properties_in: PlotPropertiesVFP,
