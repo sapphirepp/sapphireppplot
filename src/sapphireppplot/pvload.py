@@ -66,6 +66,83 @@ def read_parameter_file(
     return prm_lines
 
 
+def load_csv(
+    results_folder: str,
+    file_pattern: str = "solution_*.csv",
+    delimiter: str = ",",
+    have_headers: int = 0,
+    skip_lines: int = 0,
+    comments: str = "#",
+    array_names: Optional[list[str]] = None,
+) -> paraview.servermanager.SourceProxy:
+    """
+    Load contents of a ``.csv`` file as tabular data.
+
+    Parameters
+    ----------
+    results_folder
+        Path to the folder containing ``file_pattern`` files.
+    file_pattern
+        File pattern of the solutions files.
+    delimiter
+        Delimiter of the CSV files.
+    have_headers
+        Treat the first line of the file as headers?
+    skip_lines
+        Number of lines to skip.
+    comments
+        Character for comments.
+    array_names
+        If a list is given, the rows of the table will be renamed accordingly.
+
+    Returns
+    -------
+    solution : SourceProxy
+        A ParaView Source with Row data.
+
+    Raises
+    ------
+    FileNotFoundError
+        If no matching file is found in the ``results_folder``.
+
+    Note
+    ----
+    Tabular data in ParaView can be converted to point data using
+    :ps:`TableToPoints`.
+    This point cloud can be converted into a grid using
+    :ps:`PointVolumeInterpolator`.
+    """
+    search_pattern = os.path.join(results_folder, file_pattern)
+    csv_files = paraview.util.Glob(search_pattern)
+    if not csv_files:
+        raise FileNotFoundError(f"No file found matching '{search_pattern}'")
+    print(f"Load results in '{search_pattern}'")
+
+    # create a new 'CSV Reader'
+    solution = ps.CSVReader(
+        registrationName=file_pattern,
+        FileName=csv_files,
+        DetectNumericColumns=1,
+        UseStringDelimiter=1,
+        FieldDelimiterCharacters=delimiter,
+        HaveHeaders=have_headers,
+        SkippedLines=skip_lines,
+        CommentCharacters=comments,
+    )
+
+    if array_names:
+        solution = ps.RenameArrays(
+            registrationName="RenameArrays", Input=solution
+        )
+        name_list = []
+        for i, name in enumerate(array_names):
+            name_list += [f"Field {i}", name]
+        solution.RowArrays = name_list
+
+    solution.UpdatePipelineInformation()
+    return solution
+
+
 def load_solution_vtk(
     results_folder: str,
     base_file_name: str = "solution",
