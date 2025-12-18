@@ -4,6 +4,7 @@ from typing import Optional
 import paraview.simple as ps
 import paraview.servermanager
 
+from sapphireppplot.plot_properties import PlotProperties
 from sapphireppplot.plot_properties_vfp import PlotPropertiesVFP
 from sapphireppplot.utils import ParamDict
 from sapphireppplot import utils, pvload, pvplot, transform
@@ -122,6 +123,101 @@ def load_solution(
         animation_scene.GoToLast()
 
     return results_folder, prm, solution, animation_scene
+
+
+def load_probe_location_surface(
+    results_folder: str,
+    prm: ParamDict,
+    point_id: int = 0,
+    plot_properties_in: PlotProperties = PlotProperties(),
+) -> tuple[paraview.servermanager.SourceProxy, list[float], PlotProperties]:
+    """
+    Load surface plot of phase space distribution at a probed location.
+
+    Assumes that the phase space distribution was reconstructed in Sapphire++
+    using ``Probe location``.
+
+    Parameters
+    ----------
+    results_folder
+        The path to the results folder.
+    prm
+        Dictionary of the parameters.
+    point_id
+        Index of the
+
+    Returns
+    -------
+    solution : SourceProxy
+        ParaView source for the phase space surface plot.
+    coordinates : list[float]
+        Coordinate of the point in reduced phase space.
+    plot_properties : PlotProperties
+        Properties of the surface plot.
+
+    Raises
+    ------
+    ValueError
+        If no matching files are found.
+
+    See Also
+    --------
+    sapphireppplot.pvload : Module to load ParaView files.
+    :ps:`TableToPoints` : Convert table to point data.
+    :ps:`PointVolumeInterpolator` : Convert point cloud to grid data.
+    """
+    plot_properties = plot_properties_in.copy()
+    plot_properties.series_names = ["f"]
+    plot_properties.labels = {"f": r"$f$"}
+    plot_properties.representation_type = "UniformGridRepresentation"
+    plot_properties.preview_size_2d = [720, 1280]
+    plot_properties.camera_view_2d = (True, 0.9)
+    plot_properties.grid_labels = [r"$\cos(\theta)$", r"$\phi$", r"$z$"]
+
+    coordinates = prm["VFP"]["Probe location"]["points"].split(";")[point_id]
+    coordinates = [float(s) for s in coordinates.split(",")]
+    print(f"Load probe location surface at x = {coordinates}")
+
+    tabular_data = pvload.load_csv(
+        results_folder,
+        f"surface_plot_distribution_function_point_{point_id:02d}_t_*.dat",
+        delimiter=" ",
+        array_names=["cos_theta", "phi", "f"],
+    )
+
+    t_start = 0.0
+    t_end = float(prm["VFP"]["Time stepping"]["Final time"])
+    num = len(tabular_data.Input.GetProperty("TimestepValues"))
+    time_scaled_tabular_data = pvload.scale_time_steps(
+        tabular_data,
+        t_start=t_start,
+        t_end=t_end,
+        scale=(t_end - t_start) / (num - 1),
+    )
+
+    point_data = ps.TableToPoints(
+        registrationName="TableToPoints",
+        Input=time_scaled_tabular_data,
+        XColumn="cos_theta",
+        YColumn="phi",
+        a2DPoints=1,
+    )
+
+    n_cos_theta = int(prm["VFP"]["Probe location"]["n_cos_theta"])
+    n_phi = int(prm["VFP"]["Probe location"]["n_phi"])
+    solution = ps.PointVolumeInterpolator(
+        registrationName="PointVolumeInterpolator",
+        Input=point_data,
+        Source="Bounded Volume",
+    )
+    solution.Source.Origin = [-1.0, 0.0, 0.0]
+    solution.Source.Scale = [2.0, 6.28318530717959, 0.0]  # 2, 2*pi, 0
+    solution.Source.Resolution = [n_cos_theta, n_phi, 1]
+    ps.HideInteractiveWidgets(proxy=solution.Source)
+
+    solution.UpdatePipeline()
+
+    return solution, coordinates, plot_properties
 
 
 def scale_distribution_function(

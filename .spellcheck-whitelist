@@ -55,6 +55,8 @@ zy
 zz
 
 # ParaView
+a2
+a2DPoints
 AnimationScene
 AnimationTime
 AxesGrid
@@ -68,6 +70,7 @@ FacesToRender
 Function2
 hdf5
 HideInteractiveWidgets
+Interpolator
 Multiline
 paraview
 Point1

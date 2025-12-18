@@ -418,11 +418,12 @@ def scale_time_steps(
         registrationName="TemporalShiftScale", Input=solution
     )
 
-    num = len(solution.GetProperty("TimestepValues"))
-    # Properties modified on solution_temporal_scaled
-    solution_temporal_scaled.Scale = (t_end - t_start) / (num - 1)
     if scale:
         solution_temporal_scaled.Scale = scale
+    else:
+        num = len(solution.GetProperty("TimestepValues"))
+        # Properties modified on solution_temporal_scaled
+        solution_temporal_scaled.Scale = (t_end - t_start) / (num - 1)
     solution_temporal_scaled.PreShift = 0
     solution_temporal_scaled.PostShift = t_start
 
