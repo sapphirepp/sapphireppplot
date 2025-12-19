@@ -172,7 +172,8 @@ def load_probe_location_surface(
     plot_properties.representation_type = "UniformGridRepresentation"
     plot_properties.preview_size_2d = [720, 1280]
     plot_properties.camera_view_2d = (True, 0.9)
-    plot_properties.grid_labels = [r"$\cos(\theta)$", r"$\phi$", r"$z$"]
+    plot_properties.preview_size_3d = [1280, 720]
+    plot_properties.grid_labels = [r"$\cos(\theta)$", r"$\phi$", r"$f$"]
 
     coordinates = prm["VFP"]["Probe location"]["points"].split(";")[point_id]
     coordinates = [float(s) for s in coordinates.split(",")]
@@ -1094,6 +1095,99 @@ def plot_phase_space_surface(
 
     if show_time:
         pvplot.display_time(render_view, plot_properties=plot_properties)
+
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
+    if save_animation:
+        pvplot.save_animation(layout, results_folder, name, plot_properties)
+
+    return layout, render_view
+
+
+def plot_elevated_phase_space_surface(
+    solution: paraview.servermanager.SourceProxy,
+    results_folder: str,
+    name: str,
+    plot_properties: PlotProperties,
+    scale_factor: float = 1.0,
+    value_range: Optional[list[float]] = None,
+    log_scale: bool = False,
+    save_animation: bool = False,
+) -> tuple[
+    paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
+]:
+    r"""
+    Plot and save an elevated surface plot of the phase space distribution.
+
+    Parameters
+    ----------
+    solution
+        The simulation or computation result containing the data to plot.
+    results_folder
+        Path to the folder where results (images/animations) will be saved.
+    name
+        Name of the layout and image/animation files.
+    plot_properties
+        Properties for plotting.
+    scale_factor
+        Scaling factor for the warp in z-direction.
+    value_range
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the color bar.
+    log_scale
+        Use a logarithmic color scale?
+    save_animation
+        Save an animation of the plot.
+
+    Returns
+    -------
+    layout : ViewLayoutProxy
+        The layout object used for the plot.
+    render_view : RenderViewProxy
+        The configured 3D render view.
+
+    See Also
+    --------
+    load_probe_location_surface : Load phase space surface.
+    sapphireppplot.pvplot.plot_render_view_3d : Plot 3D RenderView.
+    sapphireppplot.pvplot.display_time : Display time.
+    :ps:`
+    """
+    warp_by_scalar = ps.WarpByScalar(
+        registrationName="WarpByScalar",
+        Input=solution,
+        Scalars=["POINTS", "f"],
+        ScaleFactor=scale_factor,
+        Normal=[0.0, 0.0, 1.0],
+    )
+    # plot_properties.representation_type = "StructuredGridRepresentation"
+
+    # create new layout object
+    layout = ps.CreateLayout(name)
+    render_view = pvplot.plot_render_view_3d(
+        warp_by_scalar,
+        layout,
+        "f",
+        value_range=value_range,
+        log_scale=log_scale,
+        # camera_direction=[0.0, 1.0, -1.0],
+        plot_properties=plot_properties,
+    )
+
+    # Set camera position
+    # render_view.Set(  # Setting for preview_size 1024 x 1024
+    #     CameraPosition=[3.0, -9.0, 2.0],
+    #     CameraFocalPoint=[-0.5, 3.0, 0.5],
+    #     CameraViewUp=[0.0, 0.0, 1.0],
+    #     CameraViewAngle=20,
+    #     CameraParallelScale=3.0,
+    # )
+    render_view.Set(  # Setting for preview_size 1280 x 720
+        CameraPosition=[6.0, -8.0, 2.0],
+        CameraFocalPoint=[-0.5, 3.0, 0.5],
+        CameraViewUp=[0.0, 0.0, 1.0],
+        CameraViewAngle=20,
+        CameraParallelScale=3.0,
+    )
 
     pvplot.save_screenshot(layout, results_folder, name, plot_properties)
     if save_animation:
