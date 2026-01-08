@@ -3,6 +3,8 @@
 from dataclasses import dataclass, field, replace
 import copy
 from typing import Optional, Any, Self
+from matplotlib.typing import ColorType
+import matplotlib.colors
 import paraview.servermanager
 
 
@@ -70,7 +72,7 @@ class PlotProperties:
     extracts_frame_stride: int = 1
     """Frame stride for the saving extracts."""
 
-    text_color: list[float] = field(default_factory=lambda: [0.5, 0.5, 0.5])
+    text_color: ColorType = field(default_factory=lambda: (0.5, 0.5, 0.5))
     """The text color for labels and legends."""
     label_size: int = 18
     """Font size for label text."""
@@ -79,7 +81,7 @@ class PlotProperties:
     title_size = 30
     """Font size for chart titles."""
 
-    line_colors: dict[str, list[str]] = field(default_factory=dict)
+    line_colors: dict[str, ColorType] = field(default_factory=dict)
     """Line colors for the series quantities in the LineChartView."""
     line_styles: dict[str, str] = field(default_factory=dict)
     """
@@ -116,7 +118,7 @@ class PlotProperties:
         default_factory=lambda: [r"$x$", r"$y$", r"$z$"]
     )
     """Labels of the x,y and z axes for 2D/3D plots."""
-    grid_color: list[float] = field(default_factory=lambda: [0.5, 0.5, 0.5])
+    grid_color: ColorType = field(default_factory=lambda: (0.5, 0.5, 0.5))
     """The color of grid axes and legend for 2D/3D plots."""
 
     color_map: str = "Viridis (matplotlib)"
@@ -281,25 +283,30 @@ class PlotProperties:
             solution_display.SeriesLabel = flat_dict
         if self.line_colors:
             flat_dict = []
-            default_color = ["0", "0", "0"]
+            default_color = "black"
             default_keys = list(
                 set(self.series_names) - set(self.line_colors.keys())
             )
             for key in default_keys:
                 flat_dict += [
                     key,
-                    default_color[0],
-                    default_color[1],
-                    default_color[2],
+                    str(matplotlib.colors.to_rgb(default_color)[0]),
+                    str(matplotlib.colors.to_rgb(default_color)[1]),
+                    str(matplotlib.colors.to_rgb(default_color)[2]),
                 ]
             for key, value in self.line_colors.items():
-                flat_dict += [key, value[0], value[1], value[2]]
+                flat_dict += [
+                    key,
+                    str(matplotlib.colors.to_rgb(value)[0]),
+                    str(matplotlib.colors.to_rgb(value)[1]),
+                    str(matplotlib.colors.to_rgb(value)[2]),
+                ]
             solution_display.SeriesColor = flat_dict
         if self.line_styles:
             flat_dict = []
             default_style = "1"
             default_keys = list(
-                set(self.series_names) - set(self.line_colors.keys())
+                set(self.series_names) - set(self.line_styles.keys())
             )
             for key in default_keys:
                 flat_dict += [key, default_style]

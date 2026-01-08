@@ -502,7 +502,7 @@ def plot_split_view_1d(
     plot_properties = plot_properties_in.copy()
     # Set all lines black
     for key in plot_properties.line_colors:
-        plot_properties.line_colors[key] = ["0", "0", "0"]
+        plot_properties.line_colors[key] = "black"
 
     for i, quantity in enumerate(quantities):
         y_label = plot_properties.quantity_label(quantity)

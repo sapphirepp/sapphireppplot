@@ -1,6 +1,7 @@
 """Transform the solution, e.g. by PlotOverLine or Calculator."""
 
 from typing import Optional, TypeVar
+from matplotlib.typing import ColorType
 import os
 import paraview.simple as ps
 import paraview.servermanager
@@ -114,7 +115,7 @@ def calculator(
     formula: str,
     label: Optional[str] = None,
     line_style: str = "1",
-    line_color: Optional[list[str]] = None,
+    line_color: ColorType = "black",
     plot_properties_in: PlotPropertiesVar = PlotProperties(),
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
     """
@@ -135,7 +136,6 @@ def calculator(
         Line style for the new quantity.
     line_color
         Line color for the new quantity.
-        Default to ``["0", "0", "0"]``.
     plot_properties_in
         Properties of the solution.
 
@@ -150,8 +150,6 @@ def calculator(
     --------
     :ps:`Calculator` : ParaView Calculator filter.
     """
-    if not line_color:
-        line_color = ["0", "0", "0"]
     if not label:
         label = quantity
 
@@ -555,7 +553,7 @@ def integrate_variables(
     if plot_properties.labels:
         plot_properties.labels["Volume"] = r"$V$"
     if plot_properties.line_colors:
-        plot_properties.line_colors["Volume"] = ["0", "0", "0"]
+        plot_properties.line_colors["Volume"] = "black"
     if plot_properties.line_styles:
         plot_properties.line_styles["Volume"] = "1"
 
@@ -634,7 +632,7 @@ def plot_over_time(
     if plot_properties.labels:
         plot_properties.labels["Time (id=0)"] = r"$t$"
     if plot_properties.line_colors:
-        plot_properties.line_colors["Time (id=0)"] = ["0", "0", "0"]
+        plot_properties.line_colors["Time (id=0)"] = "black"
     if plot_properties.line_styles:
         plot_properties.line_styles["Time (id=0)"] = "1"
     plot_properties.data_type = "ROWS"
@@ -655,11 +653,7 @@ def plot_over_time(
         if plot_properties.labels:
             plot_properties.labels["scaled_t_axes (id=0)"] = r"$t / t_0$"
         if plot_properties.line_colors:
-            plot_properties.line_colors["scaled_t_axes (id=0)"] = [
-                "0",
-                "0",
-                "0",
-            ]
+            plot_properties.line_colors["scaled_t_axes (id=0)"] = "black"
         if plot_properties.line_styles:
             plot_properties.line_styles["scaled_t_axes (id=0)"] = "1"
 
