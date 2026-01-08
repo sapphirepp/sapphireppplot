@@ -2,6 +2,7 @@
 
 from typing import Optional
 import os
+import matplotlib.colors
 import paraview.simple as ps
 import paraview.servermanager
 from sapphireppplot.plot_properties import PlotProperties
@@ -552,6 +553,8 @@ def display_text(
     text_proxy : Proxy
         The text proxy.
     """
+    is_line_char_view = view.IsA("vtkSMContextViewProxy")
+
     # create a new 'Text'
     text_proxy = ps.Text(registrationName="Text")
     text_proxy.Text = text
@@ -559,19 +562,33 @@ def display_text(
     ps.SetActiveSource(text_proxy)
 
     # show data in view
-    text_display = ps.Show(text_proxy, view, "TextSourceRepresentation")
+    if is_line_char_view:
+        text_display = ps.Show(text_proxy, view, "ChartTextRepresentation")
+    else:
+        text_display = ps.Show(text_proxy, view, "TextSourceRepresentation")
 
     # Properties modified on text_display
     text_display.FontSize = plot_properties.text_size
-    text_display.Color = plot_properties.text_color
-    match location:
-        case str():
-            text_display.WindowLocation = location
-        case _:
-            text_display.WindowLocation = "Any Location"
-            text_display.Position = location
+    text_display.Color = matplotlib.colors.to_rgb(plot_properties.text_color)
+    if is_line_char_view:
+        match location:
+            case str():
+                text_display.LabelLocation = location
+            case _:
+                text_display.LabelLocation = "Any Location"
+                text_display.Position = location
+    else:
+        match location:
+            case str():
+                text_display.WindowLocation = location
+            case _:
+                text_display.WindowLocation = "Any Location"
+                text_display.Position = location
 
     view.Update()
+    # Fix for correct positioning
+    if is_line_char_view:
+        ps.Render(view)
     return text_proxy
 
 
@@ -594,6 +611,8 @@ def display_time(
     annotate_time : Proxy
         The text proxy.
     """
+    is_line_char_view = view.IsA("vtkSMContextViewProxy")
+
     # create a new 'Annotate Time'
     annotate_time = ps.AnnotateTime(registrationName="AnnotateTime")
     annotate_time.Format = plot_properties.time_format
@@ -601,19 +620,33 @@ def display_time(
     ps.SetActiveSource(annotate_time)
 
     # show data in view
-    time_display = ps.Show(annotate_time, view, "TextSourceRepresentation")
+    if is_line_char_view:
+        time_display = ps.Show(annotate_time, view, "ChartTextRepresentation")
+    else:
+        time_display = ps.Show(annotate_time, view, "TextSourceRepresentation")
 
     # Properties modified on time_display
     time_display.FontSize = plot_properties.label_size
-    time_display.Color = plot_properties.text_color
-    match plot_properties.time_location:
-        case str():
-            time_display.WindowLocation = plot_properties.time_location
-        case _:
-            time_display.WindowLocation = "Any Location"
-            time_display.Position = plot_properties.time_location
+    time_display.Color = matplotlib.colors.to_rgb(plot_properties.text_color)
+    if is_line_char_view:
+        match plot_properties.time_location:
+            case str():
+                time_display.LabelLocation = plot_properties.time_location
+            case _:
+                time_display.LabelLocation = "Any Location"
+                time_display.Position = plot_properties.time_location
+    else:
+        match plot_properties.time_location:
+            case str():
+                time_display.WindowLocation = plot_properties.time_location
+            case _:
+                time_display.WindowLocation = "Any Location"
+                time_display.Position = plot_properties.time_location
 
     view.Update()
+    # Fix for correct positioning
+    if is_line_char_view:
+        ps.Render(view)
     return annotate_time
 
 
