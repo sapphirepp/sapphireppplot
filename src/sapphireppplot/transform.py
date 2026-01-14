@@ -615,6 +615,7 @@ def plot_over_time(
         plot_properties.series_names += ["Time"]
     if plot_properties.labels:
         plot_properties.labels["Time (id=0)"] = r"$t$"
+    plot_properties.bottom_axis_labels = {}
     plot_properties.data_type = "ROWS"
 
     if t_axes_scale is not None:

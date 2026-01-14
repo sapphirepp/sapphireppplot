@@ -112,6 +112,11 @@ class PlotProperties:
     Set to ``0`` to hide the legend.
     """
 
+    left_axis_labels: dict[float, str] = field(default_factory=dict)
+    """Custom axis labels for left axes in LineChartView."""
+    bottom_axis_labels: dict[float, str] = field(default_factory=dict)
+    """Custom axis labels for bottom axes in LineChartView."""
+
     show_grid: bool = False
     """Show the grid lines for 2D/3D plots?"""
     grid_labels: list[str] = field(
@@ -259,6 +264,18 @@ class PlotProperties:
         else:
             line_chart_view.ShowLegend = True
             line_chart_view.LegendSymbolWidth = self.legend_symbol_width
+        if self.left_axis_labels:
+            flat_dict = []
+            for key, value in self.left_axis_labels.items():
+                flat_dict += [str(key), str(value)]
+            line_chart_view.LeftAxisUseCustomLabels = 1
+            line_chart_view.LeftAxisLabels = flat_dict
+        if self.bottom_axis_labels:
+            flat_dict = []
+            for key, value in self.bottom_axis_labels.items():
+                flat_dict += [str(key), str(value)]
+            line_chart_view.BottomAxisUseCustomLabels = 1
+            line_chart_view.BottomAxisLabels = flat_dict
 
     def configure_line_chart_view_display(
         self, solution_display: paraview.servermanager.Proxy
