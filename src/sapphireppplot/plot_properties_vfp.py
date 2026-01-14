@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass, field
 from typing import Optional
+import numpy as np
 
 from sapphireppplot.plot_properties import PlotProperties
 
@@ -21,7 +22,7 @@ class PlotPropertiesVFP(PlotProperties):
     dim_cs: int = 1
     """Spatial dimension of the results."""
     logarithmic_p: bool = True
-    """Does the solution have a momentum dependence?"""
+    """Does the solution uses logarithmic momentum?"""
     scaled_distribution_function: bool = False
     """
     Is the distribution function scaled in Sapphire++ as
@@ -345,3 +346,39 @@ class PlotPropertiesVFP(PlotProperties):
 
         if self.debug_input_functions:
             self._add_debug_input_functions(lms_indices)
+
+    def convert_lnp_to_p(
+        self, p_min: float = 1e-25, p_max: float = 1e25, num: int = 51
+    ) -> None:
+        r"""
+        Convert the axes labels for the LineChartView to from :math:`\ln(p)` to :math:`p`.
+
+        .. note::
+            This function only works for LineChartViews.
+            It assumes that the bottom axes is :math:`\ln(p)`.
+
+        If more control on the label format is desired,
+        directly modify the `bottom_axis_labels` instead.
+
+        Parameters
+        ----------
+        p_min
+            Minimum momentum to label.
+        p_max
+            Maximum momentum to label.
+        num
+            Number of subdivisions.
+
+        See Also
+        --------
+        sapphireppplot.plot_properties.PlotProperties.bottom_axis_labels
+        """
+        assert self.momentum and self.logarithmic_p, "Plot has no ln_p axis"
+
+        self.bottom_axis_labels = {}
+        for p in np.logspace(np.log10(p_min), np.log10(p_max), num):
+            x = p
+            if self.logarithmic_p:
+                x = np.log(p)
+            self.bottom_axis_labels[x] = f"{p:g}"
+        self.logarithmic_p = False

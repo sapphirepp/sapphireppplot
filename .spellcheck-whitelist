@@ -34,6 +34,7 @@ hd
 inj
 interpol
 lms
+lnp
 nu0
 num
 p0
@@ -131,6 +132,8 @@ isnan
 lexsort
 linspace
 loadtxt
+log10
+logspace
 meshgrid
 ndarray
 npz

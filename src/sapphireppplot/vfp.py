@@ -555,7 +555,9 @@ def plot_f_lms_1d(
 
     if x_label is None:
         if plot_properties.momentum:
-            x_label = r"$\ln p$"
+            x_label = r"$p$"
+            if plot_properties.logarithmic_p:
+                x_label = r"$\ln p$"
         else:
             x_label = r"$x$"
 
