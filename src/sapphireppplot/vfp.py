@@ -1158,7 +1158,6 @@ def plot_elevated_phase_space_surface(
     load_probe_location_surface : Load phase space surface.
     sapphireppplot.pvplot.plot_render_view_3d : Plot 3D RenderView.
     sapphireppplot.pvplot.display_time : Display time.
-    :ps:`
     """
     warp_by_scalar = ps.WarpByScalar(
         registrationName="WarpByScalar",
