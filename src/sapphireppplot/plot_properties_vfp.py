@@ -348,7 +348,11 @@ class PlotPropertiesVFP(PlotProperties):
             self._add_debug_input_functions(lms_indices)
 
     def convert_lnp_to_p(
-        self, p_min: float = 1e-25, p_max: float = 1e25, num: int = 51
+        self,
+        p_min: float = 1e-15,
+        p_max: float = 1e15,
+        num: int = 31,
+        num_subdivisions: int = 10,
     ) -> None:
         r"""
         Convert the axes labels for the LineChartView to from :math:`\ln(p)` to :math:`p`.
@@ -367,7 +371,11 @@ class PlotPropertiesVFP(PlotProperties):
         p_max
             Maximum momentum to label.
         num
-            Number of subdivisions.
+            Number of labelled divisions,
+            logarithmically spaced.
+        num_subdivisions
+            Number of unlabelled subdivisions,
+            linearly spaced.
 
         See Also
         --------
@@ -376,9 +384,13 @@ class PlotPropertiesVFP(PlotProperties):
         assert self.momentum and self.logarithmic_p, "Plot has no ln_p axis"
 
         self.bottom_axis_labels = {}
+        last_p = 0.0
         for p in np.logspace(np.log10(p_min), np.log10(p_max), num):
-            x = p
-            if self.logarithmic_p:
-                x = np.log(p)
-            self.bottom_axis_labels[x] = f"{p:g}"
+            self.bottom_axis_labels[np.log(p)] = f"{p:g}"
+
+            if last_p > 0.0:
+                for p_sub in np.linspace(last_p, p, num_subdivisions)[1:-1]:
+                    self.bottom_axis_labels[np.log(p_sub)] = " "
+            last_p = p
+
         self.logarithmic_p = False
