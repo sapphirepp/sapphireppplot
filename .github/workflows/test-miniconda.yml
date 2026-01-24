@@ -16,7 +16,7 @@ jobs:
           miniforge-version: latest
           channels: conda-forge
           conda-remove-defaults: "true"
-          python-version: 3.13
+          python-version: 3.12.7
           activate-environment: sapplot
           environment-file: environment.yml
 

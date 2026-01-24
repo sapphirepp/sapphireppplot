@@ -2,6 +2,9 @@ name: sapplot
 channels:
   - conda-forge
 dependencies:
-  - python=3.13
+  - python=3.12.7
   - paraview=6.0.1
   - pandoc
+  - numpy
+  - matplotlib
+  - jupyter

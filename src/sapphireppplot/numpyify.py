@@ -1,7 +1,6 @@
 """Convert ParaView data to numpy arrays."""
 
 from typing import Optional
-from warnings import deprecated
 import numpy as np
 import paraview.simple as ps
 import paraview.servermanager
@@ -543,7 +542,6 @@ def to_numpy_time_steps_3d(
     return time_steps_out, points, data
 
 
-@deprecated("Use to_numpy_over_time instead.")
 def to_numpy_integrate_variables(
     solution: paraview.servermanager.SourceProxy,
     array_names: list[str],
