@@ -35,33 +35,16 @@ More example scripts can be found in the
 
 ## Installation
 
-The installation of Python packages for ParaView is not strait forward.
-We refer to the [Sapphire++ Tutorial](https://sapphirepp.org/latest/paraview-python.html)
-for an introduction.
+Installing Python packages for ParaView can be non‑trivial.
+We recommend using virtual environments so packages are properly linked to ParaView.
+Here we present simplified instructions using Conda,
+refer to the [Sapphire++ — Plot Website](https://plot.sapphirepp.org/main/installation.html)
+for detailed installation instructions.
 
-This package requires [ParaView](https://www.paraview.org/)
-and [paraview.simple](https://docs.paraview.org/en/latest/UsersGuide/introduction.html#getting-started-with-pvpython)
-to be installed.
+As prerequisite, we assume you have a
+[Conda](https://docs.conda.io)/[conda-forge](https://conda-forge.org)/[Miniforge](https://github.com/conda-forge/miniforge)
+installed.
 
-We recommanded to install ParaView Python is using
-[conda](https://docs.conda.io/)/[conda-forge](https://conda-forge.org/)/[Miniforge](https://github.com/conda-forge/miniforge):
-
-0. Install [Miniforge](https://github.com/conda-forge/miniforge#install):
-
-   If you don't have a `conda` (or similar) installation,
-   you can use the following script to install a minimal `conda` version:
-
-   ```shell
-   wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
-   bash Miniforge3-$(uname)-$(uname -m).sh
-   ```
-  
-   Then activate `conda` using:
-
-   ```shell
-   source ~/miniforge3/bin/activate
-   ```
-  
 1. Clone the repository:
 
    ```shell
@@ -69,29 +52,24 @@ We recommanded to install ParaView Python is using
    cd sapphireppplot
    ```
 
-2. Create `sapplot` conda environment with ParaView and other prerequisites installed:
+2. Create `sapplot` Conda environment and install ParaView and other prerequisites:
 
    ```shell
    conda env create -f environment.yml
    conda activate sapplot
    ```
 
-3. Install `sapphireppplot`:
+3. Install `sapphireppplot` (example developer mode):
 
    ```shell
    pip install -e '.[dev]'
    ```
 
-This ensures that the Python environments are linked correctly,
-so the scripts work both from the terminal using
-`python`, `pvpython` or `pvbatch`
-and inside the ParaView GUI as scripts and macros.
-
-If you want to use the package inside the ParaView GUI,
-make sure to use the ParaView installation in the `conda` environment:
+After this, scripts should work from the terminal with `python`, `pvpython`, or `pvbatch`,
+and inside the ParaView GUI.
+To run ParaView using the Conda environment:
 
 ```shell
-source ~/miniforge3/bin/activate
 conda activate sapplot
-paraview &
+paraview
 ```
