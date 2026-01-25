@@ -23,8 +23,8 @@ An extensive
 is provided on the Sapphire++ website.
 
 An introduction to Sapphire++ — Plot is given in the
-[Quick-start](plot.sapphirepp.org/main/examples/plot_quick_start.html)
-and the [Tutorial using Jupyter notebooks](https://plot.sapphirepp.org/main/examples/jupyter_tutorial.html).
+[Quick-start](https://plot.sapphirepp.org/latest/examples/plot_quick_start.html)
+and the [Tutorial using Jupyter notebooks](https://plot.sapphirepp.org/latest/examples/jupyter_tutorial.html).
 More example scripts can be found in the
 [Sapphire++ examples](https://github.com/sapphirepp/sapphirepp/tree/main/examples).
 
@@ -38,7 +38,7 @@ More example scripts can be found in the
 Installing Python packages for ParaView can be non‑trivial.
 We recommend using virtual environments so packages are properly linked to ParaView.
 Here we present simplified instructions using Conda,
-refer to the [Sapphire++ — Plot Website](https://plot.sapphirepp.org/main/installation.html)
+refer to the [Sapphire++ — Plot Website](https://plot.sapphirepp.org/latest/installation.html)
 for detailed installation instructions.
 
 As prerequisite, we assume you have a
