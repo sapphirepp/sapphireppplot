@@ -73,6 +73,7 @@ def create_extractor(
 def save_extracts(
     results_folder: str,
     subfolder: str = "extracts",
+    frame_window: Optional[tuple[int, int]] = None,
     plot_properties: PlotPropertiesVar = PlotProperties(),
 ) -> None:
     """
@@ -87,6 +88,8 @@ def save_extracts(
         The parent directory path where the extracts will be saved.
     subfolder
         The subfolder to save the extracts.
+    frame_window
+        The range of timesteps to extract.
     plot_properties
         Properties of the solution.
 
@@ -101,11 +104,19 @@ def save_extracts(
     """
     file_path = os.path.join(results_folder, subfolder)
     print(f"Save extracts in '{file_path}'")
-    ps.SaveExtracts(
-        ExtractsOutputDirectory=file_path,
-        # AnimationScene=animation_scene, # This leads to a segmentation fault
-        FrameStride=plot_properties.extracts_frame_stride,
-    )
+    if frame_window is not None:
+        ps.SaveExtracts(
+            ExtractsOutputDirectory=file_path,
+            # AnimationScene=animation_scene, # This leads to a segmentation fault
+            FrameStride=plot_properties.extracts_frame_stride,
+            FrameWindow=frame_window,
+        )
+    else:
+        ps.SaveExtracts(
+            ExtractsOutputDirectory=file_path,
+            # AnimationScene=animation_scene, # This leads to a segmentation fault
+            FrameStride=plot_properties.extracts_frame_stride,
+        )
 
 
 def calculator(
