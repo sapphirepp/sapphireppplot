@@ -5,6 +5,7 @@ import numpy as np
 import paraview.simple as ps
 import paraview.servermanager
 from paraview.vtk.util import numpy_support
+from sapphireppplot import utils
 
 
 def to_numpy_1d(
@@ -285,6 +286,7 @@ def to_numpy_3d(
 
 def to_numpy_time_steps(
     solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
     array_names: list[str],
     time_steps: Optional[list[float]] = None,
 ) -> tuple[list[float], list[np.ndarray], list[np.ndarray]]:
@@ -298,6 +300,8 @@ def to_numpy_time_steps(
     ----------
     solution
         ParaView solution data.
+    animation_scene
+        The ParaView AnimationScene.
     array_names
         List of array names that should be extracted.
     time_steps
@@ -338,8 +342,14 @@ def to_numpy_time_steps(
     :pv:`paraview.simple.proxy.UpdatePipeline <paraview.simple.proxy.html#paraview.simple.proxy.UpdatePipeline>` :
         ParaView method to set the time.
     """
+    source_time_steps = animation_scene.TimeKeeper.TimestepValues
     if not time_steps:
-        time_steps = solution.TimestepValues
+        time_steps = source_time_steps
+    else:
+        time_steps = [
+            source_time_steps[utils.find_closest_index(source_time_steps, t)]
+            for t in time_steps
+        ]
 
     # create a new 'Cell Centers'
     cell_centers = ps.CellCenters(
@@ -409,11 +419,19 @@ def to_numpy_time_steps(
         points_array[i] = points
         data_array[i] = data
 
+    # destroy cell_values
+    ps.Delete(cell_values)
+    del cell_values
+    # destroy cell_centers
+    ps.Delete(cell_centers)
+    del cell_centers
+
     return time_steps, points_array, data_array
 
 
 def to_numpy_time_steps_2d(
     solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
     array_names: list[str],
     time_steps: Optional[list[float]] = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -426,6 +444,8 @@ def to_numpy_time_steps_2d(
     ----------
     solution
         ParaView solution data.
+    animation_scene
+        The ParaView AnimationScene.
     array_names
         List of array names that should be extracted.
     time_steps
@@ -453,7 +473,7 @@ def to_numpy_time_steps_2d(
     to_numpy_time_steps : Get numpy arrays of data as point list for multiple time steps.
     """
     time_steps_out, points, data = to_numpy_time_steps(
-        solution, array_names, time_steps=time_steps
+        solution, animation_scene, array_names, time_steps=time_steps
     )
 
     time_steps_out = np.array(time_steps_out)
@@ -473,6 +493,7 @@ def to_numpy_time_steps_2d(
 
 def to_numpy_time_steps_3d(
     solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
     array_names: list[str],
     time_steps: Optional[list[float]] = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -485,6 +506,8 @@ def to_numpy_time_steps_3d(
     ----------
     solution
         ParaView solution data.
+    animation_scene
+        The ParaView AnimationScene.
     array_names
         List of array names that should be extracted.
     time_steps
@@ -514,7 +537,7 @@ def to_numpy_time_steps_3d(
     to_numpy_time_steps : Get numpy arrays of data as point list for multiple time steps.
     """
     time_steps_out, points, data = to_numpy_time_steps(
-        solution, array_names, time_steps=time_steps
+        solution, animation_scene, array_names, time_steps=time_steps
     )
 
     time_steps_out = np.array(time_steps_out)
