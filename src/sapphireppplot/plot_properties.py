@@ -365,13 +365,27 @@ class PlotProperties:
         render_view.AxesGrid.YLabelFontSize = self.label_size
         render_view.AxesGrid.ZLabelFontSize = self.label_size
         # Use gray color for label for good visibility in both light and dark mode
-        render_view.AxesGrid.XTitleColor = self.grid_color
-        render_view.AxesGrid.YTitleColor = self.grid_color
-        render_view.AxesGrid.ZTitleColor = self.grid_color
-        render_view.AxesGrid.XLabelColor = self.grid_color
-        render_view.AxesGrid.YLabelColor = self.grid_color
-        render_view.AxesGrid.ZLabelColor = self.grid_color
-        render_view.AxesGrid.GridColor = self.grid_color
+        render_view.AxesGrid.XTitleColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
+        render_view.AxesGrid.YTitleColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
+        render_view.AxesGrid.ZTitleColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
+        render_view.AxesGrid.XLabelColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
+        render_view.AxesGrid.YLabelColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
+        render_view.AxesGrid.ZLabelColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
+        render_view.AxesGrid.GridColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
         # scale axes
         solution_display.Scale = self.axes_stretch
         render_view.AxesGrid.DataScale = [
@@ -415,13 +429,27 @@ class PlotProperties:
         render_view.AxesGrid.YLabelFontSize = self.label_size
         render_view.AxesGrid.ZLabelFontSize = self.label_size
         # Use gray color for label for good visibility in both light and dark mode
-        render_view.AxesGrid.XTitleColor = self.grid_color
-        render_view.AxesGrid.YTitleColor = self.grid_color
-        render_view.AxesGrid.ZTitleColor = self.grid_color
-        render_view.AxesGrid.XLabelColor = self.grid_color
-        render_view.AxesGrid.YLabelColor = self.grid_color
-        render_view.AxesGrid.ZLabelColor = self.grid_color
-        render_view.AxesGrid.GridColor = self.grid_color
+        render_view.AxesGrid.XTitleColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
+        render_view.AxesGrid.YTitleColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
+        render_view.AxesGrid.ZTitleColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
+        render_view.AxesGrid.XLabelColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
+        render_view.AxesGrid.YLabelColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
+        render_view.AxesGrid.ZLabelColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
+        render_view.AxesGrid.GridColor = matplotlib.colors.to_rgb(
+            self.grid_color
+        )
         # scale axes
         solution_display.Scale = self.axes_stretch
         render_view.AxesGrid.DataScale = [
@@ -448,8 +476,8 @@ class PlotProperties:
         """
         color_bar.TitleFontSize = self.text_size
         color_bar.LabelFontSize = self.label_size
-        color_bar.TitleColor = self.text_color
-        color_bar.LabelColor = self.text_color
+        color_bar.TitleColor = matplotlib.colors.to_rgb(self.text_color)
+        color_bar.LabelColor = matplotlib.colors.to_rgb(self.text_color)
         if self.color_bar_label_format:
             color_bar.AutomaticLabelFormat = False
             color_bar.LabelFormat = self.color_bar_label_format
