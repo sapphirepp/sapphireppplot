@@ -144,7 +144,7 @@ def load_probe_location_surface(
     prm
         Dictionary of the parameters.
     point_id
-        Index of the
+        Index of the probed point.
 
     Returns
     -------
@@ -225,6 +225,7 @@ def load_probe_location_spherical_density(
     results_folder: str,
     prm: ParamDict,
     point_id: int = 0,
+    resolution: int = 100,
     plot_properties_in: PlotProperties = PlotProperties(),
 ) -> tuple[paraview.servermanager.SourceProxy, list[float], PlotProperties]:
     """
@@ -245,7 +246,9 @@ def load_probe_location_spherical_density(
     prm
         Dictionary of the parameters.
     point_id
-        Index of the
+        Index of the probed point.
+    resolution:
+        Resolution for the sphere.
 
     Returns
     -------
@@ -315,7 +318,7 @@ def load_probe_location_spherical_density(
     )
     volume_data.Source.Origin = [-1.0, -1.0, -1.0]
     volume_data.Source.Scale = [2.0, 2.0, 2.0]
-    volume_data.Source.Resolution = [100, 100, 100]
+    volume_data.Source.Resolution = [resolution, resolution, resolution]
     ps.HideInteractiveWidgets(proxy=volume_data.Source)
 
     solution = ps.Slice(registrationName="SliceSphere", Input=volume_data)
