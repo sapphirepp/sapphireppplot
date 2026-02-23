@@ -80,14 +80,6 @@ def load_solution(
     file_format = prm["Output"]["Format"]
     if not base_file_name:
         base_file_name = prm["Output"]["Base file name"]
-    t_start = 0.0
-    t_end = float(prm["MHD"]["Time stepping"]["Final time"])
-    # Use Output time step if possible
-    t_scale = None
-    try:
-        t_scale = float(prm["Output"]["Output time step"])
-    except KeyError:
-        pass
 
     match file_format:
         case "vtu":
@@ -97,17 +89,26 @@ def load_solution(
                 load_arrays=plot_properties.series_names,
             )
         case "pvtu":
-            solution_without_time = pvload.load_solution_pvtu(
+            solution = pvload.load_solution_pvtu(
                 results_folder,
                 base_file_name=base_file_name,
                 load_arrays=plot_properties.series_names,
             )
-            solution = pvload.scale_time_steps(
-                solution_without_time,
-                t_start=t_start,
-                t_end=t_end,
-                scale=t_scale,
-            )
+            if plot_properties.use_legacy_pvtu_reader:
+                t_start = 0.0
+                t_end = float(prm["MHD"]["Time stepping"]["Final time"])
+                # Use Output time step if possible
+                t_scale = None
+                try:
+                    t_scale = float(prm["Output"]["Output time step"])
+                except KeyError:
+                    pass
+                solution = pvload.scale_time_steps(
+                    solution,
+                    t_start=t_start,
+                    t_end=t_end,
+                    scale=t_scale,
+                )
         case "hdf5":
             solution = pvload.load_solution_hdf5_with_xdmf(
                 results_folder,

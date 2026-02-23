@@ -22,6 +22,18 @@ class PlotProperties:
     """Specifies if solution has DG ("POINTS") or FV ("CELLS") data."""
     representation_type: str = "UnstructuredGridRepresentation"
     """Specifies ParaView representation type for RenderView."""
+    use_legacy_pvtu_reader: bool = True
+    """
+    For deal.II versions < 9.8.0 there was a bug that ``pvtu`` files had no time information.
+    The legacy pvtu-reader addresses this problem by time-shifting the solution.
+    If a newer version of deal.II >= 9.8.0 is used,
+    this is not needed and one can set ``use_legacy_pvtu_reader=False``.
+
+    Warning
+    -------
+    The default value for this variable is ``True`` for backwards compatibility.
+    This default will change to ``False`` in a future version.
+    """
 
     preview_size_1d: list[float] = field(default_factory=lambda: [1280, 720])
     """Preview window size in 1D."""

@@ -285,7 +285,7 @@ def load_solution_pvtu(
     solution.UpdatePipelineInformation()
     if load_arrays:
         solution.PointArrayStatus = load_arrays
-    solution.TimeArray = "None"
+    solution.TimeArray = "TIME"
     return solution
 
 
@@ -518,12 +518,12 @@ def load_solution(
 
     match file_format:
         case "vtk":
-            solution_without_time = load_solution_vtk(
+            solution = load_solution_vtk(
                 results_folder,
                 base_file_name=base_file_name,
             )
             solution = scale_time_steps(
-                solution_without_time,
+                solution,
                 t_start=t_start,
                 t_end=t_end,
             )
@@ -534,16 +534,17 @@ def load_solution(
                 load_arrays=plot_properties.series_names,
             )
         case "pvtu":
-            solution_without_time = load_solution_pvtu(
+            solution = load_solution_pvtu(
                 results_folder,
                 base_file_name=base_file_name,
                 load_arrays=plot_properties.series_names,
             )
-            solution = scale_time_steps(
-                solution_without_time,
-                t_start=t_start,
-                t_end=t_end,
-            )
+            if plot_properties.use_legacy_pvtu_reader:
+                solution = scale_time_steps(
+                    solution,
+                    t_start=t_start,
+                    t_end=t_end,
+                )
         case "hdf5":
             solution = load_solution_hdf5_with_xdmf(
                 results_folder,
