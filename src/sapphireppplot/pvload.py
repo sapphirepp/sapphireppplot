@@ -1,7 +1,7 @@
 """Load the solution from files using ParaView."""
 
 import os
-from typing import Optional
+from typing import Optional, Literal
 import paraview.simple as ps
 import paraview.servermanager
 import paraview.util
@@ -567,6 +567,7 @@ def load_solution(
 def load_extract(
     base_file_name: str,
     plot_properties: PlotProperties,
+    file_format: Literal["pvtp", "pvtu"] = "pvtp",
     path_prefix: str = "",
     results_folder: str = "",
     subfolder: str = "extracts",
@@ -594,6 +595,8 @@ def load_extract(
         Filename of the extract.
     plot_properties
         Properties of the solution to load.
+    file_format
+        Format of the extracted files.
     path_prefix
         Prefix for relative path.
     results_folder
@@ -638,11 +641,21 @@ def load_extract(
     )
     prm = utils.prm_to_dict(prm_file)
 
-    solution = load_solution_pvtp(
-        os.path.join(results_folder, subfolder),
-        base_file_name=base_file_name,
-        load_arrays=plot_properties.series_names,
-    )
+    match file_format:
+        case "pvtp":
+            solution = load_solution_pvtp(
+                os.path.join(results_folder, subfolder),
+                base_file_name=base_file_name,
+                load_arrays=plot_properties.series_names,
+            )
+        case "pvtu":
+            solution = load_solution_pvtu(
+                os.path.join(results_folder, subfolder),
+                base_file_name=base_file_name,
+                load_arrays=plot_properties.series_names,
+            )
+        case _:
+            raise ValueError(f"Unknown file_format: '{file_format}'")
 
     animation_scene = ps.GetAnimationScene()
     animation_scene.UpdateAnimationUsingDataTimeSteps()

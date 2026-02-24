@@ -23,6 +23,7 @@ c3
 calc
 CFL
 coord
+crit
 dt
 dx
 f0
@@ -30,6 +31,7 @@ f1
 f2
 FFT
 func
+gmf
 hd
 inj
 interpol
@@ -68,6 +70,7 @@ AxesGrid
 ComputeTolerance
 Coords
 Crinkleclip
+Crinkleslice
 csv
 Datato
 DivideCellDataByVolume
@@ -122,6 +125,7 @@ scipy
 # numpy
 arange
 arccos
+argmax
 argmin
 argwhere
 concat
@@ -139,6 +143,7 @@ meshgrid
 ndarray
 npz
 numpy
+pcov
 popt
 savez
 searchsorted
@@ -148,6 +153,9 @@ sqrt
 antialiased
 Axes3
 Axes3D
+axhline
+axs
+axvline
 bbox
 cmap
 colorbar
@@ -158,6 +166,7 @@ linestyle
 linestyles
 linewidth
 loc
+loglog
 mappable
 matplotlib
 mpl
@@ -179,6 +188,7 @@ vmin
 xlabel
 xlim
 xscale
+xytext
 ylabel
 ylim
 yscale
@@ -197,6 +207,8 @@ typehints
 # Words
 advection
 colorblind
+Iroshnikov
+Kraichnan
 Orszag
 postfix
 subfolder

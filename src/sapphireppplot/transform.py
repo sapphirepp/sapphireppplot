@@ -1,6 +1,6 @@
 """Transform the solution, e.g. by PlotOverLine or Calculator."""
 
-from typing import Optional, TypeVar
+from typing import Optional, TypeVar, Literal
 import os
 import paraview.simple as ps
 import paraview.servermanager
@@ -14,6 +14,7 @@ PlotPropertiesVar = TypeVar("PlotPropertiesVar", bound=PlotProperties)
 def create_extractor(
     solution: paraview.servermanager.SourceProxy,
     filename: str,
+    file_format: Literal["pvtp", "pvtu"] = "pvtp",
     plot_properties: PlotPropertiesVar = PlotProperties(),  # noqa: U100
 ) -> paraview.servermanager.Proxy:
     """
@@ -33,13 +34,21 @@ def create_extractor(
         The extract of the full solution to save.
     filename
         The base name for the extracts (without extension).
+    file_format
+        Format to save the extract to.
+        Use "pvtu" for ``crinkle_slice=True``.
     plot_properties
         Properties of the solution.
 
     Returns
     -------
-    vtp_extractor : Proxy
-        The extractor to VTP files.
+    extractor : Proxy
+        The extractor to VTP/VTU files.
+
+    Raises
+    ------
+    ValueError
+        If ``file_format`` is not supported.
 
     See Also
     --------
@@ -50,24 +59,35 @@ def create_extractor(
     :pv:`paraview.simple.CreateExtractor <paraview.simple.__init__.html#paraview.simple.__init__.CreateExtractor>` :
         ParaView filter to save extracts to files.
     """
-    # create a new 'Extract Surface'
-    extract_surface = ps.ExtractSurface(
-        registrationName="ExtractSurface", Input=solution
-    )
+    if file_format == "pvtp":
+        # create a new 'Extract Surface'
+        solution = ps.ExtractSurface(
+            registrationName="ExtractSurface", Input=solution
+        )
+
+    extractor_type = ""
+    match file_format:
+        case "pvtp":
+            extractor_type = "VTP"
+        case "pvtu":
+            extractor_type = "VTU"
+        case _:
+            raise ValueError(f"Unknown file_format: '{file_format}'")
 
     # create extractor
-    vtp_extractor = ps.CreateExtractor(
-        "VTP", extract_surface, registrationName="VTP"
+    extractor = ps.CreateExtractor(
+        extractor_type, solution, registrationName=extractor_type
     )
-    vtp_extractor.Enable = 1
-    vtp_extractor.Writer.FileName = filename + r"_{timestep:06d}.pvtp"
-    vtp_extractor.Writer.UseSubdirectory = 0
-    # vtp_extractor.Trigger.Set(
+    extractor.Enable = 1
+    extractor.Writer.FileName = filename + r"_{timestep:06d}." + file_format
+    extractor.Writer.FileName
+    extractor.Writer.UseSubdirectory = 0
+    # extractor.Trigger.Set(
     #     UseEndTimeStep=0,
     #     Frequency=1,
     # )
 
-    return vtp_extractor
+    return extractor
 
 
 def save_extracts(
@@ -405,6 +425,7 @@ def slice_plane(
     solution: paraview.servermanager.SourceProxy,
     normal: list[float],
     origin: Optional[list[float]] = None,
+    crinkle_slice: bool = False,
     plot_properties: PlotPropertiesVar = PlotProperties(),  # noqa: U100
 ) -> paraview.servermanager.SourceProxy:
     """
@@ -419,6 +440,13 @@ def slice_plane(
     origin
         Origin of the plane.
         Defaults to ``[0, 0, 0]``.
+    crinkle_slice
+        This parameter controls whether to extract the entire cells
+        that are sliced by the region
+        or just extract a triangulated surface of that region.
+        If postprocessing is to be done on the data,
+        e.g. using the :py:mod:`sapphireppplot.numpyify` module,
+        ``crinkle_slice=True`` is recommended.
     plot_properties
         Properties of the solution.
 
@@ -445,6 +473,7 @@ def slice_plane(
     # create a new 'Slice'
     sliced_plane = ps.Slice(registrationName="SlicePlane", Input=solution)
 
+    sliced_plane.Crinkleslice = crinkle_slice
     sliced_plane.SliceType.Normal = normal
     sliced_plane.SliceType.Origin = origin
     # Use small offset to ensure data is within slice plane
