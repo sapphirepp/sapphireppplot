@@ -218,6 +218,47 @@ def compute_sound_speed(
     return calculator, plot_properties
 
 
+def compute_alfven_speed(
+    solution: paraview.servermanager.SourceProxy,
+    plot_properties_in: PlotPropertiesMHD,
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
+    r"""
+    Compute Alfvén speed :math:`c_A` for the solution.
+
+    .. math::
+        c_A = \sqrt{\frac{b^2}{\rho}}
+
+    Parameters
+    ----------
+    solution
+        The the source data.
+    plot_properties_in
+        Properties of the source.
+
+    Returns
+    -------
+    calculator : SourceProxy
+        Solution with Alfvén speed.
+    plot_properties : PlotPropertiesMHD
+        Solution properties for the including the Alfvén speed.
+
+    See Also
+    --------
+    sapphireppplot.transform.calculator : Create Calculator.
+    """
+    formula = "sqrt(mag(b)^2 / rho)"
+
+    calculator, plot_properties = transform.calculator(
+        solution,
+        quantity="c_a",
+        formula=formula,
+        label=r"$c_A$",
+        plot_properties_in=plot_properties_in,
+    )
+
+    return calculator, plot_properties
+
+
 def compute_magnetic_pressure(
     solution: paraview.servermanager.SourceProxy,
     plot_properties_in: PlotPropertiesMHD,

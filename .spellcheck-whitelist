@@ -206,7 +206,11 @@ typehints
 
 # Words
 advection
+alfven
+Alfvén
 colorblind
+courant
+Courant
 Iroshnikov
 Kraichnan
 Orszag
