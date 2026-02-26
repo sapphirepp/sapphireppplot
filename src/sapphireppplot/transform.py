@@ -186,7 +186,7 @@ def calculator(
 
     if plot_properties.series_names:
         plot_properties.series_names += [quantity]
-    plot_properties.labels[quantity] = quantity
+    plot_properties.labels[quantity] = label
 
     calculator_source.UpdatePipeline()
 
