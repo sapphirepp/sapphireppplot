@@ -79,9 +79,14 @@ def plot_line_chart_view(
     # Enter preview mode
     layout.PreviewMode = plot_properties.preview_size_1d
     # layout/tab size in pixels
-    layout.SetSize(
-        plot_properties.preview_size_1d[0], plot_properties.preview_size_1d[1]
-    )
+    if (
+        plot_properties.preview_size_1d[0] != 0
+        and plot_properties.preview_size_1d[1] != 0
+    ):
+        layout.SetSize(
+            plot_properties.preview_size_1d[0],
+            plot_properties.preview_size_1d[1],
+        )
 
     # Properties modified on solution_display
     solution_display.UseIndexForXAxis = 0
@@ -168,9 +173,14 @@ def plot_render_view_2d(
     # Enter preview mode
     layout.PreviewMode = plot_properties.preview_size_2d
     # layout/tab size in pixels
-    layout.SetSize(
-        plot_properties.preview_size_2d[0], plot_properties.preview_size_2d[1]
-    )
+    if (
+        plot_properties.preview_size_2d[0] != 0
+        and plot_properties.preview_size_2d[1] != 0
+    ):
+        layout.SetSize(
+            plot_properties.preview_size_2d[0],
+            plot_properties.preview_size_2d[1],
+        )
 
     # update the view to ensure updated data information
     render_view.Update()
@@ -329,9 +339,14 @@ def plot_render_view_3d(
     # Enter preview mode
     layout.PreviewMode = plot_properties.preview_size_3d
     # layout/tab size in pixels
-    layout.SetSize(
-        plot_properties.preview_size_3d[0], plot_properties.preview_size_3d[1]
-    )
+    if (
+        plot_properties.preview_size_3d[0] != 0
+        and plot_properties.preview_size_3d[1] != 0
+    ):
+        layout.SetSize(
+            plot_properties.preview_size_3d[0],
+            plot_properties.preview_size_3d[1],
+        )
 
     # update the view to ensure updated data information
     render_view.Update()

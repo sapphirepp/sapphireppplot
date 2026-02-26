@@ -36,7 +36,10 @@ class PlotProperties:
     """
 
     preview_size_1d: list[float] = field(default_factory=lambda: [1280, 720])
-    """Preview window size in 1D."""
+    """
+    Preview window size in 1D.
+    Use ``preview_size = [0, 0]`` to deactivate preview mode.
+    """
     preview_size_2d: list[float] = field(default_factory=lambda: [1024, 1024])
     """Preview window size in 2D."""
     camera_view_2d: tuple[bool, float] | Any = field(
