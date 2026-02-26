@@ -351,6 +351,7 @@ def plot_quantities_1d(
     log_y_scale: bool = False,
     show_time: bool = False,
     save_animation: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -383,6 +384,9 @@ def plot_quantities_1d(
         Display the simulation time in the line chart view view.
     save_animation
         Save an animation of the plot.
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
 
     Returns
     -------
@@ -416,8 +420,8 @@ def plot_quantities_1d(
                 plot_properties.quantity_name(quantity, "interpol_")
             ]
 
-    # create new layout object
-    layout = ps.CreateLayout(name)
+    if not layout:
+        layout = ps.CreateLayout(name)
     line_chart_view = pvplot.plot_line_chart_view(
         solution,
         layout,
@@ -571,6 +575,7 @@ def plot_quantity_2d(
     camera_direction: Optional[list[float]] = None,
     show_time: bool = False,
     save_animation: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -602,6 +607,9 @@ def plot_quantity_2d(
         Display the simulation time in the render view.
     save_animation
         Save an animation of the plot.
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
 
     Returns
     -------
@@ -618,8 +626,8 @@ def plot_quantity_2d(
     if plot_properties.prefix_numeric and prefix == "":
         prefix = "numeric_"
 
-    # create new layout object
-    layout = ps.CreateLayout(name)
+    if not layout:
+        layout = ps.CreateLayout(name)
     render_view = pvplot.plot_render_view_2d(
         solution,
         layout,
@@ -637,8 +645,6 @@ def plot_quantity_2d(
     if save_animation:
         pvplot.save_animation(layout, results_folder, name, plot_properties)
 
-    # Exit preview mode
-    # layout.PreviewMode = [0, 0]
     return layout, render_view
 
 
@@ -654,6 +660,7 @@ def plot_quantity_3d(
     camera_direction: Optional[list[float]] = None,
     show_time: bool = False,
     save_animation: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -685,6 +692,9 @@ def plot_quantity_3d(
         Display the simulation time in the render view.
     save_animation
         Save an animation of the plot.
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
 
     Returns
     -------
@@ -701,8 +711,8 @@ def plot_quantity_3d(
     if plot_properties.prefix_numeric and prefix == "":
         prefix = "numeric_"
 
-    # create new layout object
-    layout = ps.CreateLayout(name)
+    if not layout:
+        layout = ps.CreateLayout(name)
     render_view = pvplot.plot_render_view_3d(
         solution,
         layout,
@@ -720,8 +730,6 @@ def plot_quantity_3d(
     if save_animation:
         pvplot.save_animation(layout, results_folder, name, plot_properties)
 
-    # Exit preview mode
-    # layout.PreviewMode = [0, 0]
     return layout, render_view
 
 
@@ -740,6 +748,7 @@ def plot_quantities_over_x(
     log_x_scale: bool = False,
     log_y_scale: bool = False,
     save_animation: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
     paraview.servermanager.SourceProxy,
     paraview.servermanager.ViewLayoutProxy,
@@ -780,6 +789,9 @@ def plot_quantities_over_x(
         Use a logarithmic y-scale?
     save_animation
         Save an animation of the plot.
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
 
     Returns
     -------
@@ -848,7 +860,8 @@ def plot_quantities_over_x(
         plot_properties=plot_properties,
     )
 
-    layout = ps.CreateLayout(name)
+    if not layout:
+        layout = ps.CreateLayout(name)
     line_chart_view = pvplot.plot_line_chart_view(
         plot_over_line_x,
         layout,
@@ -882,6 +895,7 @@ def plot_integrated_quantities_over_time(
     value_range: Optional[list[float]] = None,
     log_x_scale: bool = False,
     log_y_scale: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
     paraview.servermanager.SourceProxy,
     paraview.servermanager.ViewLayoutProxy,
@@ -918,6 +932,10 @@ def plot_integrated_quantities_over_time(
         Use a logarithmic t-scale?
     log_y_scale
         Use a logarithmic y-scale?
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
+
 
     Returns
     -------
@@ -974,7 +992,8 @@ def plot_integrated_quantities_over_time(
     if t_axes_scale is not None:
         t_array_name = "scaled_t_axes"
 
-    layout = ps.CreateLayout(name)
+    if not layout:
+        layout = ps.CreateLayout(name)
     line_chart_view = pvplot.plot_line_chart_view(
         solution_integrated,
         layout,

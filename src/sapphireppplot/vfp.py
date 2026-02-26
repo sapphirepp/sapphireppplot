@@ -508,6 +508,7 @@ def plot_f_lms_1d(
     log_y_scale: bool = False,
     show_time: bool = False,
     save_animation: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -542,6 +543,9 @@ def plot_f_lms_1d(
         Display the simulation time in the line chart view.
     save_animation
         Save an animation of the plot.
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
 
     Returns
     -------
@@ -582,7 +586,8 @@ def plot_f_lms_1d(
                 plot_properties.f_lms_name(lms_index, "interpol_")
             ]
 
-    layout = ps.CreateLayout(name)
+    if not layout:
+        layout = ps.CreateLayout(name)
     line_chart_view = pvplot.plot_line_chart_view(
         solution,
         layout,
@@ -618,6 +623,7 @@ def plot_f_lms_2d(
     camera_direction: Optional[list[float]] = None,
     show_time: bool = False,
     save_animation: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -649,6 +655,9 @@ def plot_f_lms_2d(
         Display the simulation time in the render view.
     save_animation
         Save an animation of the plot.
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
 
     Returns
     -------
@@ -667,8 +676,8 @@ def plot_f_lms_2d(
     if plot_properties.prefix_numeric and prefix == "":
         prefix = "numeric_"
 
-    # create new layout object
-    layout = ps.CreateLayout(name)
+    if not layout:
+        layout = ps.CreateLayout(name)
     render_view = pvplot.plot_render_view_2d(
         solution,
         layout,
@@ -701,6 +710,7 @@ def plot_f_lms_3d(
     camera_direction: Optional[list[float]] = None,
     show_time: bool = False,
     save_animation: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -732,6 +742,9 @@ def plot_f_lms_3d(
         Display the simulation time in the render view.
     save_animation
         Save an animation of the plot.
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
 
     Returns
     -------
@@ -750,8 +763,8 @@ def plot_f_lms_3d(
     if plot_properties.prefix_numeric and prefix == "":
         prefix = "numeric_"
 
-    # create new layout object
-    layout = ps.CreateLayout(name)
+    if not layout:
+        layout = ps.CreateLayout(name)
     render_view = pvplot.plot_render_view_2d(
         solution,
         layout,
@@ -787,6 +800,7 @@ def plot_f_lms_over_x(
     log_x_scale: bool = False,
     log_y_scale: bool = False,
     save_animation: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
     paraview.servermanager.SourceProxy,
     paraview.servermanager.ViewLayoutProxy,
@@ -827,6 +841,9 @@ def plot_f_lms_over_x(
         Use a logarithmic y-scale?
     save_animation
         Save an animation of the plot.
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
 
     Returns
     -------
@@ -889,7 +906,8 @@ def plot_f_lms_over_x(
         plot_properties=plot_properties,
     )
 
-    layout = ps.CreateLayout(name)
+    if not layout:
+        layout = ps.CreateLayout(name)
     line_chart_view = pvplot.plot_line_chart_view(
         plot_over_line_x,
         layout,
@@ -924,6 +942,7 @@ def plot_f_lms_over_p(
     log_x_scale: bool = False,
     log_y_scale: bool = True,
     save_animation: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
     paraview.servermanager.SourceProxy,
     paraview.servermanager.ViewLayoutProxy,
@@ -960,6 +979,9 @@ def plot_f_lms_over_p(
         Use a logarithmic y-scale?
     save_animation
         Save an animation of the plot.
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
 
     Returns
     -------
@@ -1024,7 +1046,8 @@ def plot_f_lms_over_p(
         plot_properties=plot_properties,
     )
 
-    layout = ps.CreateLayout(name)
+    if not layout:
+        layout = ps.CreateLayout(name)
     line_chart_view = pvplot.plot_line_chart_view(
         plot_over_line_p,
         layout,
@@ -1055,6 +1078,7 @@ def plot_phase_space_surface(
     log_scale: bool = True,
     show_time: bool = False,
     save_animation: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -1080,6 +1104,9 @@ def plot_phase_space_surface(
         Display the simulation time in the render view.
     save_animation
         Save an animation of the plot.
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
 
     Returns
     -------
@@ -1094,8 +1121,8 @@ def plot_phase_space_surface(
     sapphireppplot.pvplot.plot_render_view_2d : Plot 2D RenderView.
     sapphireppplot.pvplot.display_time : Display time.
     """
-    # create new layout object
-    layout = ps.CreateLayout(name)
+    if not layout:
+        layout = ps.CreateLayout(name)
     render_view = pvplot.plot_render_view_2d(
         solution,
         layout,
@@ -1124,6 +1151,7 @@ def plot_elevated_phase_space_surface(
     value_range: Optional[list[float]] = None,
     log_scale: bool = False,
     save_animation: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -1149,6 +1177,9 @@ def plot_elevated_phase_space_surface(
         Use a logarithmic color scale?
     save_animation
         Save an animation of the plot.
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
 
     Returns
     -------
@@ -1172,8 +1203,8 @@ def plot_elevated_phase_space_surface(
     )
     # plot_properties.representation_type = "StructuredGridRepresentation"
 
-    # create new layout object
-    layout = ps.CreateLayout(name)
+    if not layout:
+        layout = ps.CreateLayout(name)
     render_view = pvplot.plot_render_view_3d(
         warp_by_scalar,
         layout,
@@ -1216,6 +1247,7 @@ def plot_phase_space_spherical_density_map(
     log_scale: bool = True,
     show_time: bool = False,
     save_animation: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
     paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
 ]:
@@ -1241,6 +1273,9 @@ def plot_phase_space_spherical_density_map(
         Display the simulation time in the render view.
     save_animation
         Save an animation of the plot.
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
 
     Returns
     -------
@@ -1255,8 +1290,8 @@ def plot_phase_space_spherical_density_map(
     sapphireppplot.pvplot.plot_render_view_3d : Plot 3D RenderView.
     sapphireppplot.pvplot.display_time : Display time.
     """
-    # create new layout object
-    layout = ps.CreateLayout(name)
+    if not layout:
+        layout = ps.CreateLayout(name)
     render_view = pvplot.plot_render_view_3d(
         solution,
         layout,
