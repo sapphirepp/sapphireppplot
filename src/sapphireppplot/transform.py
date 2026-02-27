@@ -694,8 +694,9 @@ def plot_over_time(
 
 def clip_area(
     solution: paraview.servermanager.SourceProxy,
-    min_x: float = -10,
-    max_x: float = 10,
+    x_range: Optional[list[float]] = None,
+    y_range: Optional[list[float]] = None,
+    z_range: Optional[list[float]] = None,
     plot_properties: PlotPropertiesVar = PlotProperties(),  # noqa: U100
 ) -> paraview.servermanager.SourceProxy:
     """
@@ -705,10 +706,12 @@ def clip_area(
     ----------
     solution
         The data source.
-    min_x
-        Start clip at min_x,
-    min_x
-        End clip at max_x.
+    x_range
+        Clip range in x, ``x_range = [x_min, x_max]``.
+    y_range
+        Clip range in y, ``y_range = [y_min, y_max]``.
+    z_range
+        Clip range in z, ``z_range = [z_min, z_max]``.
     plot_properties
         Properties of the solution, like the sampling pattern.
 
@@ -728,15 +731,29 @@ def clip_area(
 
     solution_data = paraview.servermanager.Fetch(solution)
     bounds = solution_data.GetBounds()
-    min_y = bounds[2]
-    max_y = bounds[3]
+    if x_range is None:
+        x_range = [bounds[0], bounds[1]]
+    if y_range is None:
+        y_range = [bounds[2], bounds[3]]
+    if z_range is None:
+        z_range = [bounds[4], bounds[5]]
+
+    if x_range[0] == x_range[1]:
+        x_range[0] -= _epsilon_d
+        x_range[1] += _epsilon_d
+    if y_range[0] == y_range[1]:
+        y_range[0] -= _epsilon_d
+        y_range[1] += _epsilon_d
+    if z_range[0] == z_range[1]:
+        z_range[0] -= _epsilon_d
+        z_range[1] += _epsilon_d
 
     # Use small epsilon in z to capture cells inside box
-    clipped_solution.ClipType.Position = [min_x, min_y, -_epsilon_d]
+    clipped_solution.ClipType.Position = [x_range[0], y_range[0], z_range[0]]
     clipped_solution.ClipType.Length = [
-        max_x - min_x,
-        max_y - min_y,
-        2 * _epsilon_d,
+        x_range[1] - x_range[0],
+        y_range[1] - y_range[0],
+        z_range[1] - z_range[0],
     ]
 
     ps.HideInteractiveWidgets(proxy=clipped_solution.ClipType)
