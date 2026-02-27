@@ -665,6 +665,76 @@ def display_time(
     return annotate_time
 
 
+def show_spread_sheet(
+    solution: paraview.servermanager.SourceProxy,
+    layout: paraview.servermanager.ViewLayoutProxy,
+    visible_columns: Optional[list[str]] = None,
+    sort_by_column: Optional[str] = None,
+    invert_sort_order: bool = False,
+    plot_properties: PlotProperties = PlotProperties(),  # noqa: U100
+) -> paraview.servermanager.Proxy:
+    """
+    Create and configure spread sheet view in ParaView.
+
+    Note that it is not possible to save screenshots of the spread sheet view.
+
+    Parameters
+    ----------
+    solution
+        The data source to visualize, typically a ParaView data object.
+    layout
+        ParaView layout to use for the spread sheet view.
+    visible_columns
+        List of columns  to display in the chart.
+    sort_by_column
+        Column name to sort by.
+    invert_sort_order
+        Invert sort order to show largest values first?
+    plot_properties
+        Properties for plotting like the labels.
+
+    Returns
+    -------
+    spread_sheet_view : SpreadSheetView
+        The configured spread sheet view.
+    """
+    spread_sheet_view = ps.CreateView("SpreadSheetView")
+    ps.AssignViewToLayout(view=spread_sheet_view, layout=layout, hint=0)
+    solution_display = ps.Show(  # noqa: F841
+        solution, spread_sheet_view, "SpreadSheetRepresentation"
+    )
+    # # Enter preview mode
+    # layout.PreviewMode = plot_properties.preview_size_1d
+    # # layout/tab size in pixels
+    # if (
+    #     plot_properties.preview_size_1d[0] != 0
+    #     and plot_properties.preview_size_1d[1] != 0
+    # ):
+    #     layout.SetSize(
+    #         plot_properties.preview_size_1d[0],
+    #         plot_properties.preview_size_1d[1],
+    #     )
+
+    # Show only selected columns
+    hide_columns = solution.PointData.keys() + ["Points", "Point ID"]
+    magnitude_columns = [name + "_Magnitude" for name in hide_columns]
+    hide_columns += magnitude_columns
+    if visible_columns is not None:
+        for column_name in visible_columns:
+            try:
+                hide_columns.remove(column_name)
+            except ValueError:
+                pass
+    else:
+        hide_columns = []
+    spread_sheet_view.HiddenColumnLabels = hide_columns
+
+    spread_sheet_view.ColumnToSort = sort_by_column
+    spread_sheet_view.InvertOrder = invert_sort_order
+
+    return spread_sheet_view
+
+
 def save_screenshot(
     view_or_layout: paraview.servermanager.ViewLayoutProxy,
     results_folder: str,
