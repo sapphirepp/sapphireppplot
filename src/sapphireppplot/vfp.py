@@ -1245,6 +1245,7 @@ def plot_phase_space_spherical_density_map(
     plot_properties: PlotProperties,
     value_range: Optional[list[float]] = None,
     log_scale: bool = True,
+    camera_direction: Optional[list[float]] = None,
     show_time: bool = False,
     save_animation: bool = False,
     layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
@@ -1269,6 +1270,8 @@ def plot_phase_space_spherical_density_map(
         and maximal (``value_range[1]``) value for the color bar.
     log_scale
         Use a logarithmic color scale?
+    camera_direction
+        Direction of the camera.
     show_time
         Display the simulation time in the render view.
     save_animation
@@ -1298,6 +1301,7 @@ def plot_phase_space_spherical_density_map(
         "f",
         value_range=value_range,
         log_scale=log_scale,
+        camera_direction=camera_direction,
         plot_properties=plot_properties,
     )
 
