@@ -181,6 +181,12 @@ class PlotProperties:
     This does not change the displayed numbers,
     only makes the axes visually bigger/smaller.
     """
+    axes_ticks: list[Optional[list[float]]] = field(
+        default_factory=lambda: [None, None, None]
+    )
+    """
+    Custom axes ticks for x,y,z-axes in RenderView.
+    """
 
     time_format: str = r"Time: {time:.2f}"
     """Formatted text for the time."""
@@ -408,6 +414,16 @@ class PlotProperties:
             self.axes_stretch[1] * self.axes_scale[1],
             self.axes_stretch[2] * self.axes_scale[2],
         ]
+        # custom labels
+        if self.axes_ticks[0] is not None:
+            render_view.AxesGrid.XAxisUseCustomLabels = True
+            render_view.AxesGrid.XAxisLabels = self.axes_ticks[0]
+        if self.axes_ticks[1] is not None:
+            render_view.AxesGrid.YAxisUseCustomLabels = True
+            render_view.AxesGrid.YAxisLabels = self.axes_ticks[1]
+        if self.axes_ticks[2] is not None:
+            render_view.AxesGrid.ZAxisUseCustomLabels = True
+            render_view.AxesGrid.ZAxisLabels = self.axes_ticks[2]
 
     def configure_grid_3d(
         self,
