@@ -347,6 +347,27 @@ class PlotPropertiesVFP(PlotProperties):
         if self.debug_input_functions:
             self._add_debug_input_functions(lms_indices)
 
+    def convert_lnp_to_log10p(
+        self,
+    ) -> None:
+        r"""
+        Display the momentum axes as :math:`\log_{10}(p)` instead of :math:`\ln(p)` in RenderView.
+
+        This only affects the display, it does not rescale the underlying data.
+
+        .. note::
+            This function only works for RenderView.
+            For LineChartView options see :py:func:`convert_lnp_to_p`.
+
+        See Also
+        --------
+        sapphireppplot.plot_properties.PlotProperties.axes_scale
+        """
+        assert self.momentum and self.logarithmic_p, "Plot has no ln_p axis"
+
+        self.axes_scale[self.dim_ps - 1] = 1.0 / np.log10(np.e)
+        self.grid_labels[self.dim_ps - 1] = r"$\log_{10} p$"
+
     def convert_lnp_to_p(
         self,
         p_min: float = 1e-15,
@@ -359,7 +380,7 @@ class PlotPropertiesVFP(PlotProperties):
 
         .. note::
             This function only works for LineChartViews.
-            It assumes that the bottom axes is :math:`\ln(p)`.
+            For RenderView options see :py:func:`convert_lnp_to_log10p`.
 
         If more control on the label format is desired,
         directly modify the `bottom_axis_labels` instead.
