@@ -794,3 +794,60 @@ def save_animation(
         TransparentBackground=plot_properties.animation_transparent_background,
         FrameStride=plot_properties.animation_frame_stride,
     )
+
+
+def save_view(
+    view: paraview.servermanager.Proxy,
+    results_folder: str,
+    filename: str,
+    save_format: str = "svg",
+    fix_axes_titles: bool = False,
+    plot_properties: PlotProperties = PlotProperties(),  # noqa: U100
+) -> None:
+    """
+    Save ParaView view as vector graphic.
+
+    Parameters
+    ----------
+    view
+        The ParaView view object to capture in the screenshot.
+    results_folder
+        The directory path where the screenshot will be saved.
+    filename
+        The base name for the screenshot file (without extension).
+    save_format
+        Save format of the vector graphic.
+    fix_axes_titles
+        In RenderView plots the axes titles often overlap with the axes labels
+        because trailing whitespaces in the title are removed.
+        To avoid this overlap this option appends a small dot to the axes titles.
+        Only use this option for RenderView plots!
+    plot_properties
+        Additional properties like background transparency.
+
+    Warning
+    -------
+    This feature is unstable and can lead to crashes.
+    One known issue is that it does not work together with custom axes ticks,
+    :py:attr:`sapphireppplot.plot_properties.PlotProperties.axes_ticks`.
+
+    See Also
+    --------
+    :pv:`paraview.simple.ExportView <paraview.simple.html#paraview.simple.ExportView>`
+    """
+    if fix_axes_titles:
+        view.AxesGrid.YTitle += r"$_{_{_{_{_{_{_{_{_{_{.}}}}}}}}}}$"
+        view.AxesGrid.ZTitle += r"$_{_{_{_{_{_{_{_{_{_{.}}}}}}}}}}$"
+
+    file_path = os.path.join(results_folder, filename + "." + save_format)
+    print(f"Save view '{file_path}")
+    ps.ExportView(
+        filename=file_path,
+        view=view,
+        location=PARAVIEW_DATA_SERVER_LOCATION,
+        Plottitle=filename,
+        # Linewidthscalingfactor=1.0,
+        # Pointsizescalingfactor=1.0,
+        # Rendertextaspaths=True,
+        # Rasterize3Dgeometry=False,  # noqa: SC100, SC200
+    )
