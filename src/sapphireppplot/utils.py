@@ -3,6 +3,7 @@
 import sys
 import os
 from typing import Any, Dict
+from matplotlib.typing import ColorType
 import numpy as np
 
 # ParamDict = Dict[str, Union[str, "ParamDict"]] # Confuses autodoc_typehints
@@ -180,3 +181,24 @@ def find_closest_index(
             f"array[{index}] = {array[index]}"
         )
     return index
+
+
+def sapphirepp_colors() -> list[ColorType]:
+    """
+    Get a list of six colors in the Sapphire++ design for line plots.
+
+    Thanks to Thibault Vieu for selecting the colors!
+
+    Returns
+    -------
+    sapphirepp_colors
+        A list of six colors in the Sapphire++ design.
+    """
+    return [
+        "#c4a5b6",
+        "#78539f",
+        "#38d9f3",
+        "#317caf",
+        "#031330",
+        "#5c6577",
+    ]

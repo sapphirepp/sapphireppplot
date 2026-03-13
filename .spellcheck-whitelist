@@ -3,6 +3,7 @@ mhd
 numpyify
 pvload
 pvplot
+sapphirepp
 sapphireppplot
 sapplot
 utils
@@ -44,8 +45,10 @@ p0
 p1
 p2
 par
+par2
 Param
 perp
+perp2
 prm
 rg
 rms
@@ -222,5 +225,6 @@ Courant
 Iroshnikov
 Kraichnan
 Orszag
+positivity
 postfix
 subfolder
