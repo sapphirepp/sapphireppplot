@@ -366,6 +366,13 @@ def scale_distribution_function(
     """
     if lms_indices is None:
         lms_indices = plot_properties_in.lms_indices
+    prefix_list = [""]
+    if plot_properties_in.prefix_numeric:
+        prefix_list = ["numeric_"]
+    if plot_properties_in.project:
+        prefix_list += ["project_"]
+    if plot_properties_in.interpol:
+        prefix_list += ["interpol_"]
     plot_properties = plot_properties_in.copy()
     plot_properties.scale_by_spectral_index(spectral_index, lms_indices)
 
@@ -385,27 +392,31 @@ def scale_distribution_function(
         coord_p = f"exp({coord_p})"
 
     solution_scaled = solution
+
     for lms_index in lms_indices:
-        name_old = plot_properties_in.f_lms_name(lms_index)
-        name_new = plot_properties.f_lms_name(lms_index)
+        for prefix in prefix_list:
+            name_old = plot_properties_in.f_lms_name(lms_index, prefix=prefix)
+            name_new = plot_properties.f_lms_name(lms_index, prefix=prefix)
 
-        # Add a new 'Calculator' to the pipeline
-        solution_scaled = ps.Calculator(
-            registrationName=name_new, Input=solution_scaled
-        )
-
-        # Properties modified on solution_scaled
-        solution_scaled.ResultArrayName = name_new
-        solution_scaled.Function = f"{coord_p}^{spectral_index} * {name_old}"
-        if plot_properties.scaled_distribution_function:
-            solution_scaled.Function = (
-                f"{coord_p}^{spectral_index-3} * {name_old}"
+            # Add a new 'Calculator' to the pipeline
+            solution_scaled = ps.Calculator(
+                registrationName=name_new, Input=solution_scaled
             )
 
-        if plot_properties.line_colors:
-            plot_properties.line_colors[name_new] = plot_properties.line_colors[
-                name_old
-            ]
+            # Properties modified on solution_scaled
+            solution_scaled.ResultArrayName = name_new
+            solution_scaled.Function = (
+                f"{coord_p}^{spectral_index} * {name_old}"
+            )
+            if plot_properties.scaled_distribution_function:
+                solution_scaled.Function = (
+                    f"{coord_p}^{spectral_index-3} * {name_old}"
+                )
+
+            if plot_properties.line_colors:
+                plot_properties.line_colors[name_new] = (
+                    plot_properties.line_colors[name_old]
+                )
 
     # solution_scaled.PointArrays = plot_properties.series_names
     solution_scaled.UpdatePipeline()
