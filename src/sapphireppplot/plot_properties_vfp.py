@@ -274,6 +274,14 @@ class PlotPropertiesVFP(PlotProperties):
                     lms_index, label_postfix
                 )
                 self.line_styles[f_lms_name] = line_style
+                if self.line_colors and prefix:
+                    f_lms_name_no_prefix = self.f_lms_name(lms_index)
+                    if (f_lms_name_no_prefix in self.line_colors.keys()) and (
+                        f_lms_name not in self.line_colors.keys()
+                    ):
+                        self.line_colors[f_lms_name] = self.line_colors[
+                            f_lms_name_no_prefix
+                        ]
 
         if self.debug_input_functions:
             self._add_debug_input_functions(lms_indices)
@@ -340,9 +348,10 @@ class PlotPropertiesVFP(PlotProperties):
                         plot_properties_old.line_styles[f_lms_name_old]
                     )
                 if plot_properties_old.line_colors:
-                    self.line_colors[f_lms_name] = (
-                        plot_properties_old.line_colors[f_lms_name_old]
-                    )
+                    if f_lms_name_old in plot_properties_old.line_colors.keys():
+                        self.line_colors[f_lms_name] = (
+                            plot_properties_old.line_colors[f_lms_name_old]
+                        )
 
         if self.debug_input_functions:
             self._add_debug_input_functions(lms_indices)

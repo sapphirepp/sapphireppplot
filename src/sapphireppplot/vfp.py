@@ -414,9 +414,10 @@ def scale_distribution_function(
                 )
 
             if plot_properties.line_colors:
-                plot_properties.line_colors[name_new] = (
-                    plot_properties.line_colors[name_old]
-                )
+                if name_old in plot_properties.line_colors.keys():
+                    plot_properties.line_colors[name_new] = (
+                        plot_properties.line_colors[name_old]
+                    )
 
     # solution_scaled.PointArrays = plot_properties.series_names
     solution_scaled.UpdatePipeline()
