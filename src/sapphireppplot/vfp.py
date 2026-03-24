@@ -575,9 +575,7 @@ def plot_f_lms_1d(
 
     if x_label is None:
         if plot_properties.momentum:
-            x_label = r"$p$"
-            if plot_properties.logarithmic_p:
-                x_label = r"$\ln p$"
+            x_label = plot_properties.p_label
         else:
             x_label = r"$x$"
 
@@ -1044,9 +1042,7 @@ def plot_f_lms_over_p(
             x_array_name = "Points_Z"
         case _:
             assert False
-    x_label = r"$p$"
-    if plot_properties.logarithmic_p:
-        x_label = r"$\ln p$"
+    x_label = plot_properties.p_label
 
     plot_over_line_p = transform.plot_over_line(
         solution,

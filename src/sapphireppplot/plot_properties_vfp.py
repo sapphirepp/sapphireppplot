@@ -47,6 +47,9 @@ class PlotPropertiesVFP(PlotProperties):
     annotation_project_interpol: str = "exact"
     """Label annotation for exact solution."""
 
+    p_label: str = r"$p$"
+    """Label for the :math:`p` axis in LineChartView."""
+
     _spectral_index: Optional[float] = None
     """If set, the distribution function is scaled by this index in ParaView."""
 
@@ -56,8 +59,10 @@ class PlotPropertiesVFP(PlotProperties):
 
         if self.momentum:
             if self.logarithmic_p:
+                self.p_label = r"$\ln p$"
                 self.grid_labels[self.dim_ps - 1] = r"$\ln p$"
             else:
+                self.p_label = r"$p$"
                 self.grid_labels[self.dim_ps - 1] = r"$p$"
 
         if self.lms_indices:
@@ -383,6 +388,7 @@ class PlotPropertiesVFP(PlotProperties):
         p_max: float = 1e15,
         num: int = 31,
         num_subdivisions: int = 10,
+        show_label_subdivisions: bool = False,
     ) -> None:
         r"""
         Convert the axes labels for the LineChartView to from :math:`\ln(p)` to :math:`p`.
@@ -406,6 +412,8 @@ class PlotPropertiesVFP(PlotProperties):
         num_subdivisions
             Number of unlabelled subdivisions,
             linearly spaced.
+        show_label_subdivisions
+            Show the label on the subdivision markers as well?
 
         See Also
         --------
@@ -420,7 +428,10 @@ class PlotPropertiesVFP(PlotProperties):
 
             if last_p > 0.0:
                 for p_sub in np.linspace(last_p, p, num_subdivisions)[1:-1]:
-                    self.bottom_axis_labels[np.log(p_sub)] = " "
+                    if show_label_subdivisions:
+                        self.bottom_axis_labels[np.log(p_sub)] = f"{p_sub:g}"
+                    else:
+                        self.bottom_axis_labels[np.log(p_sub)] = " "
             last_p = p
 
-        self.logarithmic_p = False
+        self.p_label = r"$p$"
