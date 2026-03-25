@@ -257,20 +257,24 @@ class PlotPropertiesVFP(PlotProperties):
         prefix_list = [""]
         label_postfix_list = [""]
         line_style_list = ["1"]
+        line_width_list = [2.0]
         if self.prefix_numeric:
             prefix_list = ["numeric_"]
         if self.project:
             prefix_list += ["project_"]
             label_postfix_list += [self.annotation_project_interpol]
             line_style_list += ["2"]
+            line_width_list += [4.0]
         if self.interpol:
             prefix_list += ["interpol_"]
             label_postfix_list += [self.annotation_project_interpol]
             line_style_list += ["2"]
+            line_width_list += [4.0]
 
         for i, prefix in enumerate(prefix_list):
             label_postfix = label_postfix_list[i]
             line_style = line_style_list[i]
+            line_width = line_width_list[i]
 
             for lms_index in lms_indices:
                 f_lms_name = self.f_lms_name(lms_index, prefix)
@@ -279,6 +283,7 @@ class PlotPropertiesVFP(PlotProperties):
                     lms_index, label_postfix
                 )
                 self.line_styles[f_lms_name] = line_style
+                self.line_widths[f_lms_name] = line_width
                 if self.line_colors and prefix:
                     f_lms_name_no_prefix = self.f_lms_name(lms_index)
                     if (f_lms_name_no_prefix in self.line_colors.keys()) and (
@@ -351,6 +356,10 @@ class PlotPropertiesVFP(PlotProperties):
                 if plot_properties_old.line_styles:
                     self.line_styles[f_lms_name] = (
                         plot_properties_old.line_styles[f_lms_name_old]
+                    )
+                if plot_properties_old.line_widths:
+                    self.line_widths[f_lms_name] = (
+                        plot_properties_old.line_widths[f_lms_name_old]
                     )
                 if plot_properties_old.line_colors:
                     if f_lms_name_old in plot_properties_old.line_colors.keys():

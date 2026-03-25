@@ -31,6 +31,7 @@ class PlotPropertiesMHD(PlotProperties):
         self.labels = {}
         self.colors = {}
         self.line_styles = {}
+        self.line_widths = {}
 
         quantities = [
             "rho",
@@ -54,20 +55,24 @@ class PlotPropertiesMHD(PlotProperties):
         prefix_list = [""]
         label_postfix_list = [""]
         line_style_list = ["1"]
+        line_width_list = [2.0]
         if self.prefix_numeric:
             prefix_list = ["numeric_"]
         if self.project:
             prefix_list += ["project_"]
             label_postfix_list += [self.annotation_project_interpol]
             line_style_list += ["2"]
+            line_width_list += [4.0]
         if self.interpol:
             prefix_list += ["interpol_"]
             label_postfix_list += [self.annotation_project_interpol]
             line_style_list += ["2"]
+            line_width_list += [4.0]
 
         for i, prefix in enumerate(prefix_list):
             label_postfix = label_postfix_list[i]
             line_style = line_style_list[i]
+            line_width = line_width_list[i]
 
             self.series_names += [
                 prefix + "rho",
@@ -98,6 +103,9 @@ class PlotPropertiesMHD(PlotProperties):
                 self.line_styles[self.quantity_name(quantity, prefix)] = (
                     line_style
                 )
+                self.line_widths[self.quantity_name(quantity, prefix)] = (
+                    line_width
+                )
 
         if self.show_indicators:
             indicators = [
@@ -115,6 +123,7 @@ class PlotPropertiesMHD(PlotProperties):
                     quantity
                 )
                 self.line_styles[self.quantity_name(quantity)] = "1"
+                self.line_widths[self.quantity_name(quantity)] = 2.0
 
     def quantity_name(self, quantity: str, prefix: str = "") -> str:
         """

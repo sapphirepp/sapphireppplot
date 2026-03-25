@@ -113,6 +113,8 @@ class PlotProperties:
     it default to None,
     making the line invisible.
     """
+    line_widths: dict[str, float] = field(default_factory=dict)
+    """Line widths or thickness for the series quantities in the LineChartView."""
 
     legend_location: str | list[float] = field(
         default_factory=lambda: "TopRight"
@@ -351,6 +353,17 @@ class PlotProperties:
             for key, value in self.line_styles.items():
                 flat_dict += [key, value]
             solution_display.SeriesLineStyle = flat_dict
+        if self.line_widths:
+            flat_dict = []
+            default_thickness = 2.0
+            default_keys = list(
+                set(self.series_names) - set(self.line_widths.keys())
+            )
+            for key in default_keys:
+                flat_dict += [key, str(default_thickness)]
+            for key, value in self.line_widths.items():
+                flat_dict += [key, str(value)]
+            solution_display.SeriesLineThickness = flat_dict
 
     def configure_grid_2d(
         self,
