@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.12.7
-  - paraview=6.0.1
+  - paraview=6.1.0
   - pandoc
   - numpy
   - matplotlib
