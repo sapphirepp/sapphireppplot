@@ -1,0 +1,62 @@
+name: Test examples using sapphirepp
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  SAPPHIREPP_RESULTS: /home/dealii/sapphirepp/results
+
+jobs:
+  tests:
+    name: Examples
+    runs-on: ubuntu-latest
+    container:
+      image: sapphirepp/sapphirepp:latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install sapphireppplot
+        run: |
+          source /home/dealii/miniforge3/etc/profile.d/conda.sh
+          conda env create -q -f environment.yml -n sapplot-test
+          conda activate sapplot-test
+          pip install -e .
+
+      - name: Run Sapphire++ quick-start
+        working-directory: /home/dealii/sapphirepp
+        run: |
+          cat <<EOT >>quick-start.prm
+
+          subsection Output
+            set Results folder = $SAPPHIREPP_RESULTS/quick-start
+            set Simulation identifier = 01
+          end
+          EOT
+          ./build/sapphirepp quick-start.prm
+
+      - name: Run quick-start example
+        run: |
+          source /home/dealii/miniforge3/etc/profile.d/conda.sh
+          conda activate sapplot-test
+          cd examples
+          python plot_quick_start.py 01
+
+      - name: Run jupyter notebook
+        run: |
+          source /home/dealii/miniforge3/etc/profile.d/conda.sh
+          conda activate sapplot-test
+          cd examples && mkdir figures
+          jupyter execute jupyter_tutorial.ipynb
+
+      - name: Create logo
+        run: |
+          export SAPPHIREPP_PLOT=$(pwd)
+          source /home/dealii/miniforge3/etc/profile.d/conda.sh
+          conda activate sapplot-test
+          cd examples
+          python create_logo.py

@@ -7,4 +7,5 @@ dependencies:
   - pandoc
   - numpy
   - matplotlib
+  - ipython
   - jupyter

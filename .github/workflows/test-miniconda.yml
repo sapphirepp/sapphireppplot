@@ -2,6 +2,7 @@ name: Test using Miniconda
 
 on:
   push:
+  workflow_dispatch:
 
 jobs:
   tests:
