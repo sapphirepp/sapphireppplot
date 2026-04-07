@@ -756,7 +756,7 @@ def save_screenshot(
         Additional properties like background transparency.
     """
     file_path = os.path.join(results_folder, filename + ".png")
-    print(f"Save screenshot '{file_path}")
+    print(f"Save screenshot '{file_path}'")
     ps.SaveScreenshot(
         filename=file_path,
         viewOrLayout=view_or_layout,
@@ -786,7 +786,7 @@ def save_animation(
         Additional properties like background transparency.
     """
     file_path = os.path.join(results_folder, filename + ".png")
-    print(f"Save animation '{file_path}")
+    print(f"Save animation '{file_path}'")
     ps.SaveAnimation(
         filename=file_path,
         viewOrLayout=view_or_layout,
@@ -840,7 +840,7 @@ def save_view(
         view.AxesGrid.ZTitle += r"$_{_{_{_{_{_{_{_{_{_{.}}}}}}}}}}$"
 
     file_path = os.path.join(results_folder, filename + "." + save_format)
-    print(f"Save view '{file_path}")
+    print(f"Save view '{file_path}'")
     ps.ExportView(
         filename=file_path,
         view=view,
