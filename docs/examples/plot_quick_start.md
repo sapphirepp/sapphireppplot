@@ -47,7 +47,8 @@ For the quick-start example,
 the reduced phase space is of dimension `2`,
 and momentum terms are activated in Sapphire++.
 We also set the
-{py:attr}`color_bar_position <sapphireppplot.plot_properties.PlotProperties.color_bar_position>`
+{py:attr}`color_bar_position <sapphireppplot.plot_properties.PlotProperties.color_bar_position>`,
+the {py:attr}`time_location <sapphireppplot.plot_properties.PlotProperties.time_location>`
 and enable a transparent background for animations:
 
 ```python
@@ -55,6 +56,7 @@ and enable a transparent background for animations:
         dimension=2,
         momentum=True,
         color_bar_position=[0.15, 0.55],
+        time_location=[0.13, 0.2],
         animation_transparent_background=True,
     )
 ```
@@ -94,6 +96,7 @@ To display the $f_{000}$ component, set `lms_index=[0, 0, 0]`.
 Since the plot uses a logarithmic color scale, we define the `value_range` to display.
 In addition to the image at the final time (`quick-start-2D.png`),
 an animation is saved as a series of PNG files (`quick-start-2D.XXXX.png`).
+To indicate the simulation time in the animation, we use `show_time=True`.
 
 ```python
     layout_2d, render_view_2d = vfp.plot_f_lms_2d(
@@ -103,11 +106,16 @@ an animation is saved as a series of PNG files (`quick-start-2D.XXXX.png`).
         plot_properties,
         lms_index=[0, 0, 0],
         value_range=[1e-2, 10.0],
+        show_time=True,
         save_animation=True,
     )
 ```
 
 ![Quick-start 2D render view](figures/quick-start-2D.png)
+
+The animation snapshots can be converted to a `gif` using
+[ImageMagick Convert](https://imagemagick.org/script/convert.php)
+as shown [below](#converting-animation-snapshots-to-gif).
 
 ## Plotting $f(x)$
 
@@ -377,13 +385,17 @@ ls $SAPPHIREPP_RESULTS/quick-start/01
 > ...
 ```
 
-The animation snapshots `quick-start-2D.XXXX.png` can be converted into an animated .gif
+#### Converting animation snapshots to `gif`
+
+The animation snapshots `quick-start-2D.XXXX.png` can be converted into an animated `gif`
 using [ImageMagick Convert](https://imagemagick.org/script/convert.php):
 
 ```bash
 magick -delay 1 -loop 0 $SAPPHIREPP_RESULTS/quick-start/01/quick-start-2D.*.png $SAPPHIREPP_RESULTS/quick-start/01/quick-start-2D.gif
 rm $SAPPHIREPP_RESULTS/quick-start/01/quick-start-2D.*.png
 ```
+
+![Quick-start 2D animation](figures/quick-start-2D.gif)
 
 ### 2. Using the ParaView Python Console
 

@@ -11,6 +11,7 @@ def main() -> dict:
         dimension=2,
         momentum=True,
         color_bar_position=[0.15, 0.55],
+        time_location=[0.13, 0.2],
         animation_transparent_background=True,
     )
 
@@ -27,6 +28,7 @@ def main() -> dict:
         plot_properties,
         lms_index=[0, 0, 0],
         value_range=[1e-2, 10.0],
+        show_time=True,
         save_animation=True,
     )
     # endregion
