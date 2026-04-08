@@ -1,6 +1,6 @@
 """Define PlotPropertiesMHD class."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from sapphireppplot.plot_properties import PlotProperties
 
@@ -25,6 +25,9 @@ class PlotPropertiesMHD(PlotProperties):
     """Show interpolated exact solution?"""
     annotation_project_interpol: str = "exact"
     """Label annotation for exact solution."""
+
+    quantity_names: dict[str, str] = field(default_factory=dict)
+    """Translation of MHD quantity names to ParaView series names."""
 
     def __post_init__(self) -> None:
         self.series_names = []
@@ -51,6 +54,34 @@ class PlotPropertiesMHD(PlotProperties):
             "u_z",
             "psi",
         ]
+
+        self.quantity_names = {
+            "rho": "rho",
+            "E": "E",
+            "p_Magnitude": "p_Magnitude",
+            "p_x": "p_X",
+            "p_y": "p_Y",
+            "p_z": "p_Z",
+            "b_Magnitude": "b_Magnitude",
+            "b_x": "b_X",
+            "b_y": "b_Y",
+            "b_z": "b_Z",
+            "P": "P",
+            "u_Magnitude": "u_Magnitude",
+            "u_x": "u_X",
+            "u_y": "u_Y",
+            "u_z": "u_Z",
+            "psi": "psi",
+        }
+
+        if self.dimension <= 1:
+            self.quantity_names["p_y"] = "p_y"
+            self.quantity_names["b_y"] = "b_y"
+            self.quantity_names["u_y"] = "u_y"
+        if self.dimension <= 2:
+            self.quantity_names["p_z"] = "p_z"
+            self.quantity_names["b_z"] = "b_z"
+            self.quantity_names["u_z"] = "u_z"
 
         prefix_list = [""]
         label_postfix_list = [""]
@@ -153,35 +184,8 @@ class PlotPropertiesMHD(PlotProperties):
         if quantity in indicators:
             return quantity
 
-        quantity_names = {
-            "rho": "rho",
-            "E": "E",
-            "p_Magnitude": "p_Magnitude",
-            "p_x": "p_X",
-            "p_y": "p_Y",
-            "p_z": "p_Z",
-            "b_Magnitude": "b_Magnitude",
-            "b_x": "b_X",
-            "b_y": "b_Y",
-            "b_z": "b_Z",
-            "P": "P",
-            "u_Magnitude": "u_Magnitude",
-            "u_x": "u_X",
-            "u_y": "u_Y",
-            "u_z": "u_Z",
-            "psi": "psi",
-        }
-        if self.dimension <= 1:
-            quantity_names["p_y"] = "p_y"
-            quantity_names["b_y"] = "b_y"
-            quantity_names["u_y"] = "u_y"
-        if self.dimension <= 2:
-            quantity_names["p_z"] = "p_z"
-            quantity_names["b_z"] = "b_z"
-            quantity_names["u_z"] = "u_z"
-
-        if quantity in quantity_names:
-            return prefix + quantity_names[quantity]
+        if quantity in self.quantity_names:
+            return prefix + self.quantity_names[quantity]
 
         if self.series_names and quantity in self.series_names:
             return quantity

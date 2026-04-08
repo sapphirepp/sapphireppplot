@@ -156,20 +156,61 @@ def compute_kinetic_energy(
     --------
     sapphireppplot.transform.calculator : Create Calculator.
     """
-    formula_p2 = (
-        f"({plot_properties_in.quantity_name("p_x")}^2"
-        + f"{plot_properties_in.quantity_name("p_y")}^2"
-        + f"{plot_properties_in.quantity_name("p_z")}^2)"
-    )
-    formula = f"1 / (2 * rho) * {formula_p2}"
+    plot_properties = plot_properties_in.copy()
+    plot_properties.quantity_names["E_kin"] = "E_kin"
+    if plot_properties.prefix_numeric:  # also add non prefixed label
+        plot_properties.labels["E_kin"] = r"$E_{\rm kin}$"
 
-    calculator, plot_properties = transform.calculator(
-        solution,
-        quantity="E_kin",
-        formula=formula,
-        label=r"$E_{\rm kin}$",
-        plot_properties_in=plot_properties_in,
-    )
+    prefix_list = [""]
+    label_postfix_list = [""]
+    line_style_list = ["1"]
+    line_width_list = [2.0]
+    if plot_properties.prefix_numeric:
+        prefix_list = ["numeric_"]
+    if plot_properties.project:
+        prefix_list += ["project_"]
+        label_postfix_list += [plot_properties.annotation_project_interpol]
+        line_style_list += ["2"]
+        line_width_list += [4.0]
+    if plot_properties.interpol:
+        prefix_list += ["interpol_"]
+        label_postfix_list += [plot_properties.annotation_project_interpol]
+        line_style_list += ["2"]
+        line_width_list += [4.0]
+
+    calculator = solution
+    for i, prefix in enumerate(prefix_list):
+        label_postfix = label_postfix_list[i]
+        line_style = line_style_list[i]
+        line_width = line_width_list[i]
+        tmp_postfix = ""
+        if label_postfix:
+            tmp_postfix = ", " + label_postfix
+
+        formula_p2 = (
+            f"({plot_properties.quantity_name("p_x", prefix)}^2"
+            + f"{plot_properties.quantity_name("p_y", prefix)}^2"
+            + f"{plot_properties.quantity_name("p_z", prefix)}^2)"
+        )
+        formula = (
+            f"1 / (2 * "
+            f"{plot_properties.quantity_name("rho", prefix)}"
+            f") * {formula_p2}"
+        )
+
+        calculator, plot_properties = transform.calculator(
+            calculator,
+            quantity=plot_properties.quantity_name("E_kin", prefix),
+            formula=formula,
+            label=r"$E_{\rm kin" + tmp_postfix + r"}$",
+            plot_properties_in=plot_properties,
+        )
+        plot_properties.line_styles[
+            plot_properties.quantity_name("E_kin", prefix)
+        ] = line_style
+        plot_properties.line_widths[
+            plot_properties.quantity_name("E_kin", prefix)
+        ] = line_width
 
     return calculator, plot_properties
 
@@ -205,15 +246,56 @@ def compute_sound_speed(
     --------
     sapphireppplot.transform.calculator : Create Calculator.
     """
-    formula = f"sqrt({gamma} * P / rho)"
+    plot_properties = plot_properties_in.copy()
+    plot_properties.quantity_names["a_s"] = "a_s"
+    if plot_properties.prefix_numeric:  # also add non prefixed label
+        plot_properties.labels["a_s"] = r"$a_{s}$"
 
-    calculator, plot_properties = transform.calculator(
-        solution,
-        quantity="a_s",
-        formula=formula,
-        label=r"$a_s$",
-        plot_properties_in=plot_properties_in,
-    )
+    prefix_list = [""]
+    label_postfix_list = [""]
+    line_style_list = ["1"]
+    line_width_list = [2.0]
+    if plot_properties.prefix_numeric:
+        prefix_list = ["numeric_"]
+    if plot_properties.project:
+        prefix_list += ["project_"]
+        label_postfix_list += [plot_properties.annotation_project_interpol]
+        line_style_list += ["2"]
+        line_width_list += [4.0]
+    if plot_properties.interpol:
+        prefix_list += ["interpol_"]
+        label_postfix_list += [plot_properties.annotation_project_interpol]
+        line_style_list += ["2"]
+        line_width_list += [4.0]
+
+    calculator = solution
+    for i, prefix in enumerate(prefix_list):
+        label_postfix = label_postfix_list[i]
+        line_style = line_style_list[i]
+        line_width = line_width_list[i]
+        tmp_postfix = ""
+        if label_postfix:
+            tmp_postfix = ", " + label_postfix
+
+        formula = (
+            f"sqrt({gamma} * "
+            f"{plot_properties.quantity_name("P", prefix)} / "
+            f"{plot_properties.quantity_name("rho", prefix)})"
+        )
+
+        calculator, plot_properties = transform.calculator(
+            calculator,
+            quantity=plot_properties.quantity_name("a_s", prefix),
+            formula=formula,
+            label=r"$a_{s" + tmp_postfix + r"}$",
+            plot_properties_in=plot_properties,
+        )
+        plot_properties.line_styles[
+            plot_properties.quantity_name("a_s", prefix)
+        ] = line_style
+        plot_properties.line_widths[
+            plot_properties.quantity_name("a_s", prefix)
+        ] = line_width
 
     return calculator, plot_properties
 
@@ -246,15 +328,60 @@ def compute_alfven_speed(
     --------
     sapphireppplot.transform.calculator : Create Calculator.
     """
-    formula = "sqrt(mag(b)^2 / rho)"
+    plot_properties = plot_properties_in.copy()
+    plot_properties.quantity_names["c_a"] = "c_a"
+    if plot_properties.prefix_numeric:  # also add non prefixed label
+        plot_properties.labels["c_a"] = r"$c_{A}$"
 
-    calculator, plot_properties = transform.calculator(
-        solution,
-        quantity="c_a",
-        formula=formula,
-        label=r"$c_A$",
-        plot_properties_in=plot_properties_in,
-    )
+    prefix_list = [""]
+    label_postfix_list = [""]
+    line_style_list = ["1"]
+    line_width_list = [2.0]
+    if plot_properties.prefix_numeric:
+        prefix_list = ["numeric_"]
+    if plot_properties.project:
+        prefix_list += ["project_"]
+        label_postfix_list += [plot_properties.annotation_project_interpol]
+        line_style_list += ["2"]
+        line_width_list += [4.0]
+    if plot_properties.interpol:
+        prefix_list += ["interpol_"]
+        label_postfix_list += [plot_properties.annotation_project_interpol]
+        line_style_list += ["2"]
+        line_width_list += [4.0]
+
+    calculator = solution
+    for i, prefix in enumerate(prefix_list):
+        label_postfix = label_postfix_list[i]
+        line_style = line_style_list[i]
+        line_width = line_width_list[i]
+        tmp_postfix = ""
+        if label_postfix:
+            tmp_postfix = ", " + label_postfix
+
+        formula_b2 = (
+            f"({plot_properties.quantity_name("b_x", prefix)}^2"
+            + f"{plot_properties.quantity_name("b_y", prefix)}^2"
+            + f"{plot_properties.quantity_name("b_z", prefix)}^2)"
+        )
+        formula = (
+            f"sqrt({formula_b2} / "
+            f"{plot_properties.quantity_name("rho", prefix)})"
+        )
+
+        calculator, plot_properties = transform.calculator(
+            calculator,
+            quantity=plot_properties.quantity_name("c_a", prefix),
+            formula=formula,
+            label=r"$c_{A" + tmp_postfix + r"}$",
+            plot_properties_in=plot_properties,
+        )
+        plot_properties.line_styles[
+            plot_properties.quantity_name("c_a", prefix)
+        ] = line_style
+        plot_properties.line_widths[
+            plot_properties.quantity_name("c_a", prefix)
+        ] = line_width
 
     return calculator, plot_properties
 
@@ -291,20 +418,57 @@ def compute_magnetic_pressure(
     --------
     sapphireppplot.transform.calculator : Create Calculator.
     """
-    formula_b2 = (
-        f"({plot_properties_in.quantity_name("b_x")}^2"
-        + f"{plot_properties_in.quantity_name("b_y")}^2"
-        + f"{plot_properties_in.quantity_name("b_z")}^2)"
-    )
-    formula = f"({gamma}-1) * {formula_b2}/2"
+    plot_properties = plot_properties_in.copy()
+    plot_properties.quantity_names["P_B"] = "P_B"
+    if plot_properties.prefix_numeric:  # also add non prefixed label
+        plot_properties.labels["P_B"] = r"$P_{B}$"
 
-    calculator, plot_properties = transform.calculator(
-        solution,
-        quantity="P_B",
-        formula=formula,
-        label=r"$P_B$",
-        plot_properties_in=plot_properties_in,
-    )
+    prefix_list = [""]
+    label_postfix_list = [""]
+    line_style_list = ["1"]
+    line_width_list = [2.0]
+    if plot_properties.prefix_numeric:
+        prefix_list = ["numeric_"]
+    if plot_properties.project:
+        prefix_list += ["project_"]
+        label_postfix_list += [plot_properties.annotation_project_interpol]
+        line_style_list += ["2"]
+        line_width_list += [4.0]
+    if plot_properties.interpol:
+        prefix_list += ["interpol_"]
+        label_postfix_list += [plot_properties.annotation_project_interpol]
+        line_style_list += ["2"]
+        line_width_list += [4.0]
+
+    calculator = solution
+    for i, prefix in enumerate(prefix_list):
+        label_postfix = label_postfix_list[i]
+        line_style = line_style_list[i]
+        line_width = line_width_list[i]
+        tmp_postfix = ""
+        if label_postfix:
+            tmp_postfix = ", " + label_postfix
+
+        formula_b2 = (
+            f"({plot_properties.quantity_name("b_x", prefix)}^2"
+            + f"{plot_properties.quantity_name("b_y", prefix)}^2"
+            + f"{plot_properties.quantity_name("b_z", prefix)}^2)"
+        )
+        formula = f"({gamma}-1) * {formula_b2}/2"
+
+        calculator, plot_properties = transform.calculator(
+            calculator,
+            quantity=plot_properties.quantity_name("P_B", prefix),
+            formula=formula,
+            label=r"$P_{B" + tmp_postfix + r"}$",
+            plot_properties_in=plot_properties,
+        )
+        plot_properties.line_styles[
+            plot_properties.quantity_name("P_B", prefix)
+        ] = line_style
+        plot_properties.line_widths[
+            plot_properties.quantity_name("P_B", prefix)
+        ] = line_width
 
     return calculator, plot_properties
 
