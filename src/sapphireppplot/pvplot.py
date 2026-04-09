@@ -805,7 +805,7 @@ def save_view(
     plot_properties: PlotProperties = PlotProperties(),  # noqa: U100
 ) -> None:
     """
-    Save ParaView view as vector graphic.
+    Save ParaView view as vector graphic or table.
 
     Parameters
     ----------
@@ -816,7 +816,7 @@ def save_view(
     filename
         The base name for the screenshot file (without extension).
     save_format
-        Save format of the vector graphic.
+        Save format, e.g. ``svg`` for vector graphics and ``csv` for table.
     fix_axes_titles
         In RenderView plots the axes titles often overlap with the axes labels
         because trailing whitespaces in the title are removed.
@@ -841,13 +841,29 @@ def save_view(
 
     file_path = os.path.join(results_folder, filename + "." + save_format)
     print(f"Save view '{file_path}'")
-    ps.ExportView(
-        filename=file_path,
-        view=view,
-        location=PARAVIEW_DATA_SERVER_LOCATION,
-        Plottitle=filename,
-        # Linewidthscalingfactor=1.0,
-        # Pointsizescalingfactor=1.0,
-        # Rendertextaspaths=True,
-        # Rasterize3Dgeometry=False,  # noqa: SC100, SC200
-    )
+    match save_format:
+        case "svg":
+            ps.ExportView(
+                filename=file_path,
+                view=view,
+                location=PARAVIEW_DATA_SERVER_LOCATION,
+                Plottitle=filename,
+                # Linewidthscalingfactor=1.0,
+                # Pointsizescalingfactor=1.0,
+                # Rendertextaspaths=True,
+                # Rasterize3Dgeometry=False,  # noqa: SC100, SC200
+            )
+        case "csv":
+            ps.ExportView(
+                filename=file_path,
+                view=view,
+                location=PARAVIEW_DATA_SERVER_LOCATION,
+                # RealNumberNotation="Mixed",
+                # RealNumberPrecision=6,
+            )
+        case _:
+            ps.ExportView(
+                filename=file_path,
+                view=view,
+                location=PARAVIEW_DATA_SERVER_LOCATION,
+            )
