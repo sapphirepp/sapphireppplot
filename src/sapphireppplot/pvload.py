@@ -441,7 +441,7 @@ def load_solution(
     t_start: float = 0.0,
     t_end: float = 1.0,
     animation_time: Optional[float] = None,
-    parameter_file_name: str = "log.prm",
+    parameter_file_name: Optional[str] = "log.prm",
 ) -> tuple[
     str,
     ParamDict,
@@ -478,6 +478,8 @@ def load_solution(
         Defaults to the last time step.
     parameter_file_name
         File name of the parameter file including file extension.
+        Loading of parameters can sometimes be very slow.
+        To skip, set ``parameter_file_name = None``.
 
     Returns
     -------
@@ -572,7 +574,7 @@ def load_extract(
     results_folder: str = "",
     subfolder: str = "extracts",
     animation_time: Optional[float] = None,
-    parameter_file_name: str = "log.prm",
+    parameter_file_name: Optional[str] = "log.prm",
 ) -> tuple[
     str,
     ParamDict,
@@ -608,6 +610,8 @@ def load_extract(
         Defaults to the last time step.
     parameter_file_name
         File name of the parameter file including file extension.
+        Loading of parameters can sometimes be very slow.
+        To skip, set ``parameter_file_name = None``.
 
     Returns
     -------
@@ -636,10 +640,18 @@ def load_extract(
         path_prefix=path_prefix, results_folder=results_folder
     )
 
-    prm_file = read_parameter_file(
-        results_folder, file_name=parameter_file_name
-    )
-    prm = utils.prm_to_dict(prm_file)
+    prm: ParamDict = {}
+    if parameter_file_name:
+        try:
+            prm_file = read_parameter_file(
+                results_folder, file_name=parameter_file_name
+            )
+            prm = utils.prm_to_dict(prm_file)
+        except FileNotFoundError:
+            print(
+                f"Parameter file `{parameter_file_name}` not found. "
+                "Parameter dict is empty."
+            )
 
     match file_format:
         case "pvtp":
