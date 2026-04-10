@@ -816,7 +816,7 @@ def save_view(
     filename
         The base name for the screenshot file (without extension).
     save_format
-        Save format, e.g. ``svg`` for vector graphics and ``csv` for table.
+        Save format, e.g. ``svg`` for vector graphics and ``csv`` for table.
     fix_axes_titles
         In RenderView plots the axes titles often overlap with the axes labels
         because trailing whitespaces in the title are removed.

@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+env:
+  SPHINXOPTS: "-W --keep-going"
+
 jobs:
   tests:
     name: Test
