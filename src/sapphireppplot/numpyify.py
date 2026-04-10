@@ -14,6 +14,7 @@ def to_numpy_1d(
     x_direction: int = 0,
     x_min: Optional[float] = None,
     x_max: Optional[float] = None,
+    time: Optional[float] = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Convert 1D data, e.g. from PlotOverLine, to a numpy array.
@@ -30,6 +31,11 @@ def to_numpy_1d(
         If set, only return the data ``x >= x_min``.
     x_max
         If set, only return the data ``x <= x_max``.
+    time
+        Time at which to extract the solution.
+        This (should) default to the current animation time,
+        but in non-interactive sessions this can break.
+        Setting an explicit time avoids this issue.
 
     Returns
     -------
@@ -45,6 +51,10 @@ def to_numpy_1d(
     KeyError
         If ``array_name`` is not available.
     """
+    # Set time
+    if time is not None:
+        solution.UpdatePipeline(time=time)
+
     # Fetch the data from the solution
     solution_data = paraview.servermanager.Fetch(solution)
 
