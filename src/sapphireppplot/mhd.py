@@ -952,6 +952,7 @@ def plot_quantities_over_x(
     value_range: Optional[list[float]] = None,
     log_x_scale: bool = False,
     log_y_scale: bool = False,
+    show_time: bool = False,
     save_animation: bool = False,
     layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
 ) -> tuple[
@@ -992,6 +993,8 @@ def plot_quantities_over_x(
         Use a logarithmic x-scale?
     log_y_scale
         Use a logarithmic y-scale?
+    show_time
+        Display the simulation time in the line chart view view.
     save_animation
         Save an animation of the plot.
     layout
@@ -1080,6 +1083,9 @@ def plot_quantities_over_x(
         log_y_scale=log_y_scale,
         plot_properties=plot_properties,
     )
+
+    if show_time:
+        pvplot.display_time(line_chart_view, plot_properties=plot_properties)
 
     pvplot.save_screenshot(layout, results_folder, name, plot_properties)
     if save_animation:
