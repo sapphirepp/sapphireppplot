@@ -251,7 +251,6 @@ class PlotPropertiesVFP(PlotProperties):
 
         self.series_names = []
         self.labels = {}
-        # self.colors = {}
         self.line_styles = {}
 
         prefix_list = [""]

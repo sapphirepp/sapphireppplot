@@ -32,7 +32,6 @@ class PlotPropertiesMHD(PlotProperties):
     def __post_init__(self) -> None:
         self.series_names = []
         self.labels = {}
-        self.colors = {}
         self.line_styles = {}
         self.line_widths = {}
 
@@ -128,15 +127,19 @@ class PlotPropertiesMHD(PlotProperties):
                 ]
 
             for quantity in quantities:
-                self.labels[self.quantity_name(quantity, prefix)] = (
-                    self.quantity_label(quantity, label_postfix)
+                tmp_quantity_name = self.quantity_name(quantity, prefix)
+                self.labels[tmp_quantity_name] = self.quantity_label(
+                    quantity, label_postfix
                 )
-                self.line_styles[self.quantity_name(quantity, prefix)] = (
-                    line_style
-                )
-                self.line_widths[self.quantity_name(quantity, prefix)] = (
-                    line_width
-                )
+                self.line_styles[tmp_quantity_name] = line_style
+                self.line_widths[tmp_quantity_name] = line_width
+                if self.line_colors:
+                    if (quantity in self.line_colors.keys()) and (
+                        tmp_quantity_name not in self.line_colors.keys()
+                    ):
+                        self.line_colors[tmp_quantity_name] = self.line_colors[
+                            quantity
+                        ]
 
         if self.show_indicators:
             indicators = [
