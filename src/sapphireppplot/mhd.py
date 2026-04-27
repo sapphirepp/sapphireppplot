@@ -1,13 +1,15 @@
 """Module for MHD specific plotting."""
 
 from typing import Optional
+import os
 import math
+import numpy as np
 import paraview.simple as ps
 import paraview.servermanager
 
 from sapphireppplot.plot_properties_mhd import PlotPropertiesMHD
 from sapphireppplot.utils import ParamDict
-from sapphireppplot import utils, pvload, pvplot, transform
+from sapphireppplot import utils, pvload, pvplot, transform, numpyify
 
 
 def load_solution(
@@ -126,6 +128,83 @@ def load_solution(
         animation_scene.GoToLast()
 
     return results_folder, prm, solution, animation_scene
+
+
+def save_to_dat(
+    solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
+    results_folder: str,
+    filename: str,
+    plot_properties: PlotPropertiesMHD,
+    quantities: Optional[list[str]] = None,
+    time_steps: Optional[list[float]] = None,
+) -> None:
+    """
+    Convert to cell-centred data and save as ``.dat`` files with history file ``.hst``.
+
+    Parameters
+    ----------
+    solution
+        ParaView solution data.
+    animation_scene
+        The ParaView AnimationScene.
+    results_folder
+        Path to the folder where results will be saved.
+    filename
+        The base name for the saved data file (without extension).
+    plot_properties
+        Properties of the solution.
+    quantities
+        List of physical quantity to save.
+        Defaults to only the conserved variables.
+    time_steps
+        List of time steps to extract the data.
+        Defaults to using all time steps.
+    """
+    if quantities is None:
+        quantities = [
+            "rho",
+            "p_x",
+            "p_y",
+            "p_z",
+            "E",
+            "b_x",
+            "b_y",
+            "b_z",
+        ]
+    prefix = ""
+    if plot_properties.prefix_numeric:
+        prefix = "numeric_"
+
+    time_steps, points, data = numpyify.to_numpy_time_steps(
+        solution,
+        animation_scene,
+        [
+            plot_properties.quantity_name(quantity, prefix)
+            for quantity in quantities
+        ],
+        time_steps=time_steps,
+    )
+
+    base_file_path = os.path.join(results_folder, filename)
+    print(f"Save data '{base_file_path}*.hst/dat'")
+    np.savetxt(
+        base_file_path + ".hst",
+        time_steps,
+        header="Sapphire++-MHD history data\n" + "t",
+    )
+
+    for i, t in enumerate(time_steps):
+        output_array = np.append(points[i], data[i].transpose(), axis=1)
+
+        header = f"Sapphire++-MHD data at {t=}\n"
+        header += "x y z "
+        header += " ".join(quantities)
+        np.savetxt(
+            base_file_path + f".{i:05d}.dat",
+            output_array,
+            header=header,
+        )
 
 
 def compute_kinetic_energy(

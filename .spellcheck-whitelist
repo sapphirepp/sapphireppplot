@@ -156,6 +156,7 @@ npz
 numpy
 pcov
 popt
+savetxt
 savez
 searchsorted
 sqrt
