@@ -1,6 +1,7 @@
 """Convert ParaView data to numpy arrays."""
 
 from typing import Optional
+import warnings
 import numpy as np
 import paraview.simple as ps
 import paraview.servermanager
@@ -95,6 +96,11 @@ def to_numpy_1d(
 
         # Get the data array
         array_vtk = solution_data.GetPointData().GetArray(base_array_name)
+        if array_vtk is None:
+            warnings.warn(
+                f"Could not read array {base_array_name}", RuntimeWarning
+            )
+            continue
         # Convert data to numpy array
         array = numpy_support.vtk_to_numpy(array_vtk)
         # Select component and filter out masked data
@@ -189,6 +195,11 @@ def to_numpy_point_list(
         array_vtk = cell_values_data.GetCellData().GetAbstractArray(
             base_array_name
         )
+        if array_vtk is None:
+            warnings.warn(
+                f"Could not read array {base_array_name}", RuntimeWarning
+            )
+            continue
         # Convert data to numpy array
         array = numpy_support.vtk_to_numpy(array_vtk)
         # Select component and sort data
@@ -418,6 +429,11 @@ def to_numpy_time_steps(
             array_vtk = cell_values_data.GetCellData().GetAbstractArray(
                 base_array_name
             )
+            if array_vtk is None:
+                warnings.warn(
+                    f"Could not read array {base_array_name}", RuntimeWarning
+                )
+                continue
             # Convert data to numpy array
             array = numpy_support.vtk_to_numpy(array_vtk)
             # Select component and sort data
@@ -756,6 +772,11 @@ def to_numpy_over_time(
 
         # Get the data array
         array_vtk = table.GetColumnByName(base_array_name)
+        if array_vtk is None:
+            warnings.warn(
+                f"Could not read array {base_array_name}", RuntimeWarning
+            )
+            continue
         # Convert data to numpy array
         array = numpy_support.vtk_to_numpy(array_vtk)
         # Select component and sort data
