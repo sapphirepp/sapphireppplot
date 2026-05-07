@@ -85,6 +85,7 @@ def load_solution(
     )
     solution = pvload.scale_time_steps(
         solution_without_time,
+        animation_scene=None,
         t_start=t_start,
         t_end=t_end,
     )

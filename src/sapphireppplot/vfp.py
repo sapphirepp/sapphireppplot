@@ -104,6 +104,7 @@ def load_solution(
                 t_end = float(prm["VFP"]["Time stepping"]["Final time"])
                 solution = pvload.scale_time_steps(
                     solution,
+                    animation_scene=None,
                     t_start=t_start,
                     t_end=t_end,
                 )
@@ -192,6 +193,7 @@ def load_probe_location_surface(
     num = len(tabular_data.Input.GetProperty("TimestepValues"))
     time_scaled_tabular_data = pvload.scale_time_steps(
         tabular_data,
+        animation_scene=None,
         t_start=t_start,
         t_end=t_end,
         scale=(t_end - t_start) / (num - 1),
@@ -299,6 +301,7 @@ def load_probe_location_spherical_density(
     num = len(tabular_data.Input.GetProperty("TimestepValues"))
     time_scaled_tabular_data = pvload.scale_time_steps(
         tabular_data,
+        animation_scene=None,
         t_start=t_start,
         t_end=t_end,
         scale=(t_end - t_start) / (num - 1),

@@ -34,6 +34,7 @@ FFT
 func
 gmf
 hd
+idx
 inj
 interpol
 lms

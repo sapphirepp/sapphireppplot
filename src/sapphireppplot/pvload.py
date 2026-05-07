@@ -389,6 +389,7 @@ def load_solution_hdf5_with_xdmf(
 
 def scale_time_steps(
     solution: paraview.servermanager.SourceProxy,
+    animation_scene: Optional[paraview.servermanager.Proxy],
     t_start: float = 0.0,
     t_end: float = 1.0,
     scale: Optional[float] = None,
@@ -400,6 +401,9 @@ def scale_time_steps(
     ----------
     solution
         Solution without time steps.
+    animation_scene
+        The ParaView AnimationScene.
+        Can be left empty to to manually update timestep values.
     t_start
         Simulation start time.
     t_end
@@ -418,17 +422,20 @@ def scale_time_steps(
         registrationName="TemporalShiftScale", Input=solution
     )
 
-    if scale:
-        solution_temporal_scaled.Scale = scale
-    else:
+    if scale is None:
         num = len(solution.GetProperty("TimestepValues"))
-        # Properties modified on solution_temporal_scaled
-        solution_temporal_scaled.Scale = (t_end - t_start) / (num - 1)
+        scale = (t_end - t_start) / (num - 1)
+    solution_temporal_scaled.Scale = scale
     solution_temporal_scaled.PreShift = 0
     solution_temporal_scaled.PostShift = t_start
 
     # solution_temporal_scaled.UpdatePipelineInformation()
     solution_temporal_scaled.UpdatePipeline()
+
+    if animation_scene is not None:
+        unscaled_current_time = animation_scene.TimeKeeper.Time
+        animation_scene.UpdateAnimationUsingDataTimeSteps()
+        animation_scene.AnimationTime = unscaled_current_time * scale
 
     return solution_temporal_scaled
 
@@ -526,6 +533,7 @@ def load_solution(
             )
             solution = scale_time_steps(
                 solution,
+                animation_scene=None,
                 t_start=t_start,
                 t_end=t_end,
             )
@@ -544,6 +552,7 @@ def load_solution(
             if plot_properties.use_legacy_pvtu_reader:
                 solution = scale_time_steps(
                     solution,
+                    animation_scene=None,
                     t_start=t_start,
                     t_end=t_end,
                 )

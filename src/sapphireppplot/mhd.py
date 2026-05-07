@@ -107,6 +107,7 @@ def load_solution(
                     pass
                 solution = pvload.scale_time_steps(
                     solution,
+                    animation_scene=None,
                     t_start=t_start,
                     t_end=t_end,
                     scale=t_scale,
