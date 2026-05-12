@@ -1027,7 +1027,7 @@ def plot_quantities_over_x(
     direction: str | list[list[float]] = "x",
     offset: Optional[list[float]] = None,
     x_axes_scale: Optional[float] = None,
-    x_label: str = r"$x$",
+    x_label: Optional[str] = None,
     x_range: Optional[list[float]] = None,
     value_range: Optional[list[float]] = None,
     log_x_scale: bool = False,
@@ -1120,18 +1120,24 @@ def plot_quantities_over_x(
     match direction:
         case list():
             x_array_name = "arc_length"
+            if x_label is None:
+                x_label = r"$d$"
         case "x":
             x_array_name = "Points_X"
-            x_label = r"$x$"
+            if x_label is None:
+                x_label = r"$x$"
         case "y":
             x_array_name = "Points_Y"
-            x_label = r"$y$"
+            if x_label is None:
+                x_label = r"$y$"
         case "z":
             x_array_name = "Points_Z"
-            x_label = r"$z$"
+            if x_label is None:
+                x_label = r"$z$"
         case "d":
             x_array_name = "arc_length"
-            x_label = r"$d$"
+            if x_label is None:
+                x_label = r"$d$"
         case _:
             raise ValueError(f"Unknown direction {direction}")
     if x_axes_scale is not None:

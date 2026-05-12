@@ -399,7 +399,7 @@ def plot_over_line(
         series_names = []
         if plot_properties.series_names:
             series_names += plot_properties.series_names
-        if direction == list() or direction == "d":
+        if isinstance(direction, list) or direction == "d":
             series_names += ["arc_length"]
         if x_axes_scale is not None:
             series_names += ["scaled_axes"]
