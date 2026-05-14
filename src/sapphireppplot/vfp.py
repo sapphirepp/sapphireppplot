@@ -1,6 +1,7 @@
 """Module for VFP specific plotting."""
 
 from typing import cast, Optional, Literal
+from collections.abc import Sequence
 import paraview.simple as ps
 import paraview.servermanager
 
@@ -339,7 +340,7 @@ def load_probe_location_spherical_density(
 def scale_distribution_function(
     solution: paraview.servermanager.SourceProxy,
     plot_properties_in: PlotPropertiesVFP,
-    lms_indices: Optional[list[list[int]]] = None,
+    lms_indices: Optional[Sequence[tuple[int, int, int]]] = None,
     spectral_index: float = 4.0,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVFP]:
     """
@@ -355,7 +356,7 @@ def scale_distribution_function(
     plot_properties_in
         Properties of the source.
     lms_indices
-        The list of indices ``[[l_1,m_1,s_1], [l_2,m_2,s_2]]`` to scale.
+        The list of indices ``[(l_1,m_1,s_1), (l_2,m_2,s_2)]`` to scale.
         Only these indices will be active in the new solution.
     spectral_index
         Spectral index to scale the distributions function f.
@@ -515,7 +516,7 @@ def plot_f_lms_1d(
     results_folder: str,
     name: str,
     plot_properties: PlotPropertiesVFP,
-    lms_indices: Optional[list[list[int]]] = None,
+    lms_indices: Optional[Sequence[tuple[int, int, int]]] = None,
     x_label: Optional[str] = None,
     x_range: Optional[tuple[float, float]] = None,
     value_range: Optional[tuple[float, float]] = None,
@@ -541,7 +542,7 @@ def plot_f_lms_1d(
     plot_properties
         Properties for plotting.
     lms_indices
-        The list of indices ``[[l_1,m_1,s_1], [l_2,m_2,s_2]]`` to plot.
+        The list of indices ``[(l_1,m_1,s_1), (l_2,m_2,s_2)]`` to plot.
     x_label
         Label for the bottom axis of the chart.
     x_range
@@ -582,7 +583,7 @@ def plot_f_lms_1d(
         else:
             x_label = r"$x$"
 
-    y_label = plot_properties.f_lms_label(["l", "m", "s"])
+    y_label = plot_properties.f_lms_label(("l", "m", "s"))
     if len(lms_indices) == 1:
         y_label = plot_properties.f_lms_label(lms_indices[0])
 
@@ -629,7 +630,7 @@ def plot_f_lms_2d(
     results_folder: str,
     name: str,
     plot_properties: PlotPropertiesVFP,
-    lms_index: Optional[list[int]] = None,
+    lms_index: Optional[tuple[int, int, int]] = None,
     prefix: str = "",
     value_range: Optional[tuple[float, float]] = None,
     log_scale: bool = True,
@@ -654,7 +655,7 @@ def plot_f_lms_2d(
     plot_properties
         Properties for plotting.
     lms_index
-        The index ``[l,m,s]`` to plot.
+        The index ``(l,m,s)`` to plot.
     prefix
         Prefix for quantity name.
     value_range
@@ -685,7 +686,7 @@ def plot_f_lms_2d(
     sapphireppplot.pvplot.display_time : Display time.
     """
     if lms_index is None:
-        lms_index = [0, 0, 0]
+        lms_index = (0, 0, 0)
     if plot_properties.prefix_numeric and prefix == "":
         prefix = "numeric_"
 
@@ -716,7 +717,7 @@ def plot_f_lms_3d(
     results_folder: str,
     name: str,
     plot_properties: PlotPropertiesVFP,
-    lms_index: Optional[list[int]] = None,
+    lms_index: Optional[tuple[int, int, int]] = None,
     prefix: str = "",
     value_range: Optional[tuple[float, float]] = None,
     log_scale: bool = True,
@@ -741,7 +742,7 @@ def plot_f_lms_3d(
     plot_properties
         Properties for plotting.
     lms_index
-        The index ``[l,m,s]`` to plot.
+        The index ``(l,m,s)`` to plot.
     prefix
         Prefix for quantity name.
     value_range
@@ -772,7 +773,7 @@ def plot_f_lms_3d(
     sapphireppplot.pvplot.display_time : Display time.
     """
     if lms_index is None:
-        lms_index = [0, 0, 0]
+        lms_index = (0, 0, 0)
     if plot_properties.prefix_numeric and prefix == "":
         prefix = "numeric_"
 
@@ -803,7 +804,7 @@ def plot_f_lms_over_x(
     results_folder: str,
     name: str,
     plot_properties: PlotPropertiesVFP,
-    lms_indices: Optional[list[list[int]]] = None,
+    lms_indices: Optional[Sequence[tuple[int, int, int]]] = None,
     direction: (
         Literal["x", "y", "z", "d"]
         | tuple[tuple[float, float, float], tuple[float, float, float]]
@@ -836,7 +837,7 @@ def plot_f_lms_over_x(
     plot_properties
         Properties for plotting.
     lms_indices
-        The list of indices ``[[l_1,m_1,s_1], [l_2,m_2,s_2]]`` to plot.
+        The list of indices ``[(l_1,m_1,s_1), (l_2,m_2,s_2)]`` to plot.
     direction
         Direction of the line.
     offset
@@ -878,7 +879,7 @@ def plot_f_lms_over_x(
     if lms_indices is None:
         lms_indices = plot_properties.lms_indices
 
-    y_label = plot_properties.f_lms_label(["l", "m", "s"])
+    y_label = plot_properties.f_lms_label(("l", "m", "s"))
     if len(lms_indices) == 1:
         y_label = plot_properties.f_lms_label(lms_indices[0])
     visible_lines = []
@@ -964,7 +965,7 @@ def plot_f_lms_over_p(
     results_folder: str,
     name: str,
     plot_properties: PlotPropertiesVFP,
-    lms_indices: Optional[list[list[int]]] = None,
+    lms_indices: Optional[Sequence[tuple[int, int, int]]] = None,
     direction: (
         Literal[""]
         | tuple[tuple[float, float, float], tuple[float, float, float]]
@@ -995,7 +996,7 @@ def plot_f_lms_over_p(
     plot_properties
         Properties for plotting.
     lms_indices
-        The list of indices ``[[l_1,m_1,s_1], [l_2,m_2,s_2]]`` to plot.
+        The list of indices ``[(l_1,m_1,s_1), (l_2,m_2,s_2)]`` to plot.
     direction
         Direction of the line.
     offset
@@ -1033,7 +1034,7 @@ def plot_f_lms_over_p(
     if lms_indices is None:
         lms_indices = plot_properties.lms_indices
 
-    y_label = plot_properties.f_lms_label(["l", "m", "s"])
+    y_label = plot_properties.f_lms_label(("l", "m", "s"))
     if len(lms_indices) == 1:
         y_label = plot_properties.f_lms_label(lms_indices[0])
     visible_lines = []

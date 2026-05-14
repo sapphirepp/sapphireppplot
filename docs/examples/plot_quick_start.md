@@ -92,7 +92,7 @@ As a first plot, we show the 2D view of the data
 using the {py:func}`vfp.plot_f_lms_2d() <sapphireppplot.vfp.plot_f_lms_2d>` function.
 The figure is named `quick-start-2D`
 and saved in the same `results_folder` as the Sapphire++ results.
-To display the $f_{000}$ component, set `lms_index=[0, 0, 0]`.
+To display the $f_{000}$ component, set `lms_index=(0, 0, 0)`.
 Since the plot uses a logarithmic color scale, we define the `value_range` to display.
 In addition to the image at the final time (`quick-start-2D.png`),
 an animation is saved as a series of PNG files (`quick-start-2D.XXXX.png`).
@@ -104,7 +104,7 @@ To indicate the simulation time in the animation, we use `show_time=True`.
         results_folder,
         "quick-start-2D",
         plot_properties,
-        lms_index=[0, 0, 0],
+        lms_index=(0, 0, 0),
         value_range=(1e-2, 10.0),
         show_time=True,
         save_animation=True,
@@ -124,7 +124,7 @@ The {py:func}`vfp.plot_f_lms_over_x() <sapphireppplot.vfp.plot_f_lms_over_x>` fu
 creates the `PlotOverLine` and displays it in a `LineChartView`,
 handling the ParaView internals.
 We specify the file name (`quick-start-f-x`),
-the $f_{000}$ and $f_{100}$ lines to plot (`lms_indices=[[0, 0, 0], [1, 0, 0]]`),
+the $f_{000}$ and $f_{100}$ lines to plot (`lms_indices=[(0, 0, 0), (1, 0, 0)]`),
 set the direction to $x$,
 and use an offset to specify that the profile is shown at $\ln p = 0.05$
 (avoiding sampling at cell edges).
@@ -135,7 +135,7 @@ and use an offset to specify that the profile is shown at $\ln p = 0.05$
         results_folder,
         "quick-start-f-x",
         plot_properties,
-        lms_indices=[[0, 0, 0], [1, 0, 0]],
+        lms_indices=[(0, 0, 0), (1, 0, 0)],
         direction="x",
         offset=(0, 0.05, 0),
         x_label=r"$x$",
@@ -163,7 +163,7 @@ showing only the $f_{000}$ component.
         results_folder,
         "quick-start-f-p",
         plot_properties_scaled,
-        lms_indices=[[0, 0, 0]],
+        lms_indices=[(0, 0, 0)],
         offset=(0.1, 0, 0),
         value_range=(1e-2, 16.0),
     )

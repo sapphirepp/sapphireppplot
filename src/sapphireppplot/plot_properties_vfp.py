@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass, field
 from typing import Optional
+from collections.abc import Sequence
 import numpy as np
 
 from sapphireppplot.plot_properties import PlotProperties
@@ -29,7 +30,7 @@ class PlotPropertiesVFP(PlotProperties):
     :math:`g = p^s f`?
     """
 
-    lms_indices: list[list[int]] = field(default_factory=list)
+    lms_indices: Sequence[tuple[int, int, int]] = field(default_factory=list)
     """
     List of lms_indices to display.
     If left empty it will be set automatically at loading.
@@ -74,7 +75,7 @@ class PlotPropertiesVFP(PlotProperties):
 
     def _add_debug_input_functions(
         self,
-        lms_indices: list[list[int]],
+        lms_indices: Sequence[tuple[int, int, int]],
         prefix: str = "func_",
         line_style: str = "1",
     ) -> None:
@@ -140,7 +141,9 @@ class PlotPropertiesVFP(PlotProperties):
                 )
 
     @staticmethod
-    def create_lms_indices(expansion_order: int) -> list[list[int]]:
+    def create_lms_indices(
+        expansion_order: int,
+    ) -> list[tuple[int, int, int]]:
         """
         Create mapping between system index :math:`i` and spherical harmonic indices :math:`(l,m,s)`.
 
@@ -151,8 +154,8 @@ class PlotPropertiesVFP(PlotProperties):
 
         Returns
         -------
-        lms_indices : list[list[int]]
-            Mapping ``lms_indices[i] = [l,m,s]``.
+        lms_indices : list[tuple[int, int, int]]
+            Mapping ``lms_indices[i] = (l,m,s)``.
         """
         system_size = (expansion_order + 1) ** 2
         lms_indices = []
@@ -161,7 +164,7 @@ class PlotPropertiesVFP(PlotProperties):
         m = 0
         for _ in range(system_size):
             s = 0 if m <= 0 else 1
-            lms_indices += [[l, abs(m), s]]
+            lms_indices.append((l, abs(m), s))
 
             m += 1
             if m > l:
@@ -171,7 +174,7 @@ class PlotPropertiesVFP(PlotProperties):
 
     def f_lms_name(
         self,
-        lms_index: list[int],
+        lms_index: tuple[int, int, int],
         prefix: str = "",
         base_name: Optional[str] = None,
     ) -> str:
@@ -181,7 +184,7 @@ class PlotPropertiesVFP(PlotProperties):
         Parameters
         ----------
         lms_index
-            The index ``[l,m,s]``.
+            The index ``(l,m,s)``.
         prefix
             Prefix.
         base_name
@@ -206,7 +209,7 @@ class PlotPropertiesVFP(PlotProperties):
 
     def f_lms_label(
         self,
-        lms_index: list[int] | list[str],
+        lms_index: tuple[int | str, int | str, int | str],
         annotation: str = "",
         variable_name: Optional[str] = None,
     ) -> str:
@@ -216,7 +219,7 @@ class PlotPropertiesVFP(PlotProperties):
         Parameters
         ----------
         lms_index
-            The index ``[l,m,s]``.
+            The index ``(l,m,s)``.
         annotation
             Postfix annotation of quantity.
         variable_name
@@ -241,13 +244,16 @@ class PlotPropertiesVFP(PlotProperties):
 
         return f"${variable_name}_{{ {lms_index[0]} {lms_index[1]} {lms_index[2]} {tmp_postfix} }}$"
 
-    def set_lms_indices(self, lms_indices: list[list[int]]) -> None:
+    def set_lms_indices(
+        self,
+        lms_indices: Sequence[tuple[int, int, int]],
+    ) -> None:
         """
         Set the ``series_names`` and labels activating only the ``lms_indices``.
 
         Parameters
         ----------
-        lms_indices : list[list[int]]
+        lms_indices
             The lms_indices to activate.
             Will deactivate all other series names.
         """
@@ -311,7 +317,9 @@ class PlotPropertiesVFP(PlotProperties):
         self.set_lms_indices(self.create_lms_indices(expansion_order))
 
     def scale_by_spectral_index(
-        self, spectral_index: float, lms_indices: list[list[int]]
+        self,
+        spectral_index: float,
+        lms_indices: Sequence[tuple[int, int, int]],
     ) -> None:
         """
         Set properties to a scaled distribution function with spectral index :math:`s`.
