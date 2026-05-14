@@ -442,7 +442,7 @@ def scale_time_steps(
 
 def load_solution(
     plot_properties: PlotProperties,
-    file_format: str = "vtu",
+    file_format: Literal["vtk", "vtu", "pvtu", "hdf5"] = "vtu",
     path_prefix: str = "",
     base_file_name: str = "solution",
     t_start: float = 0.0,
