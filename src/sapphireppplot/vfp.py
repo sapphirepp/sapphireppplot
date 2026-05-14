@@ -1,6 +1,6 @@
 """Module for VFP specific plotting."""
 
-from typing import Optional
+from typing import cast, Optional, Literal
 import paraview.simple as ps
 import paraview.servermanager
 
@@ -804,8 +804,11 @@ def plot_f_lms_over_x(
     name: str,
     plot_properties: PlotPropertiesVFP,
     lms_indices: Optional[list[list[int]]] = None,
-    direction: str | list[list[float]] = "x",
-    offset: Optional[list[float]] = None,
+    direction: (
+        Literal["x", "y", "z", "d"]
+        | tuple[tuple[float, float, float], tuple[float, float, float]]
+    ) = "x",
+    offset: Optional[tuple[float, float, float]] = None,
     x_axes_scale: Optional[float] = None,
     x_label: Optional[str] = None,
     x_range: Optional[tuple[float, float]] = None,
@@ -897,6 +900,10 @@ def plot_f_lms_over_x(
             x_array_name = "arc_length"
             if x_label is None:
                 x_label = r"$d$"
+        case tuple():
+            x_array_name = "arc_length"
+            if x_label is None:
+                x_label = r"$d$"
         case "x":
             x_array_name = "Points_X"
             if x_label is None:
@@ -958,8 +965,11 @@ def plot_f_lms_over_p(
     name: str,
     plot_properties: PlotPropertiesVFP,
     lms_indices: Optional[list[list[int]]] = None,
-    direction: str | list[list[float]] = "",
-    offset: Optional[list[float]] = None,
+    direction: (
+        Literal[""]
+        | tuple[tuple[float, float, float], tuple[float, float, float]]
+    ) = "",
+    offset: Optional[tuple[float, float, float]] = None,
     x_range: Optional[tuple[float, float]] = None,
     value_range: Optional[tuple[float, float]] = None,
     log_x_scale: bool = False,
@@ -1040,18 +1050,23 @@ def plot_f_lms_over_p(
             ]
 
     x_array_name = ""
+    direction_p = cast(
+        Literal["x", "y", "z", "d"]
+        | tuple[tuple[float, float, float], tuple[float, float, float]],
+        direction,
+    )
     match plot_properties.dim_ps:
         case 1:
-            if not direction:
-                direction = "x"
+            if not direction_p:
+                direction_p = "x"
             x_array_name = "Points_X"
         case 2:
-            if not direction:
-                direction = "y"
+            if not direction_p:
+                direction_p = "y"
             x_array_name = "Points_Y"
         case 3:
-            if not direction:
-                direction = "z"
+            if not direction_p:
+                direction_p = "z"
             x_array_name = "Points_Z"
         case _:
             assert False
@@ -1059,7 +1074,7 @@ def plot_f_lms_over_p(
 
     plot_over_line_p = transform.plot_over_line(
         solution,
-        direction=direction,
+        direction=direction_p,
         x_range=x_range,
         offset=offset,
         results_folder=results_folder,

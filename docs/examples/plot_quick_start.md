@@ -137,7 +137,7 @@ and use an offset to specify that the profile is shown at $\ln p = 0.05$
         plot_properties,
         lms_indices=[[0, 0, 0], [1, 0, 0]],
         direction="x",
-        offset=[0, 0.05, 0],
+        offset=(0, 0.05, 0),
         x_label=r"$x$",
     )
 ```
@@ -164,7 +164,7 @@ showing only the $f_{000}$ component.
         "quick-start-f-p",
         plot_properties_scaled,
         lms_indices=[[0, 0, 0]],
-        offset=[0.1, 0, 0],
+        offset=(0.1, 0, 0),
         value_range=(1e-2, 16.0),
     )
 ```

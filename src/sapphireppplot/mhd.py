@@ -1,6 +1,6 @@
 """Module for MHD specific plotting."""
 
-from typing import Optional
+from typing import Optional, Literal
 import os
 import math
 import numpy as np
@@ -1024,8 +1024,11 @@ def plot_quantities_over_x(
     quantities: list[str],
     name: str,
     plot_properties: PlotPropertiesMHD,
-    direction: str | list[list[float]] = "x",
-    offset: Optional[list[float]] = None,
+    direction: (
+        Literal["x", "y", "z", "d"]
+        | tuple[tuple[float, float, float], tuple[float, float, float]]
+    ) = "x",
+    offset: Optional[tuple[float, float, float]] = None,
     x_axes_scale: Optional[float] = None,
     x_label: Optional[str] = None,
     x_range: Optional[tuple[float, float]] = None,
@@ -1119,6 +1122,10 @@ def plot_quantities_over_x(
     x_array_name = ""
     match direction:
         case list():
+            x_array_name = "arc_length"
+            if x_label is None:
+                x_label = r"$d$"
+        case tuple():
             x_array_name = "arc_length"
             if x_label is None:
                 x_label = r"$d$"

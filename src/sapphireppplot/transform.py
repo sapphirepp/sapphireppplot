@@ -244,9 +244,12 @@ def point_data_to_cell_data(
 
 def plot_over_line(
     solution: paraview.servermanager.SourceProxy,
-    direction: str | list[list[float]] = "x",
-    offset: Optional[list[float]] = None,
-    x_range: Optional[list[float]] = None,
+    direction: (
+        Literal["x", "y", "z", "d"]
+        | tuple[tuple[float, float, float], tuple[float, float, float]]
+    ) = "x",
+    offset: Optional[tuple[float, float, float]] = None,
+    x_range: Optional[tuple[float, float]] = None,
     x_axes_scale: Optional[float] = None,
     results_folder: str = "",
     filename: Optional[str] = None,
@@ -265,8 +268,8 @@ def plot_over_line(
 
         - ``"x"``, ``"y"``, ``"z"`` for a line along coordinate axes.
         - ``"d"`` for a line along the diagonal.
-        - List with start and end points:
-          ``[[x_1,y_1,z_1], [x_2,y_2,z_2]]``.
+        - Tuple with start and end points:
+          ``((x_1,y_1,z_1), (x_2,y_2,z_2))``.
     offset
         Offset of the line-out.
         Only used for ``direction = "x"/"y"/"z"``.
@@ -298,6 +301,8 @@ def plot_over_line(
     sapphireppplot.plot_properties.PlotProperties.sampling_resolution :
         Sampling resolution.
     """
+    if offset is None:
+        offset = (0.0, 0.0, 0.0)
     if plot_properties is None:
         plot_properties = cast(PlotPropertiesVar, PlotProperties())
 
@@ -311,10 +316,11 @@ def plot_over_line(
     solution_data = paraview.servermanager.Fetch(solution)
     # Get bounds of the data
     solution_bounds = solution_data.GetBounds()
-    if offset is None:
-        offset = [0.0, 0.0, 0.0]
     match direction:
         case list():
+            plot_over_line_source.Point1 = direction[0]
+            plot_over_line_source.Point2 = direction[1]
+        case tuple():
             plot_over_line_source.Point1 = direction[0]
             plot_over_line_source.Point2 = direction[1]
         case "x":
@@ -391,6 +397,8 @@ def plot_over_line(
         match direction:
             case list():
                 x_array_name = "arc_length"
+            case tuple():
+                x_array_name = "arc_length"
             case "x":
                 x_array_name = "coordsX"
             case "y":
@@ -411,7 +419,11 @@ def plot_over_line(
         series_names = []
         if plot_properties.series_names:
             series_names += plot_properties.series_names
-        if isinstance(direction, list) or direction == "d":
+        if (
+            isinstance(direction, tuple)
+            or isinstance(direction, list)
+            or direction == "d"
+        ):
             series_names += ["arc_length"]
         if x_axes_scale is not None:
             series_names += ["scaled_axes"]
@@ -435,8 +447,8 @@ def plot_over_line(
 
 def slice_plane(
     solution: paraview.servermanager.SourceProxy,
-    normal: list[float],
-    origin: Optional[list[float]] = None,
+    normal: tuple[float, float, float],
+    origin: Optional[tuple[float, float, float]] = None,
     crinkle_slice: bool = False,
     plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> paraview.servermanager.SourceProxy:
@@ -451,7 +463,7 @@ def slice_plane(
         Normal of the plane.
     origin
         Origin of the plane.
-        Defaults to ``[0, 0, 0]``.
+        Defaults to ``(0, 0, 0)``.
     crinkle_slice
         This parameter controls whether to extract the entire cells
         that are sliced by the region
@@ -480,7 +492,7 @@ def slice_plane(
     to adjust set the view in the ``normal`` direction.
     """
     if origin is None:
-        origin = [0.0, 0.0, 0.0]
+        origin = (0.0, 0.0, 0.0)
     if plot_properties is None:
         plot_properties = cast(PlotPropertiesVar, PlotProperties())
 
@@ -488,8 +500,8 @@ def slice_plane(
     sliced_plane = ps.Slice(registrationName="SlicePlane", Input=solution)
 
     sliced_plane.Crinkleslice = crinkle_slice
-    sliced_plane.SliceType.Normal = normal
-    sliced_plane.SliceType.Origin = origin
+    sliced_plane.SliceType.Normal = list(normal)
+    sliced_plane.SliceType.Origin = list(origin)
     # Use small offset to ensure data is within slice plane
     sliced_plane.SliceType.Offset = _epsilon_d
 
@@ -501,7 +513,7 @@ def slice_plane(
 
 def probe_location(
     solution: paraview.servermanager.SourceProxy,
-    point: list[float],
+    point: tuple[float, float, float],
     plot_properties_in: Optional[PlotPropertiesVar] = None,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
     """
@@ -538,7 +550,7 @@ def probe_location(
         Input=solution,
         ProbeType="Fixed Radius Point Source",
     )
-    probe_location_source.ProbeType.Center = point
+    probe_location_source.ProbeType.Center = list(point)
     probe_location_source.ProbeType.Radius = 0
     ps.HideInteractiveWidgets(proxy=probe_location_source.ProbeType)
 
@@ -715,9 +727,9 @@ def plot_over_time(
 
 def clip_area(
     solution: paraview.servermanager.SourceProxy,
-    x_range: Optional[list[float]] = None,
-    y_range: Optional[list[float]] = None,
-    z_range: Optional[list[float]] = None,
+    x_range: Optional[tuple[float, float]] = None,
+    y_range: Optional[tuple[float, float]] = None,
+    z_range: Optional[tuple[float, float]] = None,
     plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
@@ -756,21 +768,18 @@ def clip_area(
     solution_data = paraview.servermanager.Fetch(solution)
     bounds = solution_data.GetBounds()
     if x_range is None:
-        x_range = [bounds[0], bounds[1]]
+        x_range = (bounds[0], bounds[1])
     if y_range is None:
-        y_range = [bounds[2], bounds[3]]
+        y_range = (bounds[2], bounds[3])
     if z_range is None:
-        z_range = [bounds[4], bounds[5]]
+        z_range = (bounds[4], bounds[5])
 
     if x_range[0] == x_range[1]:
-        x_range[0] -= _epsilon_d
-        x_range[1] += _epsilon_d
+        x_range = (x_range[0] - _epsilon_d, x_range[1] + _epsilon_d)
     if y_range[0] == y_range[1]:
-        y_range[0] -= _epsilon_d
-        y_range[1] += _epsilon_d
+        y_range = (y_range[0] - _epsilon_d, y_range[1] + _epsilon_d)
     if z_range[0] == z_range[1]:
-        z_range[0] -= _epsilon_d
-        z_range[1] += _epsilon_d
+        z_range = (z_range[0] - _epsilon_d, z_range[1] + _epsilon_d)
 
     # Use small epsilon in z to capture cells inside box
     clipped_solution.ClipType.Position = [x_range[0], y_range[0], z_range[0]]
@@ -789,9 +798,12 @@ def clip_area(
 def stream_tracer(
     solution: paraview.servermanager.SourceProxy,
     quantity: str,
-    direction: str | list[list[float]] = "d",
-    offset: Optional[list[float]] = None,
-    x_range: Optional[list[float]] = None,
+    direction: (
+        Literal["x", "y", "z", "d"]
+        | tuple[tuple[float, float, float], tuple[float, float, float]]
+    ) = "x",
+    offset: Optional[tuple[float, float, float]] = None,
+    x_range: Optional[tuple[float, float]] = None,
     n_lines: int = 30,
     plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> paraview.servermanager.SourceProxy:
@@ -813,8 +825,8 @@ def stream_tracer(
 
         - ``"x"``, ``"y"``, ``"z"`` for a line along coordinate axes.
         - ``"d"`` for a line along the diagonal.
-        - List with start and end points:
-          ``[[x_1,y_1,z_1], [x_2,y_2,z_2]]``.
+        - Tuple with start and end points:
+          ``((x_1,y_1,z_1), (x_2,y_2,z_2))``.
     offset
         Offset of the tracer seed line.
         Only used for ``direction = "x"/"y"/"z"``.
@@ -844,6 +856,8 @@ def stream_tracer(
     sapphireppplot.plot_properties.PlotProperties.stream_tracer_maximum_step :
         Maximum step length.
     """
+    if offset is None:
+        offset = (0.0, 0.0, 0.0)
     if plot_properties is None:
         plot_properties = cast(PlotPropertiesVar, PlotProperties())
 
@@ -860,10 +874,11 @@ def stream_tracer(
     solution_data = paraview.servermanager.Fetch(solution)
     # Get bounds of the data
     solution_bounds = solution_data.GetBounds()
-    if offset is None:
-        offset = [0.0, 0.0, 0.0]
     match direction:
         case list():
+            stream_tracer_source.SeedType.Point1 = direction[0]
+            stream_tracer_source.SeedType.Point2 = direction[1]
+        case tuple():
             stream_tracer_source.SeedType.Point1 = direction[0]
             stream_tracer_source.SeedType.Point2 = direction[1]
         case "x":
