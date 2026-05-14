@@ -105,7 +105,7 @@ To indicate the simulation time in the animation, we use `show_time=True`.
         "quick-start-2D",
         plot_properties,
         lms_index=[0, 0, 0],
-        value_range=[1e-2, 10.0],
+        value_range=(1e-2, 10.0),
         show_time=True,
         save_animation=True,
     )
@@ -165,7 +165,7 @@ showing only the $f_{000}$ component.
         plot_properties_scaled,
         lms_indices=[[0, 0, 0]],
         offset=[0.1, 0, 0],
-        value_range=[1e-2, 16.0],
+        value_range=(1e-2, 16.0),
     )
 ```
 

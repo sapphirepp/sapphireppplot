@@ -1,6 +1,6 @@
 """Create plots using ParaView."""
 
-from typing import Optional
+from typing import Optional, Literal
 import os
 import matplotlib.colors
 import paraview.simple as ps
@@ -17,8 +17,8 @@ def plot_line_chart_view(
     y_label: str = "",
     x_array_name: str = "Points_X",
     visible_lines: Optional[list[str]] = None,
-    x_range: Optional[list[float]] = None,
-    value_range: Optional[list[float]] = None,
+    x_range: Optional[tuple[float, float]] = None,
+    value_range: Optional[tuple[float, float]] = None,
     log_x_scale: bool = False,
     log_y_scale: bool = False,
     plot_properties: PlotProperties = PlotProperties(),
@@ -115,7 +115,7 @@ def plot_render_view_2d(
     solution: paraview.servermanager.SourceProxy,
     layout: paraview.servermanager.ViewLayoutProxy,
     quantity: str,
-    value_range: Optional[list[float]] = None,
+    value_range: Optional[tuple[float, float]] = None,
     log_scale: bool = False,
     camera_direction: Optional[list[float]] = None,
     plot_properties: PlotProperties = PlotProperties(),
@@ -280,7 +280,7 @@ def plot_render_view_3d(
     solution: paraview.servermanager.SourceProxy,
     layout: paraview.servermanager.ViewLayoutProxy,
     quantity: str,
-    value_range: Optional[list[float]] = None,
+    value_range: Optional[tuple[float, float]] = None,
     log_scale: bool = False,
     camera_direction: Optional[list[float]] = None,
     plot_properties: PlotProperties = PlotProperties(),
@@ -450,7 +450,7 @@ def show_stream_tracer(
     render_view: paraview.servermanager.Proxy,
     quantity: str | None = None,
     color_bar_visible: bool = False,
-    value_range: Optional[list[float]] = None,
+    value_range: Optional[tuple[float, float]] = None,
     log_scale: bool = False,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
@@ -545,7 +545,7 @@ def show_stream_tracer(
 def display_text(
     view: paraview.servermanager.Proxy,
     text: str,
-    location: str | list[float] = "Upper Center",
+    location: str | tuple[float, float] = "Upper Center",
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
@@ -591,14 +591,14 @@ def display_text(
                 text_display.LabelLocation = location
             case _:
                 text_display.LabelLocation = "Any Location"
-                text_display.Position = location
+                text_display.Position = list(location)
     else:
         match location:
             case str():
                 text_display.WindowLocation = location
             case _:
                 text_display.WindowLocation = "Any Location"
-                text_display.Position = location
+                text_display.Position = list(location)
 
     view.Update()
     # Fix for correct positioning
@@ -800,7 +800,7 @@ def save_view(
     view: paraview.servermanager.Proxy,
     results_folder: str,
     filename: str,
-    save_format: str = "svg",
+    save_format: Literal["svg", "csv"] | str = "svg",
     fix_axes_titles: bool = False,
     plot_properties: PlotProperties = PlotProperties(),  # noqa: U100
 ) -> None:
