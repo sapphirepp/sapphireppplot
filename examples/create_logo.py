@@ -11,11 +11,11 @@ def main() -> dict:
     """Create Sapphire++ - Plot logo."""
     plot_properties = PlotProperties(
         representation_type="UniformGridRepresentation",
-        preview_size_2d=[128, 128],
+        preview_size_2d=(128, 128),
         screenshot_transparent_background=True,
         series_names=["PNGImage"],
         labels={"PNGImage": "Sapphire++"},
-        grid_labels=["", "", ""],
+        grid_labels=("", "", ""),
         color_bar_length=0,
         color_map="Black, Blue and White",
         text_color="black",

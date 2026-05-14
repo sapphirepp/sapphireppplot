@@ -172,10 +172,10 @@ def load_probe_location_surface(
     plot_properties.series_names = ["f"]
     plot_properties.labels = {"f": r"$f$"}
     plot_properties.representation_type = "UniformGridRepresentation"
-    plot_properties.preview_size_2d = [720, 1280]
+    plot_properties.preview_size_2d = (720, 1280)
     plot_properties.camera_view_2d = (True, 0.9)
-    plot_properties.preview_size_3d = [1280, 720]
-    plot_properties.grid_labels = [r"$\cos(\theta)$", r"$\phi$", r"$f$"]
+    plot_properties.preview_size_3d = (1280, 720)
+    plot_properties.grid_labels = (r"$\cos(\theta)$", r"$\phi$", r"$f$")
 
     coordinates = prm["VFP"]["Probe location"]["points"].split(";")[point_id]
     coordinates = [float(s) for s in coordinates.split(",")]
@@ -279,11 +279,11 @@ def load_probe_location_spherical_density(
     plot_properties.labels = {"f": r"$f$"}
     plot_properties.representation_type = "UniformGridRepresentation"
     plot_properties.camera_view_3d = (True, 0.9)
-    plot_properties.grid_labels = [
+    plot_properties.grid_labels = (
         r"$\hat{p}_x$",
         r"$\hat{p}_y$",
         r"$\hat{p}_z$",
-    ]
+    )
 
     coordinates = prm["VFP"]["Probe location"]["points"].split(";")[point_id]
     coordinates = [float(s) for s in coordinates.split(",")]

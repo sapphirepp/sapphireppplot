@@ -10,8 +10,8 @@ def main() -> dict:
     plot_properties = vfp.PlotPropertiesVFP(
         dimension=2,
         momentum=True,
-        color_bar_position=[0.15, 0.55],
-        time_location=[0.13, 0.2],
+        color_bar_position=(0.15, 0.55),
+        time_location=(0.13, 0.2),
         animation_transparent_background=True,
     )
 

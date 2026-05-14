@@ -60,10 +60,14 @@ class PlotPropertiesVFP(PlotProperties):
         if self.momentum:
             if self.logarithmic_p:
                 self.p_label = r"$\ln p$"
-                self.grid_labels[self.dim_ps - 1] = r"$\ln p$"
+                label_list = list(self.grid_labels)
+                label_list[self.dim_ps - 1] = r"$\ln p$"
+                self.grid_labels = tuple(label_list)  # type: ignore
             else:
                 self.p_label = r"$p$"
-                self.grid_labels[self.dim_ps - 1] = r"$p$"
+                label_list = list(self.grid_labels)
+                label_list[self.dim_ps - 1] = r"$p$"
+                self.grid_labels = tuple(label_list)  # type: ignore
 
         if self.lms_indices:
             self.set_lms_indices(self.lms_indices)
@@ -387,8 +391,12 @@ class PlotPropertiesVFP(PlotProperties):
         """
         assert self.momentum and self.logarithmic_p, "Plot has no ln_p axis"
 
-        self.axes_scale[self.dim_ps - 1] = 1.0 / np.log10(np.e)
-        self.grid_labels[self.dim_ps - 1] = r"$\log_{10} p$"
+        scale_list = list(self.axes_scale)
+        scale_list[self.dim_ps - 1] = 1.0 / np.log10(np.e)
+        self.axes_scale = tuple(scale_list)  # type: ignore
+        label_list = list(self.grid_labels)
+        label_list[self.dim_ps - 1] = r"$\log_{10} p$"
+        self.grid_labels = tuple(label_list)  # type: ignore
 
     def convert_lnp_to_p(
         self,

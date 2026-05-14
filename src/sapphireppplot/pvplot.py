@@ -77,7 +77,7 @@ def plot_line_chart_view(
         solution, line_chart_view, "XYChartRepresentation"
     )
     # Enter preview mode
-    layout.PreviewMode = plot_properties.preview_size_1d
+    layout.PreviewMode = list(plot_properties.preview_size_1d)
     # layout/tab size in pixels
     if (
         plot_properties.preview_size_1d[0] != 0
@@ -171,7 +171,7 @@ def plot_render_view_2d(
         solution, render_view, plot_properties.representation_type
     )
     # Enter preview mode
-    layout.PreviewMode = plot_properties.preview_size_2d
+    layout.PreviewMode = list(plot_properties.preview_size_2d)
     # layout/tab size in pixels
     if (
         plot_properties.preview_size_2d[0] != 0
@@ -337,7 +337,7 @@ def plot_render_view_3d(
         solution, render_view, plot_properties.representation_type
     )
     # Enter preview mode
-    layout.PreviewMode = plot_properties.preview_size_3d
+    layout.PreviewMode = list(plot_properties.preview_size_3d)
     # layout/tab size in pixels
     if (
         plot_properties.preview_size_3d[0] != 0
@@ -649,14 +649,14 @@ def display_time(
                 time_display.LabelLocation = plot_properties.time_location
             case _:
                 time_display.LabelLocation = "Any Location"
-                time_display.Position = plot_properties.time_location
+                time_display.Position = list(plot_properties.time_location)
     else:
         match plot_properties.time_location:
             case str():
                 time_display.WindowLocation = plot_properties.time_location
             case _:
                 time_display.WindowLocation = "Any Location"
-                time_display.Position = plot_properties.time_location
+                time_display.Position = list(plot_properties.time_location)
 
     view.Update()
     # Fix for correct positioning
@@ -704,7 +704,7 @@ def show_spread_sheet(
         solution, spread_sheet_view, "SpreadSheetRepresentation"
     )
     # # Enter preview mode
-    # layout.PreviewMode = plot_properties.preview_size_1d
+    # layout.PreviewMode = list(plot_properties.preview_size_1d)
     # # layout/tab size in pixels
     # if (
     #     plot_properties.preview_size_1d[0] != 0

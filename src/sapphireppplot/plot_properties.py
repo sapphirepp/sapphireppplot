@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field, replace
 import copy
-from typing import Optional, Any, Self
+from typing import Optional, Any, Self, Literal
 from matplotlib.typing import ColorType
 import matplotlib.colors
 import paraview.servermanager
@@ -18,7 +18,7 @@ class PlotProperties:
     """Optional list of the series names to load and show."""
     labels: dict[str, str] = field(default_factory=dict)
     """Labels for the series quantities in the chart."""
-    data_type: str = "POINTS"
+    data_type: Literal["POINTS", "CELLS", "ROWS"] = "POINTS"
     """Specifies if solution has DG ("POINTS") or FV ("CELLS") data."""
     representation_type: str = "UnstructuredGridRepresentation"
     """Specifies ParaView representation type for RenderView."""
@@ -35,12 +35,16 @@ class PlotProperties:
     This default will change to ``False`` in a future version.
     """
 
-    preview_size_1d: list[float] = field(default_factory=lambda: [1280, 720])
+    preview_size_1d: tuple[float, float] = field(
+        default_factory=lambda: (1280, 720)
+    )
     """
     Preview window size in 1D.
-    Use ``preview_size = [0, 0]`` to deactivate preview mode.
+    Use ``preview_size = (0, 0)`` to deactivate preview mode.
     """
-    preview_size_2d: list[float] = field(default_factory=lambda: [1024, 1024])
+    preview_size_2d: tuple[float, float] = field(
+        default_factory=lambda: (1024, 1024)
+    )
     """Preview window size in 2D."""
     camera_view_2d: tuple[bool, float] | Any = field(
         default_factory=lambda: (False, 0.9)
@@ -55,7 +59,9 @@ class PlotProperties:
     :pv:`paraview.simple.ResetCamera <paraview.simple.html#paraview.simple.ResetCamera>` :
         ParaView method to reset camera view.
     """
-    preview_size_3d: list[float] = field(default_factory=lambda: [1024, 1024])
+    preview_size_3d: tuple[float, float] = field(
+        default_factory=lambda: (1024, 1024)
+    )
     """Preview window size in 3D."""
     camera_view_3d: tuple[bool, float] | Any = field(
         default_factory=lambda: (False, 0.9)
@@ -116,7 +122,7 @@ class PlotProperties:
     line_widths: dict[str, float] = field(default_factory=dict)
     """Line widths or thickness for the series quantities in the LineChartView."""
 
-    legend_location: str | list[float] = field(
+    legend_location: str | tuple[float, float] = field(
         default_factory=lambda: "TopRight"
     )
     """
@@ -136,8 +142,8 @@ class PlotProperties:
 
     show_grid: bool = False
     """Show the grid lines for 2D/3D plots?"""
-    grid_labels: list[str] = field(
-        default_factory=lambda: [r"$x$", r"$y$", r"$z$"]
+    grid_labels: tuple[str, str, str] = field(
+        default_factory=lambda: (r"$x$", r"$y$", r"$z$")
     )
     """Labels of the x,y and z axes for 2D/3D plots."""
     grid_color: ColorType = field(default_factory=lambda: (0.5, 0.5, 0.5))
@@ -158,7 +164,7 @@ class PlotProperties:
     The format string for the color bar range labels,
     e.g. ``r"%-#6.1e"``.
     """
-    color_bar_position: str | list[float] = field(
+    color_bar_position: str | tuple[float, float] = field(
         default_factory=lambda: "Lower Right Corner"
     )
     """
@@ -171,34 +177,38 @@ class PlotProperties:
     Set to ``0`` to hide the color bar.
     """
 
-    axes_scale: list[float] = field(default_factory=lambda: [1.0, 1.0, 1.0])
+    axes_scale: tuple[float, float, float] = field(
+        default_factory=lambda: (1.0, 1.0, 1.0)
+    )
     """
     Divide the x,y,z-axes by this scale in the RenderView.
     This only affects the displayed axes ticks,
     it does not rescale the underlying data.
     """
-    axes_stretch: list[float] = field(default_factory=lambda: [1.0, 1.0, 1.0])
+    axes_stretch: tuple[float, float, float] = field(
+        default_factory=lambda: (1.0, 1.0, 1.0)
+    )
     """
     Stretch the x,y,z-axes by this factor in the RenderView.
     This does not change the displayed numbers,
     only makes the axes visually bigger/smaller.
     """
-    axes_ticks: list[Optional[list[float]]] = field(
-        default_factory=lambda: [None, None, None]
-    )
+    axes_ticks: tuple[
+        Optional[list[float]], Optional[list[float]], Optional[list[float]]
+    ] = field(default_factory=lambda: (None, None, None))
     """
     Custom axes ticks for x,y,z-axes in RenderView.
     """
 
     time_format: str = r"Time: {time:.2f}"
     """Formatted text for the time."""
-    time_location: str | list[float] = "Upper Left Corner"
+    time_location: str | tuple[float, float] = "Upper Left Corner"
     """
     Text postion for time labeling.
     Either descriptive string or coordinates.
     """
 
-    sampling_pattern: str = "center"
+    sampling_pattern: Literal["uniform", "center", "boundary"] = "center"
     """
     Sampling pattern used for plot_over_line.
 
@@ -277,6 +287,9 @@ class PlotProperties:
             case list():
                 line_chart_view.LegendLocation = "Custom"
                 line_chart_view.LegendPosition = self.legend_location
+            case tuple():
+                line_chart_view.LegendLocation = "Custom"
+                line_chart_view.LegendPosition = list(self.legend_location)
             case _:
                 raise TypeError(
                     f"Unsupported `legend_location` type "
@@ -421,7 +434,7 @@ class PlotProperties:
             self.grid_color
         )
         # scale axes
-        solution_display.Scale = self.axes_stretch
+        solution_display.Scale = list(self.axes_stretch)
         render_view.AxesGrid.DataScale = [
             self.axes_stretch[0] * self.axes_scale[0],
             self.axes_stretch[1] * self.axes_scale[1],
@@ -495,7 +508,7 @@ class PlotProperties:
             self.grid_color
         )
         # scale axes
-        solution_display.Scale = self.axes_stretch
+        solution_display.Scale = list(self.axes_stretch)
         render_view.AxesGrid.DataScale = [
             self.axes_stretch[0] * self.axes_scale[0],
             self.axes_stretch[1] * self.axes_scale[1],
@@ -537,7 +550,7 @@ class PlotProperties:
                 color_bar.WindowLocation = self.color_bar_position
             case _:
                 color_bar.WindowLocation = "Any Location"
-                color_bar.Position = self.color_bar_position
+                color_bar.Position = list(self.color_bar_position)
         color_bar.ScalarBarLength = self.color_bar_length
 
         return True
