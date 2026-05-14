@@ -217,6 +217,9 @@ magick
 rtype
 typehints
 
+#mypy
+mypy
+
 # Words
 advection
 alfven

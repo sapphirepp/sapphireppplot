@@ -46,6 +46,13 @@ jobs:
           echo "Run flake8"
           flake8 .
 
+      - name: mypy
+        shell: bash -el {0}
+        run: |
+          echo "Run mypy"
+          mypy --strict src
+          mypy examples
+
       - name: documentation
         shell: bash -el {0}
         run: |
