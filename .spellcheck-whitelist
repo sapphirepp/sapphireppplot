@@ -144,6 +144,11 @@ concat
 df
 dfs
 dtype
+float128
+float16
+float32
+float64
+float96
 genfromtxt
 isnan
 lexsort

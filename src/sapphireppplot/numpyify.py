@@ -1,6 +1,7 @@
 """Convert ParaView data to numpy arrays."""
 
-from typing import Optional
+from typing import cast, Optional
+from collections.abc import Sequence, Iterable
 import warnings
 import numpy as np
 import paraview.simple as ps
@@ -8,15 +9,26 @@ import paraview.servermanager
 from paraview.vtk.util import numpy_support
 from sapphireppplot import utils
 
+DFloatLike = (
+    np.dtype[np.float16]
+    | np.dtype[np.float32]
+    | np.dtype[np.float64]
+    # | np.dtype[np.float96]
+    # | np.dtype[np.float128]
+)
+
 
 def to_numpy_1d(
     solution: paraview.servermanager.SourceProxy,
-    array_names: list[str],
+    array_names: Sequence[str],
     x_direction: int = 0,
     x_min: Optional[float] = None,
     x_max: Optional[float] = None,
     time: Optional[float] = None,
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int, int], DFloatLike],
+]:
     """
     Convert 1D data, e.g. from PlotOverLine, to a numpy array.
 
@@ -62,7 +74,10 @@ def to_numpy_1d(
     # Get the points array
     points_vtk = solution_data.GetPoints()
     # Convert points to numpy array
-    points = numpy_support.vtk_to_numpy(points_vtk.GetData())
+    points = cast(
+        np.ndarray[tuple[int, int], DFloatLike],
+        numpy_support.vtk_to_numpy(points_vtk.GetData()),
+    )
     # Extract x_direction from array
     x_values = points[:, x_direction]
 
@@ -114,8 +129,11 @@ def to_numpy_1d(
 
 def to_numpy_point_list(
     solution: paraview.servermanager.SourceProxy,
-    array_names: list[str],
-) -> tuple[np.ndarray, np.ndarray]:
+    array_names: Sequence[str],
+) -> tuple[
+    np.ndarray[tuple[int, int], DFloatLike],
+    np.ndarray[tuple[int, int], DFloatLike],
+]:
     """
     Convert data to a numpy arrays with the data evaluated at the cell centers.
 
@@ -157,7 +175,10 @@ def to_numpy_point_list(
     # Get the point array
     points_vtk = cell_center_data.GetPoints()
     # Convert points to numpy array
-    points = numpy_support.vtk_to_numpy(points_vtk.GetData())
+    points = cast(
+        np.ndarray[tuple[int, int], DFloatLike],
+        numpy_support.vtk_to_numpy(points_vtk.GetData()),
+    )
 
     # Sort arrays according to x,y,z coordinate
     sorted_indices = np.lexsort((points[:, 2], points[:, 1], points[:, 0]))
@@ -213,8 +234,11 @@ def to_numpy_point_list(
 
 def to_numpy_2d(
     solution: paraview.servermanager.SourceProxy,
-    array_names: list[str],
-) -> tuple[np.ndarray, np.ndarray]:
+    array_names: Sequence[str],
+) -> tuple[
+    np.ndarray[tuple[int, int, int], DFloatLike],
+    np.ndarray[tuple[int, int, int], DFloatLike],
+]:
     """
     Convert 2D data to a numpy array with the data evaluated at the cell centers.
 
@@ -247,16 +271,19 @@ def to_numpy_2d(
     indices_y = np.argwhere(points[:, 0] == points[0, 0])  # x constant
     size_x = indices_x.shape[0]
     size_y = indices_y.shape[0]
-    points = points.reshape((size_x, size_y, 3))
-    data = data.reshape((len(array_names), size_x, size_y))
+    points_out = points.reshape((size_x, size_y, 3))
+    data_out = data.reshape((len(array_names), size_x, size_y))
 
-    return points, data
+    return points_out, data_out
 
 
 def to_numpy_3d(
     solution: paraview.servermanager.SourceProxy,
-    array_names: list[str],
-) -> tuple[np.ndarray, np.ndarray]:
+    array_names: Sequence[str],
+) -> tuple[
+    np.ndarray[tuple[int, int, int, int], DFloatLike],
+    np.ndarray[tuple[int, int, int, int], DFloatLike],
+]:
     """
     Convert 3D data to a numpy array with the data evaluated at the cell centers.
 
@@ -299,18 +326,22 @@ def to_numpy_3d(
     size_x = indices_x.shape[0]
     size_y = indices_y.shape[0]
     size_z = indices_z.shape[0]
-    points = points.reshape((size_x, size_y, size_z, 3))
-    data = data.reshape((len(array_names), size_x, size_y, size_z))
+    points_out = points.reshape((size_x, size_y, size_z, 3))
+    data_out = data.reshape((len(array_names), size_x, size_y, size_z))
 
-    return points, data
+    return points_out, data_out
 
 
 def to_numpy_time_steps(
     solution: paraview.servermanager.SourceProxy,
     animation_scene: paraview.servermanager.Proxy,
-    array_names: list[str],
-    time_steps: Optional[list[float]] = None,
-) -> tuple[list[float], list[np.ndarray], list[np.ndarray]]:
+    array_names: Sequence[str],
+    time_steps: Optional[Iterable[float]] = None,
+) -> tuple[
+    list[float],
+    list[np.ndarray[tuple[int, int], DFloatLike]],
+    list[np.ndarray[tuple[int, int], DFloatLike]],
+]:
     """
     Retrieve data at given time steps and converts them to cell-centred numpy arrays.
 
@@ -363,7 +394,9 @@ def to_numpy_time_steps(
     :pv:`paraview.simple.proxy.UpdatePipeline <paraview.simple.proxy.html#paraview.simple.proxy.UpdatePipeline>` :
         ParaView method to set the time.
     """
-    source_time_steps = animation_scene.TimeKeeper.TimestepValues
+    source_time_steps = cast(
+        list[float], animation_scene.TimeKeeper.TimestepValues
+    )
     if not time_steps:
         time_steps = source_time_steps
     else:
@@ -382,8 +415,14 @@ def to_numpy_time_steps(
         registrationName="PointDatatoCellData", Input=solution
     )
 
-    points_array = [np.empty(0)] * len(time_steps)
-    data_array = [np.empty(0)] * len(time_steps)
+    points_array = cast(
+        list[np.ndarray[tuple[int, int], DFloatLike]],
+        [np.empty((0, 0))] * len(time_steps),
+    )
+    data_array = cast(
+        list[np.ndarray[tuple[int, int], DFloatLike]],
+        [np.empty((0, 0))] * len(time_steps),
+    )
     for i, time in enumerate(time_steps):
         # Set to time
         # animation_scene.AnimationTime = time
@@ -396,7 +435,10 @@ def to_numpy_time_steps(
         # Get the point array
         points_vtk = cell_center_data.GetPoints()
         # Convert points to numpy array
-        points = numpy_support.vtk_to_numpy(points_vtk.GetData())
+        points = cast(
+            np.ndarray[tuple[int, int], DFloatLike],
+            numpy_support.vtk_to_numpy(points_vtk.GetData()),
+        )
 
         # Sort arrays according to x,y,z coordinate
         sorted_indices = np.lexsort((points[:, 2], points[:, 1], points[:, 0]))
@@ -458,9 +500,13 @@ def to_numpy_time_steps(
 def to_numpy_time_steps_2d(
     solution: paraview.servermanager.SourceProxy,
     animation_scene: paraview.servermanager.Proxy,
-    array_names: list[str],
-    time_steps: Optional[list[float]] = None,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    array_names: Sequence[str],
+    time_steps: Optional[Iterable[float]] = None,
+) -> tuple[
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int, int, int], DFloatLike],
+    np.ndarray[tuple[int, int, int, int], DFloatLike],
+]:
     """
     Convert time dependent 2D data to a numpy array with the data evaluated at the cell centers.
 
@@ -498,31 +544,39 @@ def to_numpy_time_steps_2d(
     --------
     to_numpy_time_steps : Get numpy arrays of data as point list for multiple time steps.
     """
-    time_steps_out, points, data = to_numpy_time_steps(
+    time_steps_in, points_in, data_in = to_numpy_time_steps(
         solution, animation_scene, array_names, time_steps=time_steps
     )
 
-    time_steps_out = np.array(time_steps_out)
-    points = points[0]
-    data = np.array(data)
+    time_steps_out = cast(
+        np.ndarray[tuple[int], DFloatLike], np.array(time_steps_in)
+    )
+    points = points_in[0]
+    data = cast(np.ndarray[tuple[int, int], DFloatLike], np.array(data_in))
 
     # Reshape arrays to numpy arrays
     indices_x = np.argwhere(points[:, 1] == points[0, 1])  # y constant
     indices_y = np.argwhere(points[:, 0] == points[0, 0])  # x constant
     size_x = indices_x.shape[0]
     size_y = indices_y.shape[0]
-    points = points.reshape((size_x, size_y, 3))
-    data = data.reshape((time_steps_out.size, len(array_names), size_x, size_y))
+    points_out = points.reshape((size_x, size_y, 3))
+    data_out = data.reshape(
+        (time_steps_out.size, len(array_names), size_x, size_y)
+    )
 
-    return time_steps_out, points, data
+    return time_steps_out, points_out, data_out
 
 
 def to_numpy_time_steps_3d(
     solution: paraview.servermanager.SourceProxy,
     animation_scene: paraview.servermanager.Proxy,
-    array_names: list[str],
-    time_steps: Optional[list[float]] = None,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    array_names: Sequence[str],
+    time_steps: Optional[Sequence[float]] = None,
+) -> tuple[
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int, int, int, int], DFloatLike],
+    np.ndarray[tuple[int, int, int, int, int], DFloatLike],
+]:
     """
     Convert time dependent 3D data to a numpy array with the data evaluated at the cell centers.
 
@@ -562,13 +616,15 @@ def to_numpy_time_steps_3d(
     --------
     to_numpy_time_steps : Get numpy arrays of data as point list for multiple time steps.
     """
-    time_steps_out, points, data = to_numpy_time_steps(
+    time_steps_in, points_in, data_in = to_numpy_time_steps(
         solution, animation_scene, array_names, time_steps=time_steps
     )
 
-    time_steps_out = np.array(time_steps_out)
-    points = points[0]
-    data = np.array(data)
+    time_steps_out = cast(
+        np.ndarray[tuple[int], DFloatLike], np.array(time_steps_in)
+    )
+    points = points_in[0]
+    data = cast(np.ndarray[tuple[int, int], DFloatLike], np.array(data_in))
 
     # Reshape arrays to numpy arrays
     indices_x = np.argwhere(
@@ -583,19 +639,23 @@ def to_numpy_time_steps_3d(
     size_x = indices_x.shape[0]
     size_y = indices_y.shape[0]
     size_z = indices_z.shape[0]
-    points = points.reshape((size_x, size_y, size_z, 3))
-    data = data.reshape(
+    points_out = points.reshape((size_x, size_y, size_z, 3))
+    data_out = data.reshape(
         (time_steps_out.size, len(array_names), size_x, size_y, size_z)
     )
 
-    return time_steps_out, points, data
+    return time_steps_out, points_out, data_out
 
 
 def to_numpy_integrate_variables(
     solution: paraview.servermanager.SourceProxy,
-    array_names: list[str],
-    time_steps: Optional[list[float]] = None,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    array_names: Sequence[str],
+    time_steps: Optional[Iterable[float]] = None,
+) -> tuple[
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int, int], DFloatLike],
+]:
     """
     Integrate variables over the grid at given time steps and return as numpy arrays.
 
@@ -643,7 +703,7 @@ def to_numpy_integrate_variables(
         ParaView method to set the time.
     """
     if not time_steps:
-        time_steps = solution.TimestepValues
+        time_steps = cast(list[float], solution.TimestepValues)
     time_steps = np.array(time_steps)
 
     integrate_variables = ps.IntegrateVariables(
@@ -709,9 +769,12 @@ def to_numpy_integrate_variables(
 
 def to_numpy_over_time(
     solution: paraview.servermanager.SourceProxy,
-    array_names: list[str],
+    array_names: Sequence[str],
     time_array_name: str = "Time",
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int, int], DFloatLike],
+]:
     """
     Convert PlotOverTime data to a numpy array.
 
