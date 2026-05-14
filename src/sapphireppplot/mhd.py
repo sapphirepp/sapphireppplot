@@ -1,6 +1,7 @@
 """Module for MHD specific plotting."""
 
 from typing import Optional, Literal
+from collections.abc import Sequence, Iterable
 import os
 import math
 import numpy as np
@@ -137,8 +138,8 @@ def save_to_dat(
     results_folder: str,
     filename: str,
     plot_properties: PlotPropertiesMHD,
-    quantities: Optional[list[str]] = None,
-    time_steps: Optional[list[float]] = None,
+    quantities: Optional[Sequence[str]] = None,
+    time_steps: Optional[Iterable[float]] = None,
 ) -> None:
     """
     Convert to cell-centred data and save as ``.dat`` files with history file ``.hst``.
@@ -556,7 +557,7 @@ def compute_magnetic_pressure(
 def compute_normalized_magnetic_divergence(
     solution: paraview.servermanager.SourceProxy,
     plot_properties_in: PlotPropertiesMHD,
-    divergence_type: str = "total",
+    divergence_type: Literal["total", "cells", "faces"] = "total",
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
     """
     Compute normalized magnetic divergence for the solution.
@@ -627,7 +628,7 @@ def compute_normalized_magnetic_divergence(
 def plot_quantities_1d(
     solution: paraview.servermanager.SourceProxy,
     results_folder: str,
-    quantities: list[str],
+    quantities: Sequence[str],
     name: str,
     plot_properties: PlotPropertiesMHD,
     x_range: Optional[tuple[float, float]] = None,
@@ -732,10 +733,10 @@ def plot_quantities_1d(
 def plot_split_view_1d(
     solution: paraview.servermanager.SourceProxy,
     results_folder: str,
-    quantities: list[str],
+    quantities: Sequence[str],
     name: str,
     plot_properties_in: PlotPropertiesMHD,
-    labels: Optional[list[str]] = None,
+    labels: Optional[Sequence[str]] = None,
     x_range: Optional[tuple[float, float]] = None,
     value_range: Optional[tuple[float, float]] = None,
     log_x_scale: bool = False,
@@ -1021,7 +1022,7 @@ def plot_quantity_3d(
 def plot_quantities_over_x(
     solution: paraview.servermanager.SourceProxy,
     results_folder: str,
-    quantities: list[str],
+    quantities: Sequence[str],
     name: str,
     plot_properties: PlotPropertiesMHD,
     direction: (
@@ -1190,7 +1191,7 @@ def plot_quantities_over_x(
 def plot_integrated_quantities_over_time(
     solution: paraview.servermanager.SourceProxy,
     results_folder: str,
-    quantities: list[str],
+    quantities: Sequence[str],
     name: str,
     plot_properties_in: PlotPropertiesMHD,
     t_axes_scale: Optional[float] = None,
