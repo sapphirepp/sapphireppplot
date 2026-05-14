@@ -93,7 +93,7 @@ class PlotProperties:
     """Font size for label text."""
     text_size: int = 24
     """Font size for text, e.g. legend and axes titles."""
-    title_size = 30
+    title_size: int = 30
     """Font size for chart titles."""
 
     line_colors: dict[str, ColorType] = field(default_factory=dict)
@@ -289,14 +289,14 @@ class PlotProperties:
             line_chart_view.LegendSymbolWidth = self.legend_symbol_width
         if self.left_axis_labels:
             flat_dict = []
-            for key, value in self.left_axis_labels.items():
-                flat_dict += [str(key), str(value)]
+            for key, label in self.left_axis_labels.items():
+                flat_dict += [str(key), str(label)]
             line_chart_view.LeftAxisUseCustomLabels = 1
             line_chart_view.LeftAxisLabels = flat_dict
         if self.bottom_axis_labels:
             flat_dict = []
-            for key, value in self.bottom_axis_labels.items():
-                flat_dict += [str(key), str(value)]
+            for key, label in self.bottom_axis_labels.items():
+                flat_dict += [str(key), str(label)]
             line_chart_view.BottomAxisUseCustomLabels = 1
             line_chart_view.BottomAxisLabels = flat_dict
 
@@ -318,8 +318,8 @@ class PlotProperties:
             )
             for key in default_keys:
                 flat_dict += [key, key]
-            for key, value in self.labels.items():
-                flat_dict += [key, value]
+            for key, label in self.labels.items():
+                flat_dict += [key, label]
             solution_display.SeriesLabel = flat_dict
         if self.line_colors:
             flat_dict = []
@@ -334,12 +334,12 @@ class PlotProperties:
                     str(matplotlib.colors.to_rgb(default_color)[1]),
                     str(matplotlib.colors.to_rgb(default_color)[2]),
                 ]
-            for key, value in self.line_colors.items():
+            for key, color in self.line_colors.items():
                 flat_dict += [
                     key,
-                    str(matplotlib.colors.to_rgb(value)[0]),
-                    str(matplotlib.colors.to_rgb(value)[1]),
-                    str(matplotlib.colors.to_rgb(value)[2]),
+                    str(matplotlib.colors.to_rgb(color)[0]),
+                    str(matplotlib.colors.to_rgb(color)[1]),
+                    str(matplotlib.colors.to_rgb(color)[2]),
                 ]
             solution_display.SeriesColor = flat_dict
         if self.line_styles:
@@ -350,8 +350,8 @@ class PlotProperties:
             )
             for key in default_keys:
                 flat_dict += [key, default_style]
-            for key, value in self.line_styles.items():
-                flat_dict += [key, value]
+            for key, line_style in self.line_styles.items():
+                flat_dict += [key, line_style]
             solution_display.SeriesLineStyle = flat_dict
         if self.line_widths:
             flat_dict = []
@@ -361,8 +361,8 @@ class PlotProperties:
             )
             for key in default_keys:
                 flat_dict += [key, str(default_thickness)]
-            for key, value in self.line_widths.items():
-                flat_dict += [key, str(value)]
+            for key, line_width in self.line_widths.items():
+                flat_dict += [key, str(line_width)]
             solution_display.SeriesLineThickness = flat_dict
 
     def configure_grid_2d(

@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import override
 
-from sapphireppplot.mhd import PlotPropertiesMHD
+from sapphireppplot.plot_properties_mhd import PlotPropertiesMHD
 
 
 @dataclass

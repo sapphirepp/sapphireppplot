@@ -2,7 +2,8 @@
 
 import sys
 import os
-from typing import Any, Dict
+from typing import cast, Any, Dict
+from collections.abc import Sequence
 from matplotlib.typing import ColorType
 import numpy as np
 
@@ -106,9 +107,7 @@ def prm_to_dict(prm_lines: list[str]) -> ParamDict:
     return prm_dict
 
 
-def match_index(
-    list_in: list[Any] | np.typing.NDArray[Any], target: Any
-) -> int:
+def match_index(list_in: Sequence[Any], target: Any) -> int:
     """
     Find index ``i`` where ``list_in[i] = target``.
 
@@ -130,8 +129,8 @@ def match_index(
         Raises an error if the ``target`` can not be found in ``list_in``
         or multiple matches exist.
     """
-    list_in = np.array(list_in)
-    matched_indices = np.where((list_in == target).all(axis=1))[0]
+    list_np = np.array(list_in)
+    matched_indices = np.where((list_np == target).all(axis=1))[0]
 
     if matched_indices.size == 0:
         raise ValueError(f"No match for {target}.")
@@ -140,11 +139,11 @@ def match_index(
             f"Multiple matches for {target} at indices {matched_indices}"
         )
 
-    return matched_indices[0]
+    return cast(int, matched_indices[0])
 
 
 def find_closest_index(
-    array: list[Any] | np.typing.NDArray[Any],
+    array: Sequence[Any],
     target: Any,
     print_index: bool = False,
 ) -> int:
@@ -180,7 +179,7 @@ def find_closest_index(
             f"{index} is closest index to {target}: "
             f"array[{index}] = {array[index]}"
         )
-    return index
+    return cast(int, index)
 
 
 def sapphirepp_colors() -> list[ColorType]:

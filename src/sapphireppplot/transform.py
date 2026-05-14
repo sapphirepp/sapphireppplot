@@ -1,6 +1,6 @@
 """Transform the solution, e.g. by PlotOverLine or Calculator."""
 
-from typing import Optional, TypeVar, Literal
+from typing import cast, Optional, TypeVar, Literal
 import os
 import paraview.simple as ps
 import paraview.servermanager
@@ -15,7 +15,7 @@ def create_extractor(
     solution: paraview.servermanager.SourceProxy,
     filename: str,
     file_format: Literal["pvtp", "pvtu"] = "pvtp",
-    plot_properties: PlotPropertiesVar = PlotProperties(),  # noqa: U100
+    plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> paraview.servermanager.Proxy:
     """
     Create a extractor of the solution.
@@ -59,6 +59,9 @@ def create_extractor(
     :pv:`paraview.simple.CreateExtractor <paraview.simple.__init__.html#paraview.simple.__init__.CreateExtractor>` :
         ParaView filter to save extracts to files.
     """
+    if plot_properties is None:
+        plot_properties = cast(PlotPropertiesVar, PlotProperties())
+
     if file_format == "pvtp":
         # create a new 'Extract Surface'
         solution = ps.ExtractSurface(
@@ -94,7 +97,7 @@ def save_extracts(
     results_folder: str,
     subfolder: str = "extracts",
     frame_window: Optional[tuple[int, int]] = None,
-    plot_properties: PlotPropertiesVar = PlotProperties(),
+    plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> None:
     """
     Save the extracts of the solution created with :py:func:`create_extractor`.
@@ -122,6 +125,8 @@ def save_extracts(
     :py:attr:`sapphireppplot.plot_properties.PlotProperties.extracts_frame_stride` :
         Frame stride.
     """
+    if plot_properties is None:
+        plot_properties = cast(PlotPropertiesVar, PlotProperties())
     file_path = os.path.join(results_folder, subfolder)
     print(f"Save extracts in '{file_path}'")
     if frame_window is not None:
@@ -144,7 +149,7 @@ def calculator(
     quantity: str,
     formula: str,
     label: Optional[str] = None,
-    plot_properties_in: PlotPropertiesVar = PlotProperties(),
+    plot_properties_in: Optional[PlotPropertiesVar] = None,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
     """
     Create a ParaView Calculator and add the new quantity to the PlotProperties.
@@ -174,7 +179,9 @@ def calculator(
     --------
     :ps:`Calculator` : ParaView Calculator filter.
     """
-    if not label:
+    if plot_properties_in is None:
+        plot_properties_in = cast(PlotPropertiesVar, PlotProperties())
+    if label is None:
         label = quantity
 
     plot_properties = plot_properties_in.copy()
@@ -195,7 +202,7 @@ def calculator(
 
 def point_data_to_cell_data(
     solution: paraview.servermanager.SourceProxy,
-    plot_properties_in: PlotPropertiesVar = PlotProperties(),
+    plot_properties_in: Optional[PlotPropertiesVar] = None,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
     """
     Convert point data to cell data.
@@ -220,6 +227,8 @@ def point_data_to_cell_data(
     sapphireppplot.plot_properties.PlotProperties.data_type :
         Solution data type.
     """
+    if plot_properties_in is None:
+        plot_properties_in = cast(PlotPropertiesVar, PlotProperties())
     plot_properties = plot_properties_in.copy()
 
     if plot_properties.data_type == "CELLS":
@@ -241,7 +250,7 @@ def plot_over_line(
     x_axes_scale: Optional[float] = None,
     results_folder: str = "",
     filename: Optional[str] = None,
-    plot_properties: PlotPropertiesVar = PlotProperties(),
+    plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
     Create and configure plot over line from solution.
@@ -289,6 +298,9 @@ def plot_over_line(
     sapphireppplot.plot_properties.PlotProperties.sampling_resolution :
         Sampling resolution.
     """
+    if plot_properties is None:
+        plot_properties = cast(PlotPropertiesVar, PlotProperties())
+
     # create a new 'Plot Over Line'
     plot_over_line_source = ps.PlotOverLine(
         registrationName="PlotOverLine", Input=solution
@@ -426,7 +438,7 @@ def slice_plane(
     normal: list[float],
     origin: Optional[list[float]] = None,
     crinkle_slice: bool = False,
-    plot_properties: PlotPropertiesVar = PlotProperties(),  # noqa: U100
+    plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
     Slice a 2D plane from a 3D solution.
@@ -469,6 +481,8 @@ def slice_plane(
     """
     if origin is None:
         origin = [0.0, 0.0, 0.0]
+    if plot_properties is None:
+        plot_properties = cast(PlotPropertiesVar, PlotProperties())
 
     # create a new 'Slice'
     sliced_plane = ps.Slice(registrationName="SlicePlane", Input=solution)
@@ -488,7 +502,7 @@ def slice_plane(
 def probe_location(
     solution: paraview.servermanager.SourceProxy,
     point: list[float],
-    plot_properties_in: PlotPropertiesVar = PlotProperties(),
+    plot_properties_in: Optional[PlotPropertiesVar] = None,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
     """
     Probe location at one point.
@@ -515,6 +529,8 @@ def probe_location(
     sapphireppplot.plot_properties.PlotProperties.sampling_resolution :
         Sampling resolution.
     """
+    if plot_properties_in is None:
+        plot_properties_in = cast(PlotPropertiesVar, PlotProperties())
     plot_properties = plot_properties_in.copy()
 
     probe_location_source = ps.ProbeLocation(
@@ -539,7 +555,7 @@ def probe_location(
 
 def integrate_variables(
     solution: paraview.servermanager.SourceProxy,
-    plot_properties_in: PlotPropertiesVar = PlotProperties(),
+    plot_properties_in: Optional[PlotPropertiesVar] = None,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
     """
     Integrate variables over the grid.
@@ -566,6 +582,9 @@ def integrate_variables(
     :ps:`IntegrateVariables` : ParaView filter to integrate variables.
     point_data_to_cell_data : Convert point data to cell data.
     """
+    if plot_properties_in is None:
+        plot_properties_in = cast(PlotPropertiesVar, PlotProperties())
+
     cell_data, plot_properties = point_data_to_cell_data(
         solution, plot_properties_in=plot_properties_in
     )
@@ -589,7 +608,7 @@ def plot_over_time(
     t_axes_scale: Optional[float] = None,
     results_folder: str = "",
     filename: Optional[str] = None,
-    plot_properties_in: PlotPropertiesVar = PlotProperties(),
+    plot_properties_in: Optional[PlotPropertiesVar] = None,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
     """
     Get temporal evolution of the solution.
@@ -627,6 +646,8 @@ def plot_over_time(
     --------
     :ps:`PlotDataOverTime` : ParaView PlotDataOverTime filter.
     """
+    if plot_properties_in is None:
+        plot_properties_in = cast(PlotPropertiesVar, PlotProperties())
     plot_properties = plot_properties_in.copy()
 
     plot_over_time_source = ps.PlotDataOverTime(
@@ -697,7 +718,7 @@ def clip_area(
     x_range: Optional[list[float]] = None,
     y_range: Optional[list[float]] = None,
     z_range: Optional[list[float]] = None,
-    plot_properties: PlotPropertiesVar = PlotProperties(),  # noqa: U100
+    plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
     Clip area from solution.
@@ -724,6 +745,9 @@ def clip_area(
     --------
     :ps:`Clip` : ParaView Clip filter.
     """
+    if plot_properties is None:
+        plot_properties = cast(PlotPropertiesVar, PlotProperties())
+
     clipped_solution = ps.Clip(registrationName="Clip", Input=solution)
 
     clipped_solution.ClipType = "Box"
@@ -769,7 +793,7 @@ def stream_tracer(
     offset: Optional[list[float]] = None,
     x_range: Optional[list[float]] = None,
     n_lines: int = 30,
-    plot_properties: PlotPropertiesVar = PlotProperties(),
+    plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
     Create stream tracer of a quantity from the solution.
@@ -820,6 +844,9 @@ def stream_tracer(
     sapphireppplot.plot_properties.PlotProperties.stream_tracer_maximum_step :
         Maximum step length.
     """
+    if plot_properties is None:
+        plot_properties = cast(PlotPropertiesVar, PlotProperties())
+
     # create a new 'Stream Tracer'
     stream_tracer_source = ps.StreamTracer(
         registrationName="StreamTracer",
