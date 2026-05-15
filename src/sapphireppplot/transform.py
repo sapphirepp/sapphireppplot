@@ -432,9 +432,7 @@ def plot_over_line(
             filename=file_path,
             proxy=plot_over_line_source,
             location=PARAVIEW_DATA_SERVER_LOCATION,
-            ChooseArraysToWrite=(
-                1 if plot_properties.series_names is not None else 0
-            ),
+            ChooseArraysToWrite=(1 if plot_properties.series_names else 0),
             PointDataArrays=series_names,
             Precision=5,
             UseScientificNotation=1,
@@ -608,9 +606,10 @@ def integrate_variables(
     )
 
     if plot_properties.series_names:
-        plot_properties.series_names += ["Volume"]
+        plot_properties.series_names += ["Volume", "Area"]
     if plot_properties.labels:
         plot_properties.labels["Volume"] = r"$V$"
+        plot_properties.labels["Area"] = r"$A$"
 
     return integrate_variables_source, plot_properties
 
@@ -715,9 +714,7 @@ def plot_over_time(
             filename=file_path,
             proxy=plot_over_time_source,
             location=PARAVIEW_DATA_SERVER_LOCATION,
-            ChooseArraysToWrite=(
-                1 if plot_properties.series_names is not None else 0
-            ),
+            ChooseArraysToWrite=(1 if plot_properties.series_names else 0),
             FieldAssociation="Row Data",
             RowDataArrays=plot_properties.series_names,
         )
