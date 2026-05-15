@@ -20,7 +20,14 @@ class PlotProperties:
     """Labels for the series quantities in the chart."""
     data_type: Literal["POINTS", "CELLS", "ROWS"] = "POINTS"
     """Specifies if solution has DG ("POINTS") or FV ("CELLS") data."""
-    representation_type: str = "UnstructuredGridRepresentation"
+    representation_type: (
+        Literal[
+            "UnstructuredGridRepresentation",
+            "UniformGridRepresentation",
+            "StructuredGridRepresentation",
+        ]
+        | str
+    ) = "UnstructuredGridRepresentation"
     """Specifies ParaView representation type for RenderView."""
     use_legacy_pvtu_reader: bool = True
     """
@@ -122,9 +129,19 @@ class PlotProperties:
     line_widths: dict[str, float] = field(default_factory=dict)
     """Line widths or thickness for the series quantities in the LineChartView."""
 
-    legend_location: str | tuple[float, float] = field(
-        default_factory=lambda: "TopRight"
-    )
+    legend_location: (
+        Literal[
+            "TopLeft",
+            "Top",
+            "TopRight",
+            "Left",
+            "Right",
+            "BottomLeft",
+            "Bottom",
+            "BottomRight",
+        ]
+        | tuple[float, float]
+    ) = "TopRight"
     """
     Legend postion in LineChartView.
     Either descriptive string or coordinates.
@@ -164,9 +181,17 @@ class PlotProperties:
     The format string for the color bar range labels,
     e.g. ``r"%-#6.1e"``.
     """
-    color_bar_position: str | tuple[float, float] = field(
-        default_factory=lambda: "Lower Right Corner"
-    )
+    color_bar_position: (
+        Literal[
+            "Upper Left Corner",
+            "Upper Center",
+            "Upper Right Corner",
+            "Lower Left Corner",
+            "Lower Center",
+            "Lower Right Corner",
+        ]
+        | tuple[float, float]
+    ) = "Lower Right Corner"
     """
     Color bar postion.
     Either descriptive string or coordinates.
@@ -202,7 +227,17 @@ class PlotProperties:
 
     time_format: str = r"Time: {time:.2f}"
     """Formatted text for the time."""
-    time_location: str | tuple[float, float] = "Upper Left Corner"
+    time_location: (
+        Literal[
+            "Upper Left Corner",
+            "Upper Center",
+            "Upper Right Corner",
+            "Lower Left Corner",
+            "Lower Center",
+            "Lower Right Corner",
+        ]
+        | tuple[float, float]
+    ) = "Upper Left Corner"
     """
     Text postion for time labeling.
     Either descriptive string or coordinates.

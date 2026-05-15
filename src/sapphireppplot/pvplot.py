@@ -545,7 +545,17 @@ def show_stream_tracer(
 def display_text(
     view: paraview.servermanager.Proxy,
     text: str,
-    location: str | tuple[float, float] = "Upper Center",
+    location: (
+        Literal[
+            "Upper Left Corner",
+            "Upper Center",
+            "Upper Right Corner",
+            "Lower Left Corner",
+            "Lower Center",
+            "Lower Right Corner",
+        ]
+        | tuple[float, float]
+    ) = "Upper Center",
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """

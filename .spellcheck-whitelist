@@ -141,6 +141,7 @@ argmax
 argmin
 argwhere
 concat
+deg2rad
 df
 dfs
 dtype
@@ -162,6 +163,7 @@ npz
 numpy
 pcov
 popt
+rad2deg
 savetxt
 savez
 searchsorted
