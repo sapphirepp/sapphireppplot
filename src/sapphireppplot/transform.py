@@ -434,8 +434,8 @@ def plot_over_line(
             location=PARAVIEW_DATA_SERVER_LOCATION,
             ChooseArraysToWrite=(1 if plot_properties.series_names else 0),
             PointDataArrays=series_names,
-            Precision=5,
             UseScientificNotation=1,
+            Precision=plot_properties.export_precision,
         )
 
     plot_over_line_source.UpdatePipeline()
@@ -717,6 +717,8 @@ def plot_over_time(
             ChooseArraysToWrite=(1 if plot_properties.series_names else 0),
             FieldAssociation="Row Data",
             RowDataArrays=plot_properties.series_names,
+            UseScientificNotation=1,
+            Precision=plot_properties.export_precision,
         )
 
     return plot_over_time_source, plot_properties

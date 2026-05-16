@@ -812,7 +812,7 @@ def save_view(
     filename: str,
     save_format: Literal["svg", "csv"] | str = "svg",
     fix_axes_titles: bool = False,
-    plot_properties: PlotProperties = PlotProperties(),  # noqa: U100
+    plot_properties: PlotProperties = PlotProperties(),
 ) -> None:
     """
     Save ParaView view as vector graphic or table.
@@ -868,8 +868,8 @@ def save_view(
                 filename=file_path,
                 view=view,
                 location=PARAVIEW_DATA_SERVER_LOCATION,
-                # RealNumberNotation="Mixed",
-                # RealNumberPrecision=6,
+                RealNumberNotation="Scientific",
+                RealNumberPrecision=plot_properties.export_precision,
             )
         case _:
             ps.ExportView(

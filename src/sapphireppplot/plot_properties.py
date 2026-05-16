@@ -277,6 +277,9 @@ class PlotProperties:
     sapphireppplot.transform.stream_tracer
     """
 
+    export_precision: int = 5
+    """Precision for exporting data, e.g. as CSV"""
+
     def copy(self) -> Self:
         """
         Create a deep copy of the PlotProperties.
