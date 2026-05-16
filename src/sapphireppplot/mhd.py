@@ -1210,6 +1210,8 @@ def plot_integrated_quantities_over_time(
     """
     Integrate quantities over the grid and plot over time.
 
+    The integrated quantities are divided by the grid volume/area.
+
     Parameters
     ----------
     solution
@@ -1245,7 +1247,7 @@ def plot_integrated_quantities_over_time(
     Returns
     -------
     solution_integrated : SourceProxy
-        The PlotOverLine source.
+        The PlotOverTime source.of the integrated variables.
     layout : ViewLayoutProxy
         The layout object used for the plot.
     line_chart_view : XYChartViewProxy
@@ -1256,7 +1258,7 @@ def plot_integrated_quantities_over_time(
     See Also
     --------
     sapphireppplot.transform.integrate_variables : Integrate variables.
-    sapphireppplot.transform.plot_over_time : PlotOverTine.
+    sapphireppplot.transform.plot_over_time : PlotOverTime.
     sapphireppplot.pvplot.plot_line_chart_view : Plot LineChartView.
     """
     solution_integrated, plot_properties = transform.integrate_variables(

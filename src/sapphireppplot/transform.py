@@ -570,7 +570,7 @@ def integrate_variables(
     """
     Integrate variables over the grid.
 
-    Divide the result by the grid volume.
+    The integrated quantities are divided by the grid volume/area.
     For this, the solution is converted to cell data.
 
     Parameters
