@@ -269,14 +269,19 @@ def compute_kinetic_energy(
             tmp_postfix = ", " + label_postfix
 
         formula_p2 = (
-            f"({plot_properties.quantity_name("p_x", prefix)}^2"
-            + f"{plot_properties.quantity_name("p_y", prefix)}^2"
-            + f"{plot_properties.quantity_name("p_z", prefix)}^2)"
+            "("
+            + plot_properties.quantity_name("p_x", prefix)
+            + "^2 + "
+            + plot_properties.quantity_name("p_y", prefix)
+            + "^2 + "
+            + plot_properties.quantity_name("p_z", prefix)
+            + "^2)"
         )
         formula = (
-            f"1 / (2 * "
-            f"{plot_properties.quantity_name("rho", prefix)}"
-            f") * {formula_p2}"
+            "1 / (2 * "
+            + plot_properties.quantity_name("rho", prefix)
+            + ") * "
+            + formula_p2
         )
 
         calculator, plot_properties = transform.calculator(
@@ -360,8 +365,10 @@ def compute_sound_speed(
 
         formula = (
             f"sqrt({gamma} * "
-            f"{plot_properties.quantity_name("P", prefix)} / "
-            f"{plot_properties.quantity_name("rho", prefix)})"
+            + plot_properties.quantity_name("P", prefix)
+            + " / "
+            + plot_properties.quantity_name("rho", prefix)
+            + ")"
         )
 
         calculator, plot_properties = transform.calculator(
@@ -441,13 +448,18 @@ def compute_alfven_speed(
             tmp_postfix = ", " + label_postfix
 
         formula_b2 = (
-            f"({plot_properties.quantity_name("b_x", prefix)}^2"
-            + f"{plot_properties.quantity_name("b_y", prefix)}^2"
-            + f"{plot_properties.quantity_name("b_z", prefix)}^2)"
+            "("
+            + plot_properties.quantity_name("b_x", prefix)
+            + "^2 + "
+            + plot_properties.quantity_name("b_y", prefix)
+            + "^2 + "
+            + plot_properties.quantity_name("b_z", prefix)
+            + "^2)"
         )
         formula = (
             f"sqrt({formula_b2} / "
-            f"{plot_properties.quantity_name("rho", prefix)})"
+            + plot_properties.quantity_name("rho", prefix)
+            + ")"
         )
 
         calculator, plot_properties = transform.calculator(
@@ -531,9 +543,13 @@ def compute_magnetic_pressure(
             tmp_postfix = ", " + label_postfix
 
         formula_b2 = (
-            f"({plot_properties.quantity_name("b_x", prefix)}^2"
-            + f"{plot_properties.quantity_name("b_y", prefix)}^2"
-            + f"{plot_properties.quantity_name("b_z", prefix)}^2)"
+            "("
+            + plot_properties.quantity_name("b_x", prefix)
+            + "^2 + "
+            + plot_properties.quantity_name("b_y", prefix)
+            + "^2 + "
+            + plot_properties.quantity_name("b_z", prefix)
+            + "^2)"
         )
         formula = f"({gamma}-1) * {formula_b2}/2"
 
@@ -558,9 +574,14 @@ def compute_normalized_magnetic_divergence(
     solution: paraview.servermanager.SourceProxy,
     plot_properties_in: PlotPropertiesMHD,
     divergence_type: Literal["total", "cells", "faces"] = "total",
+    delta_x: Optional[float] = None,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
-    """
-    Compute normalized magnetic divergence for the solution.
+    r"""
+    Compute ``normalized_magnetic_divergence`` for the solution.
+
+    It is calculated using the following formula:
+    :math:`\frac{|\nabla \cdot B|}{\|B\|} \Delta x`.
+
 
     Parameters
     ----------
@@ -570,6 +591,9 @@ def compute_normalized_magnetic_divergence(
         Properties of the source.
     divergence_type
         "total", "cells" or "faces" divergence.
+    delta_x
+        Cell size.
+        If none is given assume square grid with square cells.
 
     Returns
     -------
@@ -584,18 +608,18 @@ def compute_normalized_magnetic_divergence(
     """
     plot_properties = plot_properties_in.copy()
 
-    # Fetch data information from the solution
-    solution_data = paraview.servermanager.Fetch(solution)
-    # Get number of cells
-    n_cells = solution_data.GetNumberOfCells()
-    n_cells_x = math.sqrt(n_cells)
+    if delta_x is None:
+        # Fetch data information from the solution
+        solution_data = paraview.servermanager.Fetch(solution)
+        # Get number of cells
+        n_cells = solution_data.GetNumberOfCells()
+        n_cells_x = math.sqrt(n_cells)
 
-    solution_bounds = solution_data.GetBounds()
-    dx = (solution_bounds[1] - solution_bounds[0]) / n_cells_x
+        solution_bounds = solution_data.GetBounds()
+        delta_x = (solution_bounds[1] - solution_bounds[0]) / n_cells_x
 
     quantity = "normalized_magnetic_divergence"
     quantity_in = "magnetic_divergence"
-    label = r"\mid \nabla \cdot B \mid / \mid B \mid \Delta x"
     label_postfix = ""
 
     match divergence_type:
@@ -604,21 +628,31 @@ def compute_normalized_magnetic_divergence(
         case "cells":
             quantity += "_cells"
             quantity_in += "_cells"
-            label_postfix = r"\mid_{\mathrm{Cell}}"
+            label_postfix = r"_{_{\mathrm{Cell}}}"
         case "faces":
             quantity += "_faces"
             quantity_in += "_faces"
-            label_postfix = r"\mid_{\mathrm{Face}}"
+            label_postfix = r"_{_{\mathrm{Face}}}"
         case _:
             raise ValueError(f"Unknown case {type}.")
 
-    formula = f"abs({quantity_in}) / sqrt(b_X^2 + b_Y^2) * {dx}"
+    formula_b2 = (
+        "("
+        + plot_properties.quantity_name("b_x")
+        + "^2 + "
+        + plot_properties.quantity_name("b_y")
+        + "^2 + "
+        + plot_properties.quantity_name("b_z")
+        + "^2)"
+    )
+    formula = f"abs({quantity_in}) / sqrt({formula_b2}) * {delta_x}"
+    label = rf"$\mid\nabla \cdot B\mid{label_postfix} / \|B\| \Delta x$"
 
     calculator, plot_properties = transform.calculator(
         solution,
         quantity=quantity,
         formula=formula,
-        label=f"${label} {label_postfix}$",
+        label=label,
         plot_properties_in=plot_properties,
     )
 
