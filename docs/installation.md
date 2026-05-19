@@ -4,8 +4,9 @@ Installing Python packages for ParaView can be non‑trivial.
 We recommend using virtual environments so packages are properly linked to ParaView.
 For this we present two methods:
 
-- [Use Conda to install ParaView](#use-conda-to-install-paraview)
-- [Link package to an existing ParaView installation using `venv`](#link-package-to-an-existing-paraview-installation-using-venv)
+- [Installation](#installation)
+  - [Use Conda to install ParaView](#use-conda-to-install-paraview)
+  - [Link package to an existing ParaView installation using `venv`](#link-package-to-an-existing-paraview-installation-using-venv)
 
 :::{note}
 The ParaView package available via Conda lacks MPI support.
@@ -64,6 +65,8 @@ This assumes you already have [ParaView](https://www.paraview.org)
 (and [`pvpython`](https://docs.paraview.org/en/latest/UsersGuide/introduction.html#getting-started-with-pvpython))
 installed.
 Install it from the [ParaView download page](https://www.paraview.org/download/) if needed.
+Or follow the instructions to
+[compile ParaView from source](tips.md).
 
 The Python version used by the virtual environment must match the Python used by `pvpython`.
 Check the version with:
