@@ -1,7 +1,6 @@
 """Define PlotPropertiesAthena class."""
 
 from dataclasses import dataclass
-from typing import override
 
 from sapphireppplot.plot_properties_mhd import PlotPropertiesMHD
 
@@ -33,34 +32,7 @@ class PlotPropertiesAthena(PlotPropertiesMHD):
             "b_z",
         ]
 
-        for quantity in quantities:
-            self.labels[self.quantity_name(quantity)] = self.quantity_label(
-                quantity
-            )
-            self.line_styles[self.quantity_name(quantity)] = "1"
-
-    @override
-    def quantity_name(self, quantity: str, prefix: str = "") -> str:
-        """
-        Look up of ParaView series names for quantities.
-
-        Parameters
-        ----------
-        quantity
-            The physical quantity.
-        prefix
-            Prefix
-
-        Returns
-        -------
-        quantity_name : str
-            The ParaView Series name for the quantity.
-
-        See Also
-        --------
-        sapphireppplot.plot_properties_mhd.PlotPropertiesMHD.quantity_name
-        """
-        quantity_names = {
+        self.quantity_names = {
             "rho": "dens",
             "E": "Etot",
             "p_x": "mom_X",
@@ -71,10 +43,14 @@ class PlotPropertiesAthena(PlotPropertiesMHD):
             "b_z": "Bcc_Z",
         }
 
-        if quantity in quantity_names:
-            return prefix + quantity_names[quantity]
-
-        if self.series_names and quantity in self.series_names:
-            return quantity
-
-        raise ValueError(f"Unknown quantity '{quantity}'!")
+        for quantity in quantities:
+            tmp_quantity_name = self.quantity_name(quantity)
+            self.labels[tmp_quantity_name] = self.quantity_label(quantity)
+            self.line_styles[tmp_quantity_name] = "1"
+            if self.line_colors:
+                if (quantity in self.line_colors.keys()) and (
+                    tmp_quantity_name not in self.line_colors.keys()
+                ):
+                    self.line_colors[tmp_quantity_name] = self.line_colors[
+                        quantity
+                    ]
