@@ -269,19 +269,14 @@ def compute_kinetic_energy(
             tmp_postfix = ", " + label_postfix
 
         formula_p2 = (
-            "("
-            + plot_properties.quantity_name("p_x", prefix)
-            + "^2 + "
-            + plot_properties.quantity_name("p_y", prefix)
-            + "^2 + "
-            + plot_properties.quantity_name("p_z", prefix)
-            + "^2)"
+            f"({plot_properties.quantity_name('p_x', prefix)}^2"
+            f" + {plot_properties.quantity_name('p_y', prefix)}^2"
+            f" + {plot_properties.quantity_name('p_z', prefix)}^2)"
         )
         formula = (
-            "1 / (2 * "
-            + plot_properties.quantity_name("rho", prefix)
-            + ") * "
-            + formula_p2
+            f"1 / (2 * "
+            f"{plot_properties.quantity_name('rho', prefix)}"
+            f") * {formula_p2}"
         )
 
         calculator, plot_properties = transform.calculator(
@@ -365,10 +360,8 @@ def compute_sound_speed(
 
         formula = (
             f"sqrt({gamma} * "
-            + plot_properties.quantity_name("P", prefix)
-            + " / "
-            + plot_properties.quantity_name("rho", prefix)
-            + ")"
+            f"{plot_properties.quantity_name('P', prefix)} / "
+            f"{plot_properties.quantity_name('rho', prefix)})"
         )
 
         calculator, plot_properties = transform.calculator(
@@ -448,18 +441,13 @@ def compute_alfven_speed(
             tmp_postfix = ", " + label_postfix
 
         formula_b2 = (
-            "("
-            + plot_properties.quantity_name("b_x", prefix)
-            + "^2 + "
-            + plot_properties.quantity_name("b_y", prefix)
-            + "^2 + "
-            + plot_properties.quantity_name("b_z", prefix)
-            + "^2)"
+            f"({plot_properties.quantity_name('b_x', prefix)}^2"
+            f" + {plot_properties.quantity_name('b_y', prefix)}^2"
+            f" + {plot_properties.quantity_name('b_z', prefix)}^2)"
         )
         formula = (
             f"sqrt({formula_b2} / "
-            + plot_properties.quantity_name("rho", prefix)
-            + ")"
+            f"{plot_properties.quantity_name('rho', prefix)})"
         )
 
         calculator, plot_properties = transform.calculator(
@@ -543,13 +531,9 @@ def compute_magnetic_pressure(
             tmp_postfix = ", " + label_postfix
 
         formula_b2 = (
-            "("
-            + plot_properties.quantity_name("b_x", prefix)
-            + "^2 + "
-            + plot_properties.quantity_name("b_y", prefix)
-            + "^2 + "
-            + plot_properties.quantity_name("b_z", prefix)
-            + "^2)"
+            f"({plot_properties.quantity_name('b_x', prefix)}^2"
+            f" + {plot_properties.quantity_name('b_y', prefix)}^2"
+            f" + {plot_properties.quantity_name('b_z', prefix)}^2)"
         )
         formula = f"({gamma}-1) * {formula_b2}/2"
 
@@ -621,6 +605,9 @@ def compute_normalized_magnetic_divergence(
     quantity = "normalized_magnetic_divergence"
     quantity_in = "magnetic_divergence"
     label_postfix = ""
+    prefix = ""
+    if plot_properties.prefix_numeric:
+        prefix = "numeric_"
 
     match divergence_type:
         case "total":
@@ -637,13 +624,9 @@ def compute_normalized_magnetic_divergence(
             raise ValueError(f"Unknown case {type}.")
 
     formula_b2 = (
-        "("
-        + plot_properties.quantity_name("b_x")
-        + "^2 + "
-        + plot_properties.quantity_name("b_y")
-        + "^2 + "
-        + plot_properties.quantity_name("b_z")
-        + "^2)"
+        f"({plot_properties.quantity_name('b_x', prefix)}^2"
+        f" + {plot_properties.quantity_name('b_y', prefix)}^2"
+        f" + {plot_properties.quantity_name('b_z', prefix)}^2)"
     )
     formula = f"abs({quantity_in}) / sqrt({formula_b2}) * {delta_x}"
     label = rf"$\mid\nabla \cdot B\mid{label_postfix} / \|B\| \Delta x$"
