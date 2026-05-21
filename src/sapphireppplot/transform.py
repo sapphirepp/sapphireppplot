@@ -857,8 +857,8 @@ def stream_tracer(
     offset: Optional[tuple[float, float, float]] = None,
     x_range: Optional[tuple[float, float]] = None,
     n_lines: int = 30,
-    plot_properties: Optional[PlotPropertiesVar] = None,
-) -> paraview.servermanager.SourceProxy:
+    plot_properties_in: Optional[PlotPropertiesVar] = None,
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
     """
     Create stream tracer of a quantity from the solution.
 
@@ -895,6 +895,8 @@ def stream_tracer(
     -------
     stream_tracer_source : SourceProxy
         The StreamTracer source.
+    plot_properties : PlotPropertiesVar
+        The PlotProperties for StreamTracer.
 
     See Also
     --------
@@ -910,8 +912,9 @@ def stream_tracer(
     """
     if offset is None:
         offset = (0.0, 0.0, 0.0)
-    if plot_properties is None:
-        plot_properties = cast(PlotPropertiesVar, PlotProperties())
+    if plot_properties_in is None:
+        plot_properties_in = cast(PlotPropertiesVar, PlotProperties())
+    plot_properties = plot_properties_in.copy()
 
     # create a new 'Stream Tracer'
     stream_tracer_source = ps.StreamTracer(
@@ -986,4 +989,4 @@ def stream_tracer(
 
     stream_tracer_source.UpdatePipeline()
 
-    return stream_tracer_source
+    return stream_tracer_source, plot_properties
