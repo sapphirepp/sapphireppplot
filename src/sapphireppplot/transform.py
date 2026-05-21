@@ -1,6 +1,7 @@
 """Transform the solution, e.g. by PlotOverLine or Calculator."""
 
 from typing import cast, Optional, TypeVar, Literal
+from collections.abc import Sequence
 import os
 import paraview.simple as ps
 import paraview.servermanager
@@ -792,6 +793,58 @@ def clip_area(
     clipped_solution.UpdatePipeline()
 
     return clipped_solution
+
+
+def contour_lines(
+    solution: paraview.servermanager.SourceProxy,
+    quantity: str,
+    isosurfaces: Sequence[float],
+    plot_properties_in: Optional[PlotPropertiesVar] = None,
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVar]:
+    """
+    Create contour lines of a quantity from the solution.
+
+    The ``contour_lines`` can be added to an existing ``render_view``
+    using ``pvplot.show_overlay_2d()``.
+
+    Parameters
+    ----------
+    solution
+        The data source.
+    quantity
+        Name of the quantity for contour lines.
+    isosurfaces
+        The value of the isosurfaces.
+    plot_properties
+        Properties of the solution.
+
+    Returns
+    -------
+    contour_source : SourceProxy
+        The Contour source.
+    plot_properties : PlotPropertiesVar
+        The PlotProperties for contour lines.
+
+    See Also
+    --------
+    :ps:`Contour` : ParaView Contour filter.
+    """
+    if plot_properties_in is None:
+        plot_properties_in = cast(PlotPropertiesVar, PlotProperties())
+    plot_properties = plot_properties_in.copy()
+    plot_properties.representation_type = "GeometryRepresentation"
+
+    # create a new 'Contour'
+    contour_source = ps.Contour(registrationName="Contour", Input=solution)
+
+    contour_source.ContourBy = ["POINTS", quantity]
+
+    # Properties modified on contour_source
+    contour_source.Isosurfaces = isosurfaces
+
+    contour_source.UpdatePipeline()
+
+    return contour_source, plot_properties
 
 
 def stream_tracer(

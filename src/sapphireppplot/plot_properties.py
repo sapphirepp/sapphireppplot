@@ -25,6 +25,7 @@ class PlotProperties:
             "UnstructuredGridRepresentation",
             "UniformGridRepresentation",
             "StructuredGridRepresentation",
+            "GeometryRepresentation",
         ]
         | str
     ) = "UnstructuredGridRepresentation"
