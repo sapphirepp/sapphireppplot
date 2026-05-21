@@ -467,6 +467,99 @@ def compute_alfven_speed(
     return calculator, plot_properties
 
 
+def compute_mach_number(
+    solution: paraview.servermanager.SourceProxy,
+    plot_properties_in: PlotPropertiesMHD,
+    gamma: float = 5.0 / 3.0,
+) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
+    r"""
+    Compute Mach number ``M`` for the solution.
+
+    .. math::
+        M = \frac{\|u\|}{a_s}
+
+    with :math:`a_s` the sound speed.
+
+    Parameters
+    ----------
+    solution
+        The the source data.
+    plot_properties_in
+        Properties of the source.
+    gamma
+        The adiabatic index.
+
+    Returns
+    -------
+    calculator : SourceProxy
+        Solution with Mach number.
+    plot_properties : PlotPropertiesMHD
+        Solution properties for the including the Mach number.
+
+    See Also
+    --------
+    sapphireppplot.transform.calculator : Create Calculator.
+    """
+    plot_properties = plot_properties_in.copy()
+    plot_properties.quantity_names["M"] = "M"
+    if plot_properties.prefix_numeric:  # also add non prefixed label
+        plot_properties.labels["M"] = r"$M$"
+
+    prefix_list = [""]
+    label_postfix_list = [""]
+    line_style_list = ["1"]
+    line_width_list = [2.0]
+    if plot_properties.prefix_numeric:
+        prefix_list = ["numeric_"]
+    if plot_properties.project:
+        prefix_list += ["project_"]
+        label_postfix_list += [plot_properties.annotation_project_interpol]
+        line_style_list += ["2"]
+        line_width_list += [4.0]
+    if plot_properties.interpol:
+        prefix_list += ["interpol_"]
+        label_postfix_list += [plot_properties.annotation_project_interpol]
+        line_style_list += ["2"]
+        line_width_list += [4.0]
+
+    calculator = solution
+    for i, prefix in enumerate(prefix_list):
+        label_postfix = label_postfix_list[i]
+        line_style = line_style_list[i]
+        line_width = line_width_list[i]
+        tmp_postfix = ""
+        if label_postfix:
+            tmp_postfix = r"_{" + label_postfix + r"}"
+
+        formula_a_s = (
+            f"sqrt({gamma} * "
+            f"{plot_properties.quantity_name('P', prefix)} / "
+            f"{plot_properties.quantity_name('rho', prefix)})"
+        )
+        formula_u2 = (
+            f"({plot_properties.quantity_name('u_x', prefix)}^2"
+            f" + {plot_properties.quantity_name('u_y', prefix)}^2"
+            f" + {plot_properties.quantity_name('u_z', prefix)}^2)"
+        )
+        formula = f"sqrt({formula_u2}) / {formula_a_s}"
+
+        calculator, plot_properties = transform.calculator(
+            calculator,
+            quantity=plot_properties.quantity_name("M", prefix),
+            formula=formula,
+            label=r"$M" + tmp_postfix + r"$",
+            plot_properties_in=plot_properties,
+        )
+        plot_properties.line_styles[
+            plot_properties.quantity_name("M", prefix)
+        ] = line_style
+        plot_properties.line_widths[
+            plot_properties.quantity_name("M", prefix)
+        ] = line_width
+
+    return calculator, plot_properties
+
+
 def compute_magnetic_pressure(
     solution: paraview.servermanager.SourceProxy,
     plot_properties_in: PlotPropertiesMHD,
