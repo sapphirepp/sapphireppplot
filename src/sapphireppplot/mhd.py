@@ -214,7 +214,7 @@ def compute_kinetic_energy(
     plot_properties_in: PlotPropertiesMHD,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
     r"""
-    Compute kinetic energy :math:`E_{\rm kin}` for the solution.
+    Compute kinetic energy ``E_kin`` for the solution.
 
     .. math::
         E_{\rm kin} = \frac{p^2}{2 \rho}
@@ -307,7 +307,7 @@ def compute_sound_speed(
     gamma: float = 5.0 / 3.0,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
     r"""
-    Compute sound speed :math:`a_s` for the solution.
+    Compute sound speed ``a_s`` for the solution.
 
     .. math::
         a_s = \sqrt{\frac{\gamma P}{\rho}}
@@ -393,7 +393,7 @@ def compute_alfven_speed(
     plot_properties_in: PlotPropertiesMHD,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
     r"""
-    Compute Alfvén speed :math:`c_A` for the solution.
+    Compute Alfvén speed ``c_a`` for the solution.
 
     .. math::
         c_A = \sqrt{\frac{b^2}{\rho}}
@@ -485,7 +485,7 @@ def compute_magnetic_pressure(
     gamma: float = 5.0 / 3.0,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
     r"""
-    Compute magnetic pressure :math:`P_B` for the solution.
+    Compute magnetic pressure ``P_B`` for the solution.
 
     .. math::
         P_B = (\gamma -1) b^2

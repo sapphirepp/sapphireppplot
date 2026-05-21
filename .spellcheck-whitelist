@@ -28,6 +28,7 @@ crit
 dt
 dx
 f0
+ERK
 f1
 f2
 FFT
@@ -40,6 +41,7 @@ interpol
 lms
 lnp
 log10p
+LSERK
 nu0
 num
 p0
@@ -169,6 +171,10 @@ savez
 searchsorted
 sqrt
 
+# mpi4py
+MPI
+mpi4py
+
 # matplotlib
 antialiased
 Axes3
@@ -235,7 +241,9 @@ colorblind
 courant
 Courant
 Iroshnikov
+Kolmogorov
 Kraichnan
+minmod
 Orszag
 positivity
 postfix
