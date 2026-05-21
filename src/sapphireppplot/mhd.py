@@ -386,7 +386,7 @@ def compute_alfven_speed(
     plot_properties_in: PlotPropertiesMHD,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
     r"""
-    Compute Alfvén speed ``c_a`` for the solution.
+    Compute Alfvén speed ``c_A`` for the solution.
 
     .. math::
         c_A = \sqrt{\frac{b^2}{\rho}}
@@ -410,9 +410,9 @@ def compute_alfven_speed(
     sapphireppplot.transform.calculator : Create Calculator.
     """
     plot_properties = plot_properties_in.copy()
-    plot_properties.quantity_names["c_a"] = "c_a"
+    plot_properties.quantity_names["c_A"] = "c_A"
     if plot_properties.prefix_numeric:  # also add non prefixed label
-        plot_properties.labels["c_a"] = r"$c_{A}$"
+        plot_properties.labels["c_A"] = r"$c_{A}$"
 
     prefix_list = [""]
     label_postfix_list = [""]
@@ -452,16 +452,16 @@ def compute_alfven_speed(
 
         calculator, plot_properties = transform.calculator(
             calculator,
-            quantity=plot_properties.quantity_name("c_a", prefix),
+            quantity=plot_properties.quantity_name("c_A", prefix),
             formula=formula,
             label=r"$c_{A" + tmp_postfix + r"}$",
             plot_properties_in=plot_properties,
         )
         plot_properties.line_styles[
-            plot_properties.quantity_name("c_a", prefix)
+            plot_properties.quantity_name("c_A", prefix)
         ] = line_style
         plot_properties.line_widths[
-            plot_properties.quantity_name("c_a", prefix)
+            plot_properties.quantity_name("c_A", prefix)
         ] = line_width
 
     return calculator, plot_properties
