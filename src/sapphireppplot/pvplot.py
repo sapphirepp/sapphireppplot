@@ -445,8 +445,8 @@ def plot_render_view_3d(
     return render_view
 
 
-def show_stream_tracer(
-    stream_tracer: paraview.servermanager.SourceProxy,
+def show_overlay_2d(
+    source: paraview.servermanager.SourceProxy,
     render_view: paraview.servermanager.Proxy,
     quantity: str | None = None,
     color_bar_visible: bool = False,
@@ -455,14 +455,14 @@ def show_stream_tracer(
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
-    Show a stream tracer in a render view in ParaView.
+    Show a contour lines or stream tracer overlay in a 2D render view.
 
     Parameters
     ----------
-    stream_tracer
-        The stream tracer to visualize.
+    source
+        The contour lines or stream tracer to visualize.
     render_view
-        ParaView render view in which to show the stream tracer.
+        ParaView 2D render view in which to show the overlay.
     quantity
         Name of the quantity to plot.
         Use ``None`` to display ``Solid Color`` lines.
@@ -483,6 +483,7 @@ def show_stream_tracer(
 
     See Also
     --------
+    sapphireppplot.transform.contour_lines : Create contour lines.
     sapphireppplot.transform.stream_tracer : Create stream tracer.
     """
     # set active view
@@ -490,7 +491,7 @@ def show_stream_tracer(
 
     # show data in view
     solution_display = ps.Show(
-        stream_tracer, render_view, plot_properties.representation_type
+        source, render_view, plot_properties.representation_type
     )
     # update the view to ensure updated data information
     render_view.Update()
@@ -746,7 +747,9 @@ def show_spread_sheet(
 
 
 def save_screenshot(
-    view_or_layout: paraview.servermanager.ViewLayoutProxy,
+    view_or_layout: (
+        paraview.servermanager.ViewLayoutProxy | paraview.servermanager.Proxy
+    ),
     results_folder: str,
     filename: str,
     plot_properties: PlotProperties = PlotProperties(),
@@ -776,7 +779,9 @@ def save_screenshot(
 
 
 def save_animation(
-    view_or_layout: paraview.servermanager.ViewLayoutProxy,
+    view_or_layout: (
+        paraview.servermanager.ViewLayoutProxy | paraview.servermanager.Proxy
+    ),
     results_folder: str,
     filename: str,
     plot_properties: PlotProperties = PlotProperties(),

@@ -863,7 +863,7 @@ def stream_tracer(
     Create stream tracer of a quantity from the solution.
 
     The ``stream_tracer`` can be added to an existing ``render_view``
-    using ``pvplot.show_stream_tracer()``.
+    using ``pvplot.show_overlay_2d()``.
 
     Parameters
     ----------
