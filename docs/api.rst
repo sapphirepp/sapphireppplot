@@ -17,3 +17,5 @@ API Reference
    modules/mhd
    modules/plot_properties_athena
    modules/athena
+   modules/plot_properties_satanic
+   modules/satanic
