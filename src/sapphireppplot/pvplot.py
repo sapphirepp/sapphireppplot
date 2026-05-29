@@ -21,6 +21,7 @@ def plot_line_chart_view(
     value_range: Optional[tuple[float, float]] = None,
     log_x_scale: bool = False,
     log_y_scale: bool = False,
+    line_chart_view: Optional[paraview.servermanager.Proxy] = None,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
@@ -50,6 +51,9 @@ def plot_line_chart_view(
         Use a logarithmic x-scale?
     log_y_scale
         Use a logarithmic y-scale?
+    line_chart_view
+        If a line chart view is given, add the plot to it.
+        Otherwise create a new one.
     plot_properties
         Properties for plotting like the labels.
 
@@ -58,8 +62,10 @@ def plot_line_chart_view(
     line_chart_view : XYChartViewProxy
         The configured XY chart view.
     """
-    # Create a new 'Line Chart View'
-    line_chart_view = ps.CreateView("XYChartView")
+    if line_chart_view is None:
+        # Create a new 'Line Chart View'
+        line_chart_view = ps.CreateView("XYChartView")
+
     line_chart_view.BottomAxisTitle = x_label
     line_chart_view.LeftAxisTitle = y_label
     plot_properties.configure_line_chart_view_axes(line_chart_view)
@@ -118,6 +124,7 @@ def plot_render_view_2d(
     value_range: Optional[tuple[float, float]] = None,
     log_scale: bool = False,
     camera_direction: Optional[list[float]] = None,
+    render_view: Optional[paraview.servermanager.Proxy] = None,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
@@ -142,6 +149,9 @@ def plot_render_view_2d(
         Use a logarithmic color scale?
     camera_direction
         Direction of the camera.
+    render_view
+        If a render view is given, add the plot to it.
+        Otherwise create a new one.
     plot_properties
         Properties for plotting like the labels.
 
@@ -155,8 +165,9 @@ def plot_render_view_2d(
     :pv:`paraview.simple.ResetCameraToDirection <paraview.simple.html#paraview.simple.ResetCameraToDirection>` :
         ParaView method to set camera direction.
     """
-    # Create a new 'Render View'
-    render_view = ps.CreateView("RenderView")
+    if render_view is None:
+        # Create a new 'Render View'
+        render_view = ps.CreateView("RenderView")
 
     # assign view to a particular cell in the layout
     ps.AssignViewToLayout(view=render_view, layout=layout, hint=0)
@@ -283,6 +294,7 @@ def plot_render_view_3d(
     value_range: Optional[tuple[float, float]] = None,
     log_scale: bool = False,
     camera_direction: Optional[list[float]] = None,
+    render_view: Optional[paraview.servermanager.Proxy] = None,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
@@ -308,6 +320,9 @@ def plot_render_view_3d(
     camera_direction
         Direction of the camera.
         Uses isometric view by default.
+    render_view
+        If a render view is given, add the plot to it.
+        Otherwise create a new one.
     plot_properties
         Properties for plotting like the labels.
 
@@ -321,8 +336,9 @@ def plot_render_view_3d(
     :pv:`paraview.simple.ResetCameraToDirection <paraview.simple.html#paraview.simple.ResetCameraToDirection>` :
         ParaView method to set camera direction.
     """
-    # Create a new 'Render View'
-    render_view = ps.CreateView("RenderView")
+    if render_view is None:
+        # Create a new 'Render View'
+        render_view = ps.CreateView("RenderView")
 
     # assign view to a particular cell in the layout
     ps.AssignViewToLayout(view=render_view, layout=layout, hint=0)
