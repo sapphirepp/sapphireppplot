@@ -1,12 +1,14 @@
 """Module for SATANIC (Solving Acceleration, Transport And Non-thermal Interactions in star Clusters) specific plotting."""
 
-from typing import Optional
+from typing import cast, Optional
+import numpy as np
 import paraview.simple as ps
 import paraview.servermanager
 
 from sapphireppplot.plot_properties_satanic import PlotPropertiesSatanic
 from sapphireppplot.utils import ParamDict
-from sapphireppplot import utils, pvload, pvplot
+from sapphireppplot.numpyify import DFloatLike
+from sapphireppplot import utils, pvload, pvplot, transform, numpyify
 
 
 def load_solution(
@@ -178,3 +180,92 @@ def plot_f_2d(
         pvplot.save_animation(layout, results_folder, name, plot_properties)
 
     return layout, render_view
+
+
+def plot_f_over_r(
+    solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
+    plot_properties: PlotPropertiesSatanic,
+    ln_p: float = 1.0,
+    mu: float = 0.0,
+    time: Optional[float] = None,
+    results_folder: str = "",
+    filename: Optional[str] = None,
+) -> tuple[
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int], DFloatLike],
+]:
+    r"""
+    Take line-out along :math:`r` of the solution and convert it to numpy.
+
+    Parameters
+    ----------
+    solution
+        The simulation or computation result containing the data to plot.
+    animation_scene
+        The ParaView AnimationScene.
+    plot_properties
+        Properties for plotting.
+    ln_p
+        The logarithmic momentum :math:`\ln(p)` where to plot the solution.
+    mu
+        The pitch angle :math:`\mu = \cos(\theta)` where to plot the solution.
+    time
+        Time at which to extract the solution.
+        Defaults to the last time step.
+    results_folder
+        The directory path where the data will be saved.
+    filename
+        The base name for the saved data file (without extension).
+        If no filename is given, the data and ParaView plot are not saved.
+
+    Returns
+    -------
+    r : np.ndarray
+        The radius :math:`r`.
+    f : np.ndarray
+        The distribution function :math:`F = p^s f`.
+
+    See Also
+    --------
+    sapphireppplot.transform.plot_over_line : Create PlotOverLine.
+    sapphireppplot.pvplot.plot_line_chart_view : Plot LineChartView.
+    sapphireppplot.numpyify.to_numpy_1d : Convert to numpy array.
+    """
+    if time is None:
+        time = cast(float, animation_scene.TimeKeeper.TimestepValues[-1])
+    animation_scene.AnimationTime = time
+
+    plot_over_line_r = transform.plot_over_line(
+        solution,
+        direction="x",
+        offset=(0.0, ln_p, mu),
+        results_folder=results_folder,
+        filename=filename,
+        plot_properties=plot_properties,
+    )
+
+    r, data = numpyify.to_numpy_1d(
+        plot_over_line_r,
+        array_names=[plot_properties.quantity_name],
+        x_direction=0,
+        time=time,
+    )
+    f = data[0]
+
+    if filename:
+        layout = ps.CreateLayout("f(r)")
+        pvplot.plot_line_chart_view(
+            plot_over_line_r,
+            layout,
+            x_label=plot_properties.grid_labels[0],
+            y_label=plot_properties.labels[plot_properties.quantity_name],
+            x_array_name="Points_X",
+            visible_lines=[plot_properties.quantity_name],
+            plot_properties=plot_properties,
+        )
+        pvplot.save_screenshot(
+            layout, results_folder, filename, plot_properties
+        )
+
+    return r, f
