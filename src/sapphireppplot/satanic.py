@@ -10,16 +10,17 @@ from sapphireppplot import utils, pvload, pvplot
 
 
 def load_solution(
-    plot_properties: PlotPropertiesSatanic,
     path_prefix: str = "",
     results_folder: str = "",
     base_file_name: str = "solution",
     animation_time: Optional[float] = None,
+    plot_properties_in: Optional[PlotPropertiesSatanic] = None,
 ) -> tuple[
     str,
     ParamDict,
     paraview.servermanager.SourceProxy,
     paraview.servermanager.Proxy,
+    PlotPropertiesSatanic,
 ]:
     """
     Load solution for SATANIC.
@@ -34,8 +35,6 @@ def load_solution(
 
     Parameters
     ----------
-    plot_properties
-        Properties of the solution to load.
     path_prefix
         Prefix for relative path.
     results_folder
@@ -45,6 +44,8 @@ def load_solution(
     animation_time
         Set the time at which the animation scene is displayed.
         Defaults to the last time step.
+    plot_properties_in
+        Properties of the solution.
 
     Returns
     -------
@@ -56,6 +57,9 @@ def load_solution(
         A ParaView reader object with selected point arrays enabled.
     animation_scene : Proxy
         The ParaView AnimationScene.
+    plot_properties : PlotPropertiesSatanic
+        Properties of the solution
+        as deduced from the parameters.
 
     Raises
     ------
@@ -69,6 +73,10 @@ def load_solution(
     sapphireppplot.plot_properties.PlotProperties.series_names :
         Series names list to load.
     """
+    if plot_properties_in is None:
+        plot_properties_in = PlotPropertiesSatanic()
+    plot_properties = plot_properties_in.copy()
+
     results_folder = utils.get_results_folder(
         path_prefix=path_prefix, results_folder=results_folder
     )
@@ -77,6 +85,12 @@ def load_solution(
         results_folder, file_name=base_file_name + "_log.prm"
     )
     prm = utils.prm_to_dict(prm_file)
+
+    plot_properties.dimension = int(prm["dimension"])
+    plot_properties.spectral_rescale = float(prm["spectral_rescale"])
+    plot_properties.labels[plot_properties.quantity_name] = (
+        rf"$p^{plot_properties.spectral_rescale:.0f} f$"
+    )
 
     solution = pvload.load_solution_vtu(
         results_folder,
@@ -91,7 +105,7 @@ def load_solution(
     else:
         animation_scene.GoToLast()
 
-    return results_folder, prm, solution, animation_scene
+    return results_folder, prm, solution, animation_scene, plot_properties
 
 
 def plot_f_2d(

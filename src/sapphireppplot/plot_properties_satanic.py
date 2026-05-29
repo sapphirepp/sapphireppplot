@@ -26,5 +26,4 @@ class PlotPropertiesSatanic(PlotProperties):
 
     def __post_init__(self) -> None:
         self.series_names = [self.quantity_name]
-        # self.labels[self.quantity_name] = r"$p^s f$"
-        self.labels[self.quantity_name] = rf"$p^{self.spectral_rescale:.0f} f$"
+        self.labels[self.quantity_name] = r"$p^s f$"
