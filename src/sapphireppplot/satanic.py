@@ -338,3 +338,94 @@ def plot_f_over_r(
         )
 
     return r, f
+
+
+def plot_f_over_p(
+    solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
+    plot_properties: PlotPropertiesSatanic,
+    r: float = 1.0,
+    mu: float = 0.0,
+    time: Optional[float] = None,
+    results_folder: str = "",
+    filename: Optional[str] = None,
+) -> tuple[
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int], DFloatLike],
+]:
+    r"""
+    Take line-out along :math:`\ln(p)` of the solution and convert it to numpy.
+
+    Parameters
+    ----------
+    solution
+        The simulation or computation result containing the data to plot.
+    animation_scene
+        The ParaView AnimationScene.
+    plot_properties
+        Properties for plotting.
+    r
+        The radius :math:`r` where to plot the solution.
+    mu
+        The pitch angle :math:`\mu = \cos(\theta)` where to plot the solution.
+    time
+        Time at which to extract the solution.
+        Defaults to the last time step.
+    results_folder
+        The directory path where the data will be saved.
+    filename
+        The base name for the saved data file (without extension).
+        If no filename is given, the data and ParaView plot are not saved.
+
+    Returns
+    -------
+    ln_p : np.ndarray
+        The logarithmic momentum :math:`ln_p`.
+    f : np.ndarray
+        The distribution function :math:`F = p^s f`.
+
+    See Also
+    --------
+    sapphireppplot.transform.plot_over_line : Create PlotOverLine.
+    sapphireppplot.pvplot.plot_line_chart_view : Plot LineChartView.
+    sapphireppplot.numpyify.to_numpy_1d : Convert to numpy array.
+    """
+    if time is None:
+        time = cast(float, animation_scene.TimeKeeper.TimestepValues[-1])
+    animation_scene.AnimationTime = time
+
+    plot_over_line_p = transform.plot_over_line(
+        solution,
+        direction="y",
+        offset=(r, 0.0, mu),
+        results_folder=results_folder,
+        filename=filename,
+        plot_properties=plot_properties,
+    )
+
+    ln_p, data = numpyify.to_numpy_1d(
+        plot_over_line_p,
+        array_names=[plot_properties.quantity_name],
+        x_direction=1,
+        time=time,
+    )
+    f = data[0]
+
+    if filename:
+        layout = ps.CreateLayout("f(p)")
+        pvplot.plot_line_chart_view(
+            plot_over_line_p,
+            layout,
+            x_label=plot_properties.grid_labels[1],
+            y_label=plot_properties.labels[plot_properties.quantity_name],
+            x_array_name="Points_Y",
+            value_range=(min(f[f > 0.0]), max(f)),
+            log_y_scale=True,
+            visible_lines=[plot_properties.quantity_name],
+            plot_properties=plot_properties,
+        )
+        pvplot.save_screenshot(
+            layout, results_folder, filename, plot_properties
+        )
+
+    return ln_p, f
