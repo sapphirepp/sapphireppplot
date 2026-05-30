@@ -503,3 +503,83 @@ def matplot_f_over_r(
     ax.legend()
 
     return ax
+
+
+def matplot_f_over_p(
+    ax: Axes,
+    solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
+    plot_properties: PlotPropertiesSatanic,
+    r_values: Iterable[float],
+    mu: float = 0.0,
+    time: Optional[float] = None,
+    p_normalization: Optional[float] = None,
+) -> Axes:
+    r"""
+    Take line-out along :math:`p` for multiple radia and plot on the axes.
+
+    Parameters
+    ----------
+    ax
+        Matplotlib axes to add the plots.
+    solution
+        The simulation or computation result containing the data to plot.
+    animation_scene
+        The ParaView AnimationScene.
+    plot_properties
+        Properties for plotting.
+    r_values
+        The radia :math:`r` where to plot the solution.
+    mu
+        The pitch angle :math:`\mu = \cos(\theta)` where to plot the solution.
+    time
+        Time at which to extract the solution.
+        Defaults to the last time step.
+    p_normalization
+        Momentum :math:`p` to normalize the distribution function.
+
+    Returns
+    -------
+    ax : Axes
+        Matplotlib axes to with the plots.
+
+    See Also
+    --------
+    plot_f_over_p : Create line out using ParaView.
+    """
+    for r in r_values:
+        ln_p, f = plot_f_over_p(
+            solution,
+            animation_scene,
+            plot_properties,
+            r=r,
+            mu=mu,
+            time=time,
+        )
+        normalization = 1.0
+        if p_normalization is not None:
+            index_normalization = utils.find_closest_index(
+                ln_p, np.log(p_normalization)
+            )
+            normalization = f[index_normalization]
+        label = rf"$r = {r:.2f} \,$" + plot_properties.unit_r
+        if time is not None:
+            label += rf", $t = {time:.2f} \,$" + plot_properties.unit_t
+        ax.plot(
+            np.exp(ln_p),
+            f / normalization,
+            marker="x",
+            label=label,
+        )
+
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    ax.set_ylim(1e-2, None)
+    ax.set_xlabel(r"$p \,$ / " + plot_properties.unit_p)
+    y_label = plot_properties.labels[plot_properties.quantity_name]
+    if p_normalization is not None:
+        y_label += " [normalized]"
+    ax.set_ylabel(y_label)
+    ax.legend()
+
+    return ax
