@@ -1,6 +1,7 @@
 """Module for SATANIC (Solving Acceleration, Transport And Non-thermal Interactions in star Clusters) specific plotting."""
 
 from typing import cast, Optional
+from collections.abc import Sequence
 import numpy as np
 import paraview.simple as ps
 import paraview.servermanager
@@ -108,6 +109,74 @@ def load_solution(
         animation_scene.GoToLast()
 
     return results_folder, prm, solution, animation_scene, plot_properties
+
+
+def to_numpy(
+    solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
+    plot_properties: PlotPropertiesSatanic,
+    time_steps: Optional[Sequence[float]] = None,
+) -> tuple[
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int, int, int, int], DFloatLike],
+]:
+    r"""
+    Convert time dependent ParaView solution to a numpy array with the data evaluated at the cell centers.
+
+    Parameters
+    ----------
+    solution
+        ParaView solution data.
+    animation_scene
+        The ParaView AnimationScene.
+    plot_properties
+        Properties of the solution.
+    time_steps
+        List of time steps to extract the data.
+        Defaults to using all time steps.
+
+    Returns
+    -------
+    t : np.ndarray
+        The time steps :math:`t`:
+        ``t[n] = t_n``
+        where ``n`` is the index of the time step.
+    r : np.ndarray
+        The radius :math:`r`:
+        ``r[i] = r_i``
+        where ``i`` is the index of the radius.
+    ln_p : np.ndarray
+        The logarithmic momentum :math:`\ln(p)`:
+        ``ln_p[j] = ln_p_j``
+        where ``j`` is the index of the momentum.
+    mu : np.ndarray
+        The pitch angle :math:`\mu = \cos(\theta)`:
+        ``mu[k] = mu_k``
+        where ``k`` is the index of the pitch angle.
+    f : np.ndarray
+        The distribution function :math:`F = p^s f` as a 4D numpy array:
+        ``f[n][i][j][k]``.
+        The first index ``n`` corresponds to ``t[n]``,
+        the second index ``i`` to ``r[i]``,
+        the third index ``j`` to ``ln_p[j]``
+        and the fourth index ``k`` to ``mu[k]``.
+
+    See Also
+    --------
+    sapphireppplot.numpify.to_numpy_time_steps_3d : Get numpy arrays.
+    """
+    t, points, data = numpyify.to_numpy_time_steps_3d(
+        solution, animation_scene, [plot_properties.quantity_name], time_steps
+    )
+    r = points[:, 0, 0, 0]
+    ln_p = points[0, :, 0, 1]
+    mu = points[0, 0, :, 2]
+    f = data[:, 0, :, :, :]
+
+    return t, r, ln_p, mu, f
 
 
 def plot_f_2d(
