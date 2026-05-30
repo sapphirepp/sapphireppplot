@@ -143,7 +143,7 @@ def match_index(list_in: Sequence[Any], target: Any) -> int:
 
 
 def find_closest_index(
-    array: Sequence[Any],
+    array: Sequence[Any] | np.ndarray,
     target: Any,
     print_index: bool = False,
 ) -> int:

@@ -206,6 +206,7 @@ linewidth
 loc
 loglog
 mappable
+matplot
 matplotlib
 mpl
 mplot3d

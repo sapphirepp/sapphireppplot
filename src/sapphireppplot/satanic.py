@@ -1,8 +1,9 @@
 """Module for SATANIC (Solving Acceleration, Transport And Non-thermal Interactions in star Clusters) specific plotting."""
 
 from typing import cast, Optional
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 import numpy as np
+from matplotlib.axes import Axes
 import paraview.simple as ps
 import paraview.servermanager
 
@@ -427,3 +428,78 @@ def plot_f_over_p(
         )
 
     return ln_p, f
+
+
+def matplot_f_over_r(
+    ax: Axes,
+    solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
+    plot_properties: PlotPropertiesSatanic,
+    p_values: Iterable[float],
+    mu: float = 0.0,
+    time: Optional[float] = None,
+    r_normalization: Optional[float] = None,
+) -> Axes:
+    r"""
+    Take line-out along :math:`r` for multiple momenta and plot on the axes.
+
+    Parameters
+    ----------
+    ax
+        Matplotlib axes to add the plots.
+    solution
+        The simulation or computation result containing the data to plot.
+    animation_scene
+        The ParaView AnimationScene.
+    plot_properties
+        Properties for plotting.
+    p_values
+        The linear momentum values :math:`p` where to plot the solution.
+    mu
+        The pitch angle :math:`\mu = \cos(\theta)` where to plot the solution.
+    time
+        Time at which to extract the solution.
+        Defaults to the last time step.
+    r_normalization
+        Radius :math:`r` to normalize the distribution function.
+
+    Returns
+    -------
+    ax : Axes
+        Matplotlib axes to with the plots.
+
+    See Also
+    --------
+    plot_f_over_r : Create line out using ParaView.
+    """
+    for p in p_values:
+        r, f = plot_f_over_r(
+            solution,
+            animation_scene,
+            plot_properties,
+            ln_p=np.log(p),
+            mu=mu,
+            time=time,
+        )
+        normalization = 1.0
+        if r_normalization is not None:
+            index_normalization = utils.find_closest_index(r, r_normalization)
+            normalization = f[index_normalization]
+        label = rf"$p = {p:.2f} \,$" + plot_properties.unit_p
+        if time is not None:
+            label += rf", $t = {time:.2f} \,$" + plot_properties.unit_t
+        ax.plot(
+            r,
+            f / normalization,
+            marker="x",
+            label=label,
+        )
+
+    ax.set_xlabel(plot_properties.grid_labels[0])
+    y_label = plot_properties.labels[plot_properties.quantity_name]
+    if r_normalization is not None:
+        y_label += " [normalized]"
+    ax.set_ylabel(y_label)
+    ax.legend()
+
+    return ax
