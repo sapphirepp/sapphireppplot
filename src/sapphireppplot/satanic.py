@@ -91,9 +91,7 @@ def load_solution(
 
     plot_properties.dimension = int(prm["dimension"])
     plot_properties.spectral_rescale = float(prm["spectral_rescale"])
-    plot_properties.labels[plot_properties.quantity_name] = (
-        rf"$p^{plot_properties.spectral_rescale:.0f} f$"
-    )
+    plot_properties.update_properties()
 
     solution = pvload.load_solution_vtu(
         results_folder,

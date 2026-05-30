@@ -1,6 +1,6 @@
 """Define PlotPropertiesSatanic class."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from sapphireppplot.plot_properties import PlotProperties
 
@@ -20,10 +20,19 @@ class PlotPropertiesSatanic(PlotProperties):
     quantity_name: str = "F"
     """Name of quantity to plot."""
 
-    grid_labels: tuple[str, str, str] = field(
-        default_factory=lambda: (r"$r$", r"$\ln p$", r"$\mu$")
-    )
+    unit_r: str = "pc"
+    """Unit for radius :math:`r`."""
+    unit_p: str = "GeV/c"
+    """Unit for momentum :math:`p`."""
+    unit_t: str = "Myr"
+    """Unit for time :math:`t`."""
 
     def __post_init__(self) -> None:
+        self.update_properties()
+
+    def update_properties(self) -> None:
+        """Update PlotProperties from current values."""
         self.series_names = [self.quantity_name]
-        self.labels[self.quantity_name] = r"$p^s f$"
+        # self.labels[self.quantity_name] = r"$p^s f$"
+        self.labels[self.quantity_name] = rf"$p^{self.spectral_rescale:.0f} f$"
+        self.grid_labels = (r"$r$ / " + self.unit_r, r"$\ln p$", r"$\mu$")
