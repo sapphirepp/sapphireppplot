@@ -779,7 +779,7 @@ def plot_f_lms_3d(
 
     if not layout:
         layout = ps.CreateLayout(name)
-    render_view = pvplot.plot_render_view_2d(
+    render_view = pvplot.plot_render_view_3d(
         solution,
         layout,
         plot_properties.f_lms_name(lms_index, prefix=prefix),
