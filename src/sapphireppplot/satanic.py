@@ -252,6 +252,82 @@ def plot_f_2d(
     return layout, render_view
 
 
+def plot_f_3d(
+    solution: paraview.servermanager.SourceProxy,
+    results_folder: str,
+    name: str,
+    plot_properties: PlotPropertiesSatanic,
+    value_range: Optional[tuple[float, float]] = None,
+    log_scale: bool = True,
+    camera_direction: Optional[list[float]] = None,
+    show_time: bool = False,
+    save_animation: bool = False,
+    layout: Optional[paraview.servermanager.ViewLayoutProxy] = None,
+) -> tuple[
+    paraview.servermanager.ViewLayoutProxy, paraview.servermanager.Proxy
+]:
+    """
+    Plot and save visualization of F in 3D.
+
+    Parameters
+    ----------
+    solution
+        The simulation or computation result containing the data to plot.
+    results_folder
+        Path to the folder where results (images/animations) will be saved.
+    name
+        Name of the layout and image/animation files.
+    plot_properties
+        Properties for plotting.
+    value_range
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the y-axes.
+    log_scale
+        Use a logarithmic color scale?
+    camera_direction
+        Direction of the camera.
+    show_time
+        Display the simulation time in the render view.
+    save_animation
+        Save an animation of the plot.
+    layout
+        The layout object where the plot should be added as new view.
+        Will create a new one if none if provided.
+
+    Returns
+    -------
+    layout : ViewLayoutProxy
+        The layout object used for the plot.
+    render_view : RenderViewProxy
+        The configured 3D render view.
+
+    See Also
+    --------
+    sapphireppplot.pvplot.plot_render_view_3d : Plot 3D RenderView.
+    sapphireppplot.pvplot.display_time : Display time.
+    """
+    if not layout:
+        layout = ps.CreateLayout(name)
+    render_view = pvplot.plot_render_view_3d(
+        solution,
+        layout,
+        plot_properties.quantity_name,
+        value_range=value_range,
+        log_scale=log_scale,
+        camera_direction=camera_direction,
+        plot_properties=plot_properties,
+    )
+
+    if show_time:
+        pvplot.display_time(render_view, plot_properties=plot_properties)
+
+    pvplot.save_screenshot(layout, results_folder, name, plot_properties)
+    if save_animation:
+        pvplot.save_animation(layout, results_folder, name, plot_properties)
+
+    return layout, render_view
+
+
 def plot_f_over_r(
     solution: paraview.servermanager.SourceProxy,
     animation_scene: paraview.servermanager.Proxy,
