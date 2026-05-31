@@ -1172,3 +1172,93 @@ def matplot_f_r_p(
     )
 
     return fig, ax, cmesh
+
+
+def matplot_f_r_mu(
+    fig: Figure,
+    ax: Axes,
+    solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
+    plot_properties: PlotPropertiesSatanic,
+    p: float = 1.0,
+    time: Optional[float] = None,
+    value_range: tuple[float, Optional[float]] = (1e-10, None),
+) -> tuple[Figure, Axes, QuadMesh]:
+    r"""
+    Slice solution and create polar plot :math:`f(\theta, r)`.
+
+    The axes must be use polar projection:
+    ``fig, ax = plt.subplots(subplot_kw={"projection": "polar"})``
+
+    Parameters
+    ----------
+    fig
+        Matplotlib figure to add the plot.
+    ax
+        Matplotlib axes to add the plot.
+        Must use polar projection:
+        ``ax = fig.add_subplot(111, projection="polar")``
+    solution
+        The simulation or computation result containing the data to plot.
+    animation_scene
+        The ParaView AnimationScene.
+    plot_properties
+        Properties for plotting.
+    p
+        The linear momentum :math:`p` where to plot the solution.
+    time
+        Time at which to extract the solution.
+        Defaults to the last time step.
+    value_range
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the color bar.
+
+    Returns
+    -------
+    fig : Figure
+        Matplotlib figure with the plot.
+    ax : Axes
+        Matplotlib axes with the plot.
+    cmesh : QuadMesh
+        Matplotlib color mesh.
+
+    See Also
+    --------
+    slice_plane_r_mu : Slice plane using ParaView.
+    convert_mu_to_theta : Convert :math:`\mu` to :math:`\theta`.
+    """
+    r, mu, f = slice_plane_r_mu(
+        solution,
+        animation_scene,
+        plot_properties,
+        ln_p=np.log(p),
+        time=time,
+    )
+    theta, f = convert_mu_to_theta(mu, f)
+    mesh_r, mesh_theta = np.meshgrid(r, theta, indexing="ij")
+
+    f[f < value_range[0]] = value_range[0]
+
+    cmesh = ax.pcolormesh(
+        mesh_theta,
+        mesh_r,
+        f,
+        cmap=plot_properties.matplot_color_map,
+        norm="log",
+        vmin=value_range[0],
+        vmax=value_range[1],
+        shading=plot_properties.matplot_shading,
+    )
+
+    ax.set_xlabel(r"$\theta$")
+    # ax.set_ylabel(r"$r \,$ / " + plot_properties.unit_r)
+
+    fig.colorbar(
+        cmesh,
+        ax=ax,
+        orientation="vertical",
+        pad=0.07,
+        label=plot_properties.labels[plot_properties.quantity_name],
+    )
+
+    return fig, ax, cmesh
