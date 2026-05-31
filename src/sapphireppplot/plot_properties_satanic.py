@@ -1,6 +1,7 @@
 """Define PlotPropertiesSatanic class."""
 
 from dataclasses import dataclass
+from typing import Literal
 
 from sapphireppplot.plot_properties import PlotProperties
 
@@ -26,6 +27,17 @@ class PlotPropertiesSatanic(PlotProperties):
     """Unit for momentum :math:`p`."""
     unit_t: str = "Myr"
     """Unit for time :math:`t`."""
+
+    matplot_color_map: str = "viridis"
+    """Color map for the matplotlib plots."""
+    matplot_shading: Literal["flat", "nearest", "gouraud", "auto"] = "gouraud"
+    """
+    The shading style got matplotlib color maps.
+
+    See Also
+    --------
+    `matplotlib pcolormesh grids and shading <https://matplotlib.org/stable/gallery/images_contours_and_fields/pcolormesh_grids.html>`_
+    """
 
     def __post_init__(self) -> None:
         self.update_properties()

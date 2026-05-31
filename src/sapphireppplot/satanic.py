@@ -4,6 +4,8 @@ from typing import cast, Optional
 from collections.abc import Iterable, Sequence
 import numpy as np
 from matplotlib.axes import Axes
+from matplotlib.figure import Figure
+from matplotlib.collections import QuadMesh
 import paraview.simple as ps
 import paraview.servermanager
 
@@ -680,3 +682,88 @@ def matplot_f_over_p(
     ax.legend()
 
     return ax
+
+
+def matplot_f_r_p(
+    fig: Figure,
+    ax: Axes,
+    solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
+    plot_properties: PlotPropertiesSatanic,
+    mu: float = 0.0,
+    time: Optional[float] = None,
+    value_range: tuple[float, Optional[float]] = (1e-10, None),
+) -> tuple[Figure, Axes, QuadMesh]:
+    r"""
+    Slice 2D plane in :math:`r -\ln(p)` of the solution and plot on the axes.
+
+    Parameters
+    ----------
+    fig
+        Matplotlib figure to add the plot.
+    ax
+        Matplotlib axes to add the plot.
+    solution
+        The simulation or computation result containing the data to plot.
+    animation_scene
+        The ParaView AnimationScene.
+    plot_properties
+        Properties for plotting.
+    mu
+        The pitch angle :math:`\mu = \cos(\theta)` where to plot the solution.
+    time
+        Time at which to extract the solution.
+        Defaults to the last time step.
+    value_range
+        Minimal (``value_range[0]``)
+        and maximal (``value_range[1]``) value for the color bar.
+
+    Returns
+    -------
+    fig : Figure
+        Matplotlib figure with the plot.
+    ax : Axes
+        Matplotlib axes with the plot.
+    cmesh : QuadMesh
+        Matplotlib color mesh.
+
+    See Also
+    --------
+    slice_plane_r_p : Slice plane using ParaView.
+    """
+    r, ln_p, f = slice_plane_r_p(
+        solution,
+        animation_scene,
+        plot_properties,
+        mu=mu,
+        time=time,
+    )
+    p = np.exp(ln_p)
+    mesh_r, mesh_p = np.meshgrid(r, p, indexing="ij")
+
+    f[f < value_range[0]] = value_range[0]
+
+    cmesh = ax.pcolormesh(
+        mesh_r,
+        mesh_p,
+        f,
+        cmap=plot_properties.matplot_color_map,
+        norm="log",
+        vmin=value_range[0],
+        vmax=value_range[1],
+        shading=plot_properties.matplot_shading,
+    )
+
+    ax.set_yscale("log")
+    ax.set_xlabel(r"$r \,$ / " + plot_properties.unit_r)
+    ax.set_ylabel(r"$p \,$ / " + plot_properties.unit_p)
+
+    fig.colorbar(
+        cmesh,
+        ax=ax,
+        orientation="vertical",
+        # pad=-0.1,
+        label=plot_properties.labels[plot_properties.quantity_name],
+    )
+
+    return fig, ax, cmesh

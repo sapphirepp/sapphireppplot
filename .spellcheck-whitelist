@@ -196,10 +196,12 @@ axs
 axvline
 bbox
 cmap
+cmesh
 colorbar
 cstride
 facecolors
 figsize
+gouraud
 linestyle
 linestyles
 linewidth
@@ -211,6 +213,7 @@ matplotlib
 mpl
 mplot3d
 Params
+pcolormesh
 plt
 pyplot
 rgb
