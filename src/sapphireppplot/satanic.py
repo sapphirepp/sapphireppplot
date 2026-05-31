@@ -154,9 +154,9 @@ def to_numpy(
         ``ln_p[j] = ln_p_j``
         where ``j`` is the index of the momentum.
     mu : np.ndarray
-        The pitch angle :math:`\mu = \cos(\theta)`:
+        The azimuth angle :math:`\mu = \cos(\theta)`:
         ``mu[k] = mu_k``
-        where ``k`` is the index of the pitch angle.
+        where ``k`` is the index of the azimuth angle.
     f : np.ndarray
         The distribution function :math:`F = p^s f` as a 4D numpy array:
         ``f[n][i][j][k]``.
@@ -355,7 +355,7 @@ def plot_f_over_r(
     ln_p
         The logarithmic momentum :math:`\ln(p)` where to plot the solution.
     mu
-        The pitch angle :math:`\mu = \cos(\theta)` where to plot the solution.
+        The azimuth angle :math:`\mu = \cos(\theta)` where to plot the solution.
     time
         Time at which to extract the solution.
         Defaults to the last time step.
@@ -444,7 +444,7 @@ def plot_f_over_p(
     r
         The radius :math:`r` where to plot the solution.
     mu
-        The pitch angle :math:`\mu = \cos(\theta)` where to plot the solution.
+        The azimuth angle :math:`\mu = \cos(\theta)` where to plot the solution.
     time
         Time at which to extract the solution.
         Defaults to the last time step.
@@ -553,7 +553,7 @@ def plot_f_over_mu(
     Returns
     -------
     mu : np.ndarray
-        The pitch angle :math:`\mu = \cos(\theta)`.
+        The azimuth angle :math:`\mu = \cos(\theta)`.
     f : np.ndarray
         The distribution function :math:`F = p^s f`.
 
@@ -627,7 +627,7 @@ def slice_plane_r_p(
     plot_properties
         Properties for plotting.
     mu
-        The pitch angle :math:`\mu = \cos(\theta)` where to plot the solution.
+        The azimuth angle :math:`\mu = \cos(\theta)` where to plot the solution.
     time
         Time at which to extract the solution.
         Defaults to the last time step.
@@ -725,7 +725,7 @@ def matplot_f_over_r(
     p_values
         The linear momentum values :math:`p` where to plot the solution.
     mu
-        The pitch angle :math:`\mu = \cos(\theta)` where to plot the solution.
+        The azimuth angle :math:`\mu = \cos(\theta)` where to plot the solution.
     time
         Time at which to extract the solution.
         Defaults to the last time step.
@@ -800,7 +800,7 @@ def matplot_f_over_p(
     r_values
         The radia :math:`r` where to plot the solution.
     mu
-        The pitch angle :math:`\mu = \cos(\theta)` where to plot the solution.
+        The azimuth angle :math:`\mu = \cos(\theta)` where to plot the solution.
     time
         Time at which to extract the solution.
         Defaults to the last time step.
@@ -885,7 +885,7 @@ def matplot_f_over_mu(
         Time at which to extract the solution.
         Defaults to the last time step.
     mu_normalization
-        Pitch angle :math:`\mu = \cos(\theta)` to normalize the distribution function.
+        Azimuth angle :math:`\mu = \cos(\theta)` to normalize the distribution function.
 
     Returns
     -------
@@ -959,7 +959,7 @@ def matplot_f_r_p(
     plot_properties
         Properties for plotting.
     mu
-        The pitch angle :math:`\mu = \cos(\theta)` where to plot the solution.
+        The azimuth angle :math:`\mu = \cos(\theta)` where to plot the solution.
     time
         Time at which to extract the solution.
         Defaults to the last time step.
