@@ -490,13 +490,18 @@ def plot_f_over_p(
 
     if filename:
         layout = ps.CreateLayout("f(p)")
+        value_range = None
+        try:
+            value_range = (min(f[f > 0.0]), max(f))
+        except ValueError:
+            pass
         pvplot.plot_line_chart_view(
             plot_over_line_p,
             layout,
             x_label=plot_properties.grid_labels[1],
             y_label=plot_properties.labels[plot_properties.quantity_name],
             x_array_name="Points_Y",
-            value_range=(min(f[f > 0.0]), max(f)),
+            value_range=value_range,
             log_y_scale=True,
             visible_lines=[plot_properties.quantity_name],
             plot_properties=plot_properties,
