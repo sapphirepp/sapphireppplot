@@ -699,6 +699,102 @@ def slice_plane_r_p(
     return r, ln_p, f
 
 
+def slice_plane_r_mu(
+    solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
+    plot_properties: PlotPropertiesSatanic,
+    ln_p: float = 1.0,
+    time: Optional[float] = None,
+    results_folder: str = "",
+    filename: Optional[str] = None,
+) -> tuple[
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int, int], DFloatLike],
+]:
+    r"""
+    Slice 2D plane in :math:`r -\mu` of the solution and convert it to numpy.
+
+    Parameters
+    ----------
+    solution
+        The simulation or computation result containing the data to plot.
+    animation_scene
+        The ParaView AnimationScene.
+    plot_properties
+        Properties for plotting.
+    ln_p
+        The logarithmic momentum :math:`\ln(p)` where to plot the solution.
+    time
+        Time at which to extract the solution.
+        Defaults to the last time step.
+    results_folder
+        The directory path where the data will be saved.
+    filename
+        The base name for the saved data file (without extension).
+        If no filename is given, the data and ParaView plot are not saved.
+
+    Returns
+    -------
+    r : np.ndarray
+        The radius :math:`r`:
+        ``r[i] = r_i``
+        where ``i`` is the index of the radius.
+    mu : np.ndarray
+        The azimuth angle :math:`\mu = \cos(\theta)`:
+        ``mu[k] = mu_k``
+        where ``k`` is the index of the azimuth angle.
+    f : np.ndarray
+        The distribution function :math:`F = p^s f` as a 2D numpy array:
+        ``f[i][k]``.
+        The first index ``i`` corresponds to ``r[i]``
+        and the second index ``k`` to ``mu[k]``.
+
+    See Also
+    --------
+    sapphireppplot.transform.slice_plane : Slice 2D plane.
+    sapphireppplot.pvplot.plot_render_view_2d : Plot 2D RenderView.
+    sapphireppplot.numpyify.to_numpy_3d : Convert to numpy array.
+    """
+    if time is None:
+        time = cast(float, animation_scene.TimeKeeper.TimestepValues[-1])
+    animation_scene.AnimationTime = time
+    solution.UpdatePipeline(time=time)
+
+    assert plot_properties.dimension == 3, "Solution has no mu dependence!"
+    sliced_plane = transform.slice_plane(
+        solution,
+        normal=(0, 1, 0),
+        origin=(0.0, ln_p, 0.0),
+        plot_properties=plot_properties,
+        crinkle_slice=True,
+    )
+
+    points, data = numpyify.to_numpy_3d(
+        sliced_plane,
+        array_names=[plot_properties.quantity_name],
+    )
+    r = points[:, 0, 0, 0]
+    mu = points[0, 0, :, 2]
+    f = data[0, :, 0, :]
+
+    if filename:
+        layout = ps.CreateLayout("f(r,p)")
+        pvplot.plot_render_view_2d(
+            sliced_plane,
+            layout,
+            plot_properties.quantity_name,
+            log_scale=True,
+            camera_direction=[0.0, 1.0, 0.0],
+            plot_properties=plot_properties,
+        )
+        pvplot.save_screenshot(
+            layout, results_folder, filename, plot_properties
+        )
+
+    return r, mu, f
+
+
 def matplot_f_over_r(
     ax: Axes,
     solution: paraview.servermanager.SourceProxy,
