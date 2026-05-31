@@ -854,6 +854,85 @@ def matplot_f_over_p(
     return ax
 
 
+def matplot_f_over_mu(
+    ax: Axes,
+    solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
+    plot_properties: PlotPropertiesSatanic,
+    r_values: Iterable[float],
+    p_values: Iterable[float],
+    time: Optional[float] = None,
+    mu_normalization: Optional[float] = None,
+) -> Axes:
+    r"""
+    Take line-out along :math:`\mu = \cos(\theta)` for multiple momenta and plot on the axes.
+
+    Parameters
+    ----------
+    ax
+        Matplotlib axes to add the plots.
+    solution
+        The simulation or computation result containing the data to plot.
+    animation_scene
+        The ParaView AnimationScene.
+    plot_properties
+        Properties for plotting.
+    r_values
+        The radia :math:`r` where to plot the solution.
+    p_values
+        The linear momentum values :math:`p` where to plot the solution.
+    time
+        Time at which to extract the solution.
+        Defaults to the last time step.
+    mu_normalization
+        Pitch angle :math:`\mu = \cos(\theta)` to normalize the distribution function.
+
+    Returns
+    -------
+    ax : Axes
+        Matplotlib axes to with the plots.
+
+    See Also
+    --------
+    plot_f_over_mu : Create line out using ParaView.
+    """
+    for r in r_values:
+        for p in p_values:
+            mu, f = plot_f_over_mu(
+                solution,
+                animation_scene,
+                plot_properties,
+                r=r,
+                ln_p=np.log(p),
+                time=time,
+            )
+            normalization = 1.0
+            if mu_normalization is not None:
+                index_normalization = utils.find_closest_index(
+                    mu, mu_normalization
+                )
+                normalization = f[index_normalization]
+            label = rf"$r = {r:.2f} \,$" + plot_properties.unit_r
+            label += rf", $p = {p:.2f} \,$" + plot_properties.unit_p
+            if time is not None:
+                label += rf", $t = {time:.2f} \,$" + plot_properties.unit_t
+            ax.plot(
+                mu,
+                f / normalization,
+                marker="x",
+                label=label,
+            )
+
+    ax.set_xlabel(plot_properties.grid_labels[2])
+    y_label = plot_properties.labels[plot_properties.quantity_name]
+    if mu_normalization is not None:
+        y_label += " [normalized]"
+    ax.set_ylabel(y_label)
+    ax.legend()
+
+    return ax
+
+
 def matplot_f_r_p(
     fig: Figure,
     ax: Axes,
