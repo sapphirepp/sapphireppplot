@@ -180,6 +180,66 @@ def to_numpy(
     return t, r, ln_p, mu, f
 
 
+def convert_mu_to_theta(
+    mu: np.ndarray[tuple[int], DFloatLike],
+    f_mu: np.ndarray[tuple[int, int], DFloatLike],
+) -> tuple[
+    np.ndarray[tuple[int], DFloatLike],
+    np.ndarray[tuple[int, int], DFloatLike],
+]:
+    r"""
+    Convert azimuthal angle from :math:`\mu` to :math:`\theta = \arccos(\mu)`.
+
+    Extends :math:`f` to span the full range
+    from :math:`\theta=0^{\circ}` to :math:`\theta=360^{\circ}`.
+
+    Parameters
+    ----------
+    mu
+        The azimuth angle :math:`\mu = \cos(\theta)`:
+        ``mu[k] = mu_k``
+        where ``k`` is the index of the azimuth angle.
+    f_mu
+        The distribution function :math:`F = p^s f`
+        as a function of :math:`\mu = \cos(\theta)`:
+        ``f[i][k]``.
+        The first index ``i`` corresponds to ``r[i]``,
+        and the last index ``k`` to ``mu[k]``.
+
+    Returns
+    -------
+    theta : np.ndarray
+        The azimuth angle :math:`\theta` in radiants,
+        running from :math:`\theta = \pi = 180^{\circ}`
+        to :math:`\theta = -\pi = -180^{\circ}`
+        ``theta[k] = theta_k``
+        where ``k`` is the index of the azimuth angle.
+    f : np.ndarray
+        The distribution function :math:`F = p^s f` as a 4D numpy array:
+        ``f[n][i][j][k]``.
+        The first index ``n`` corresponds to ``t[n]``,
+        the second index ``i`` to ``r[i]``,
+        the third index ``j`` to ``ln_p[j]``
+        and the fourth index ``k`` to ``mu[k]``.
+    """
+    theta = np.acos(mu)
+    f_theta = f_mu
+
+    # Extend to `theta = 0 \degree`` using extrapolation
+    theta = np.append(theta, 0.0)
+    f_theta = np.append(f_theta, f_theta[:, -2:-1], axis=1)
+    # Extend to `theta = -180 \degree`` using extrapolation
+    theta = np.insert(theta, 0, np.pi)
+    f_theta = np.insert(f_theta, 0, f_theta[:, 0], axis=1)
+    # Mirror `theta = (180, 0) -> (0, -180)`
+    theta = np.append(theta, theta - np.pi)
+    f_theta = np.append(f_theta, f_theta[:, ::-1], axis=1)
+    # with np.printoptions(edgeitems=3, precision=3, suppress=True, threshold=10):
+    #     print("theta: ", theta.shape, theta, np.rad2deg(theta))
+
+    return theta, f_theta
+
+
 def plot_f_2d(
     solution: paraview.servermanager.SourceProxy,
     results_folder: str,

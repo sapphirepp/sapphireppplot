@@ -149,6 +149,7 @@ removesuffix
 scipy
 
 # numpy
+acos
 arange
 arccos
 argmax
@@ -159,6 +160,7 @@ deg2rad
 df
 dfs
 dtype
+edgeitems
 float128
 float16
 float32
@@ -177,6 +179,7 @@ npz
 numpy
 pcov
 popt
+printoptions
 rad2deg
 savetxt
 savez
