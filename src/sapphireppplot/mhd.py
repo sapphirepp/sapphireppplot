@@ -1522,3 +1522,107 @@ def plot_integrated_quantities_over_time(
     pvplot.save_screenshot(layout, results_folder, name, plot_properties)
 
     return solution_integrated, layout, line_chart_view, plot_properties
+
+
+def extract_slices_from_3d(
+    solution: paraview.servermanager.SourceProxy,
+    animation_scene: paraview.servermanager.Proxy,
+    results_folder: str,
+    plot_properties: PlotPropertiesMHD,
+    origin: tuple[float, float, float] = (0.0, 0.0, 0.0),
+    subfolder: str = "extracts",
+    frame_window: Optional[tuple[int, int]] = None,
+) -> tuple[
+    paraview.servermanager.SourceProxy,
+    paraview.servermanager.SourceProxy,
+    paraview.servermanager.SourceProxy,
+]:
+    """
+    Create and save slices of ``x-y``, ``x-z`` and ``y-z`` planes from a 3D solution.
+
+    Note, this function is expensive as it iterates over all time steps.
+    Note, sets the animation time to the last time step.
+
+    Parameters
+    ----------
+    solution
+        The data source.
+    animation_scene
+        The ParaView AnimationScene.
+    results_folder
+        The parent directory path where the extracts will be saved.
+    plot_properties
+        Properties of the solution.
+    origin
+        Origin of the planes.
+    subfolder
+        The subfolder to save the extracts.
+    frame_window
+        The range of timesteps to extract.
+
+    Returns
+    -------
+    slice_plane_xy : SourceProxy
+        The 2D slice of ``x-y`` plane.
+    slice_plane_xz : SourceProxy
+        The 2D slice of ``x-z`` plane.
+    slice_plane_yz : SourceProxy
+        The 2D slice of ``y-z`` plane.
+
+    See Also
+    --------
+    sapphireppplot.transform.slice_plane : Slice 2D planes form 3D solution.
+    sapphireppplot.transform.create_extractor : Create extractor for slice.
+    sapphireppplot.transform.save_extracts : Save extracts.
+    """
+    sliced_plane_xy = transform.slice_plane(
+        solution,
+        normal=(0.0, 0.0, 1.0),
+        origin=origin,
+        crinkle_slice=True,
+        plot_properties=plot_properties,
+    )
+    transform.create_extractor(
+        sliced_plane_xy,
+        "slice-xy",
+        file_format="pvtu",
+        plot_properties=plot_properties,
+    )
+
+    sliced_plane_xz = transform.slice_plane(
+        solution,
+        normal=(0.0, 1.0, 0.0),
+        origin=origin,
+        crinkle_slice=True,
+        plot_properties=plot_properties,
+    )
+    transform.create_extractor(
+        sliced_plane_xz,
+        "slice-xz",
+        file_format="pvtu",
+        plot_properties=plot_properties,
+    )
+
+    sliced_plane_yz = transform.slice_plane(
+        solution,
+        normal=(1.0, 0.0, 0.0),
+        origin=origin,
+        crinkle_slice=True,
+        plot_properties=plot_properties,
+    )
+    transform.create_extractor(
+        sliced_plane_yz,
+        "slice-yz",
+        file_format="pvtu",
+        plot_properties=plot_properties,
+    )
+
+    transform.save_extracts(
+        results_folder,
+        animation_scene,
+        subfolder=subfolder,
+        frame_window=frame_window,
+        plot_properties=plot_properties,
+    )
+
+    return sliced_plane_xy, sliced_plane_xz, sliced_plane_yz
