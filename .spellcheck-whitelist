@@ -16,6 +16,9 @@ vfp
 2d
 3d
 ath
+ax1
+ax2
+ax3
 b0
 b2
 c0
@@ -39,6 +42,7 @@ hd
 idx
 inj
 interpol
+k2
 lms
 lnp
 log10p
@@ -63,9 +67,11 @@ x0
 xx
 xy
 xz
+y0
 yx
 yy
 yz
+z0
 zx
 zy
 zz
@@ -152,8 +158,10 @@ scipy
 acos
 arange
 arccos
+arctan
 argmax
 argmin
+argsort
 argwhere
 concat
 deg2rad
@@ -161,12 +169,18 @@ df
 dfs
 dtype
 edgeitems
+fftfreq
+fftshift
 float128
 float16
 float32
 float64
 float96
+fmt
 genfromtxt
+geomspace
+irfft
+irfftn
 isnan
 lexsort
 linspace
@@ -174,6 +188,7 @@ loadtxt
 log10
 logspace
 meshgrid
+nanmax
 ndarray
 npz
 numpy
@@ -181,9 +196,14 @@ pcov
 popt
 printoptions
 rad2deg
+rfft
+rfft2
+rfftfreq
+rfftn
 savetxt
 savez
 searchsorted
+seterr
 sqrt
 
 # mpi4py
@@ -198,6 +218,7 @@ axhline
 axs
 axvline
 bbox
+cbar
 cmap
 cmesh
 colorbar
@@ -225,6 +246,7 @@ rstride
 savefig
 seaborn
 sns
+suptitle
 toolkits
 usetex
 viridis
