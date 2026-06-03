@@ -96,6 +96,7 @@ def create_extractor(
 
 def save_extracts(
     results_folder: str,
+    animation_scene: paraview.servermanager.Proxy,  # noqa: U100
     subfolder: str = "extracts",
     frame_window: Optional[tuple[int, int]] = None,
     plot_properties: Optional[PlotPropertiesVar] = None,
@@ -110,6 +111,8 @@ def save_extracts(
     ----------
     results_folder
         The parent directory path where the extracts will be saved.
+    animation_scene
+        The ParaView AnimationScene.
     subfolder
         The subfolder to save the extracts.
     frame_window
@@ -447,7 +450,7 @@ def plot_over_line(
 def slice_plane(
     solution: paraview.servermanager.SourceProxy,
     normal: tuple[float, float, float],
-    origin: Optional[tuple[float, float, float]] = None,
+    origin: tuple[float, float, float] = (0.0, 0.0, 0.0),
     crinkle_slice: bool = False,
     plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> paraview.servermanager.SourceProxy:
@@ -462,7 +465,6 @@ def slice_plane(
         Normal of the plane.
     origin
         Origin of the plane.
-        Defaults to ``(0, 0, 0)``.
     crinkle_slice
         This parameter controls whether to extract the entire cells
         that are sliced by the region
@@ -490,8 +492,6 @@ def slice_plane(
     the ``camera_direction`` parameter can be used
     to adjust set the view in the ``normal`` direction.
     """
-    if origin is None:
-        origin = (0.0, 0.0, 0.0)
     if plot_properties is None:
         plot_properties = cast(PlotPropertiesVar, PlotProperties())
 
