@@ -835,6 +835,7 @@ def plot_quantities_1d(
     quantities: Sequence[str],
     name: str,
     plot_properties: PlotPropertiesMHD,
+    x_label: str = r"$x$",
     x_range: Optional[tuple[float, float]] = None,
     value_range: Optional[tuple[float, float]] = None,
     log_x_scale: bool = False,
@@ -860,6 +861,8 @@ def plot_quantities_1d(
         Name of the layout and image/animation files.
     plot_properties
         Properties for plotting.
+    x_label
+        Label for the bottom axis of the chart.
     x_range
         Minimal (``x_range[0]``)
         and maximal (``x_range[1]``) value for the x-axes.
@@ -917,6 +920,7 @@ def plot_quantities_1d(
         layout,
         y_label=y_label,
         visible_lines=visible_lines,
+        x_label=x_label,
         x_range=x_range,
         value_range=value_range,
         log_x_scale=log_x_scale,
