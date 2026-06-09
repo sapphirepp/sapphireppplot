@@ -226,7 +226,7 @@ class PlotProperties:
     Custom axes ticks for x,y,z-axes in RenderView.
     """
 
-    time_format: str = r"Time: {time:.2f}"
+    time_format: str = r"$t = {time:.2f}$"
     """Formatted text for the time."""
     time_location: (
         Literal[
