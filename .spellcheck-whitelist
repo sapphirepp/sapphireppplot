@@ -32,6 +32,7 @@ crit
 dt
 dx
 ERK
+exc
 f0
 f1
 f2
@@ -39,10 +40,12 @@ FFT
 func
 gmf
 hd
+HLLD
 idx
 inj
 interpol
 k2
+KXRCF
 lms
 lnp
 log10p
@@ -90,11 +93,14 @@ Crinkleslice
 csv
 Cullhiddenprimitives
 Datato
+DCMAKE
 Dgeometry
 DivideCellDataByVolume
 Dontrasterizecubeaxes
+DPARAVIEW
 Drawbackground
 eps
+EqualizeViews
 FacesToRender
 Function2
 GL2PS
@@ -116,6 +122,7 @@ Polydata
 ProbeType
 pvbatch
 pvpython
+pvserver
 pvtp
 pvtu
 Rasterize3
@@ -126,6 +133,8 @@ ResultArrayName
 ResultTCoords
 Sdepthsortmethod
 servermanager
+SplitHorizontal
+SplitVertical
 Subdirectory
 svg
 timestep
@@ -140,19 +149,27 @@ xdmf
 Xdmf3
 
 # Python
+doctestplus
 endregion
 expandvars
 globals
+ipynb
+ipython
 isabs
 locals
 maxsplit
+Miniforge
+myst
 normpath
 pylint
+pytest
 readline
 region
 removeprefix
 removesuffix
-scipy
+setuptools
+venv
+virtualenv
 
 # numpy
 acos
@@ -206,9 +223,14 @@ searchsorted
 seterr
 sqrt
 
+#scipy
+prominences
+scipy
+
 # mpi4py
 MPI
 mpi4py
+openmpi
 
 # matplotlib
 antialiased
@@ -219,12 +241,14 @@ axs
 axvline
 bbox
 cbar
+clim
 cmap
 cmesh
 colorbar
 cstride
 facecolors
 figsize
+frameon
 gouraud
 linestyle
 linestyles
@@ -245,6 +269,7 @@ RGBA
 rstride
 savefig
 seaborn
+sharex
 sns
 suptitle
 toolkits
@@ -263,12 +288,17 @@ zlabel
 zlim
 
 # sphinx
+autoclass
 autodoc
+automodule
 autosummary
+copybutton
 extlinks
 favicon
 magick
+nbsphinx
 rtype
+toctree
 typehints
 
 #mypy
@@ -281,12 +311,18 @@ Alfvén
 colorblind
 courant
 Courant
+florian
+Florian
+Institut
 Iroshnikov
+Kernphysik
 Kolmogorov
 Kraichnan
 minmod
+orszag
 Orszag
 positivity
+Postamble
 postfix
 subfolder
 unscaled
