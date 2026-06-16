@@ -17,7 +17,7 @@ def read_parameter_file(
     """
     Read contents of a ``.prm`` parameter file.
 
-    This function utiles the ParaView CSV reader
+    This function utilises the ParaView CSV reader
     to allow reading parameter files on a remote data server.
     It can also be used to read any text file.
 
@@ -40,30 +40,36 @@ def read_parameter_file(
         If the parameter file is found in the ``results_folder``.
     """
     search_pattern = os.path.join(results_folder, file_name)
-    prm_file = paraview.util.Glob(search_pattern)
-    if not prm_file:
-        raise FileNotFoundError(f"No file found matching '{search_pattern}'")
+    prm_file = [search_pattern]
+    # prm_file = paraview.util.Glob(search_pattern)
+    # if not prm_file:
+    #     raise FileNotFoundError(f"No file found matching '{search_pattern}'")
     print(f"Read file '{search_pattern}'")
 
     # Use a CSVReader in order to read the text file
-    prm_reader = ps.CSVReader(
-        registrationName=file_name,
-        FileName=prm_file,
-        DetectNumericColumns=0,
-        UseStringDelimiter=0,
-        HaveHeaders=0,
-        FieldDelimiterCharacters="",
-    )
+    try:
+        prm_reader = ps.CSVReader(
+            registrationName=file_name,
+            FileName=prm_file,
+            DetectNumericColumns=0,
+            UseStringDelimiter=0,
+            HaveHeaders=0,
+            FieldDelimiterCharacters="",
+        )
 
-    prm_data = paraview.servermanager.Fetch(prm_reader)
-    col = prm_data.GetColumn(0)
+        prm_data = paraview.servermanager.Fetch(prm_reader)
+        col = prm_data.GetColumn(0)
 
-    prm_lines: list[str] = [""] * col.GetNumberOfValues()
-    for i in range(col.GetNumberOfValues()):
-        prm_lines[i] = col.GetValue(i)
+        prm_lines: list[str] = [""] * col.GetNumberOfValues()
+        for i in range(col.GetNumberOfValues()):
+            prm_lines[i] = col.GetValue(i)
 
-    ps.Delete(prm_reader)
-    return prm_lines
+        ps.Delete(prm_reader)
+        return prm_lines
+    except Exception as exc:
+        raise FileNotFoundError(
+            f"No file found matching '{search_pattern}'"
+        ) from exc
 
 
 def load_csv(
@@ -485,7 +491,6 @@ def load_solution(
         Defaults to the last time step.
     parameter_file_name
         File name of the parameter file including file extension.
-        Loading of parameters can sometimes be very slow.
         To skip, set ``parameter_file_name = None``.
 
     Returns
@@ -619,7 +624,6 @@ def load_extract(
         Defaults to the last time step.
     parameter_file_name
         File name of the parameter file including file extension.
-        Loading of parameters can sometimes be very slow.
         To skip, set ``parameter_file_name = None``.
 
     Returns
