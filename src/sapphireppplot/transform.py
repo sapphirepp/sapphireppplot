@@ -15,7 +15,7 @@ PlotPropertiesVar = TypeVar("PlotPropertiesVar", bound=PlotProperties)
 def create_extractor(
     solution: paraview.servermanager.SourceProxy,
     filename: str,
-    file_format: Literal["pvtp", "pvtu"] = "pvtp",
+    file_format: Literal["pvtu", "pvtp"] = "pvtu",
     plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> paraview.servermanager.Proxy:
     """
@@ -37,7 +37,7 @@ def create_extractor(
         The base name for the extracts (without extension).
     file_format
         Format to save the extract to.
-        Use "pvtu" for ``crinkle_slice=True``.
+        Use "pvtp" for sliced planes with ``crinkle_slice=False``.
     plot_properties
         Properties of the solution.
 
@@ -59,6 +59,10 @@ def create_extractor(
         ParaView ExtractSurface filter.
     :pv:`paraview.simple.CreateExtractor <paraview.simple.__init__.html#paraview.simple.__init__.CreateExtractor>` :
         ParaView filter to save extracts to files.
+    :py:attr:`sapphireppplot.plot_properties.PlotProperties.extracts_compressor` :
+        Compressor type.
+    :py:attr:`sapphireppplot.plot_properties.PlotProperties.extracts_compression_level` :
+        Compression level.
     """
     if plot_properties is None:
         plot_properties = cast(PlotPropertiesVar, PlotProperties())
@@ -84,12 +88,15 @@ def create_extractor(
     )
     extractor.Enable = 1
     extractor.Writer.FileName = filename + r"_{timestep:06d}." + file_format
-    extractor.Writer.FileName
     extractor.Writer.UseSubdirectory = 0
     # extractor.Trigger.Set(
     #     UseEndTimeStep=0,
     #     Frequency=1,
     # )
+    extractor.Writer.CompressorType = plot_properties.extracts_compressor
+    extractor.Writer.CompressionLevel = (
+        plot_properties.extracts_compression_level
+    )
 
     return extractor
 
@@ -451,7 +458,7 @@ def slice_plane(
     solution: paraview.servermanager.SourceProxy,
     normal: tuple[float, float, float],
     origin: tuple[float, float, float] = (0.0, 0.0, 0.0),
-    crinkle_slice: bool = False,
+    crinkle_slice: bool = True,
     plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> paraview.servermanager.SourceProxy:
     """

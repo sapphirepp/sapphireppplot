@@ -100,6 +100,14 @@ class PlotProperties:
 
     extracts_frame_stride: int = 1
     """Frame stride for the saving extracts."""
+    extracts_compressor: Literal["None", "LZ4", "ZLib", "LZMA"] = "ZLib"
+    """Compressor type for extracts."""
+    extracts_compression_level: int = 5
+    """
+    Compression level for extracts.
+
+    A value between 1 (fastest write) to 9 (smallest filesize).
+    """
 
     text_color: ColorType = field(default_factory=lambda: (0.5, 0.5, 0.5))
     """The text color for labels and legends."""
