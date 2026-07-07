@@ -217,7 +217,7 @@ def compute_kinetic_energy(
     Compute kinetic energy ``E_kin`` for the solution.
 
     .. math::
-        E_{\rm kin} = \frac{p^2}{2 \rho}
+        \mathcal{E}_{\rm kin} = \frac{p^2}{2 \rho}
 
     Parameters
     ----------
@@ -240,7 +240,7 @@ def compute_kinetic_energy(
     plot_properties = plot_properties_in.copy()
     plot_properties.quantity_names["E_kin"] = "E_kin"
     if plot_properties.prefix_numeric:  # also add non prefixed label
-        plot_properties.labels["E_kin"] = r"$E_{\rm kin}$"
+        plot_properties.labels["E_kin"] = r"$\mathcal{E}_{\rm kin}$"
 
     prefix_list = [""]
     label_postfix_list = [""]
@@ -305,7 +305,7 @@ def compute_sound_speed(
     Compute sound speed ``a_s`` for the solution.
 
     .. math::
-        a_s = \sqrt{\frac{\gamma P}{\rho}}
+        a_{\mathrm{s}} = \sqrt{\frac{\gamma P}{\rho}}
 
     Parameters
     ----------
@@ -330,7 +330,7 @@ def compute_sound_speed(
     plot_properties = plot_properties_in.copy()
     plot_properties.quantity_names["a_s"] = "a_s"
     if plot_properties.prefix_numeric:  # also add non prefixed label
-        plot_properties.labels["a_s"] = r"$a_{s}$"
+        plot_properties.labels["a_s"] = r"$a_{\mathrm{s}}$"
 
     prefix_list = [""]
     label_postfix_list = [""]
@@ -389,7 +389,7 @@ def compute_alfven_speed(
     Compute Alfvén speed ``c_A`` for the solution.
 
     .. math::
-        c_A = \sqrt{\frac{b^2}{\rho}}
+        c_{\mathrm{A}} = \sqrt{\frac{b^2}{\rho}}
 
     Parameters
     ----------
@@ -412,7 +412,7 @@ def compute_alfven_speed(
     plot_properties = plot_properties_in.copy()
     plot_properties.quantity_names["c_A"] = "c_A"
     if plot_properties.prefix_numeric:  # also add non prefixed label
-        plot_properties.labels["c_A"] = r"$c_{A}$"
+        plot_properties.labels["c_A"] = r"$c_{\mathrm{A}}$"
 
     prefix_list = [""]
     label_postfix_list = [""]
@@ -476,9 +476,9 @@ def compute_mach_number(
     Compute Mach number ``M`` for the solution.
 
     .. math::
-        M = \frac{\|u\|}{a_s}
+        M = \frac{\|u\|}{a_{\mathrm{s}}}
 
-    with :math:`a_s` the sound speed.
+    with :math:`a_{\mathrm{s}}` the sound speed.
 
     Parameters
     ----------
@@ -568,9 +568,9 @@ def compute_alfven_mach_number(
     Compute Alfvén Mach number ``M_A`` for the solution.
 
     .. math::
-        M_A = \frac{\|u\|}{c_A}
+        M_{\mathrm{A}} = \frac{\|u\|}{c_{\mathrm{A}}}
 
-    with :math:`c_A` the Alfvén speed.
+    with :math:`c_{\mathrm{A}}` the Alfvén speed.
 
     Parameters
     ----------
@@ -593,7 +593,7 @@ def compute_alfven_mach_number(
     plot_properties = plot_properties_in.copy()
     plot_properties.quantity_names["M_A"] = "M_A"
     if plot_properties.prefix_numeric:  # also add non prefixed label
-        plot_properties.labels["M_A"] = r"$M_{A}$"
+        plot_properties.labels["M_A"] = r"$M_{\mathrm{A}}$"
 
     prefix_list = [""]
     label_postfix_list = [""]
@@ -751,7 +751,7 @@ def compute_normalized_magnetic_divergence(
     Compute ``normalized_magnetic_divergence`` for the solution.
 
     It is calculated using the following formula:
-    :math:`\frac{|\nabla \cdot B|}{\|B\|} \Delta x`.
+    :math:`\frac{|\nabla \cdot \mathbf{b}|}{\|\mathbf{b}\|} \Delta x`.
 
 
     Parameters
@@ -816,7 +816,11 @@ def compute_normalized_magnetic_divergence(
         f" + {plot_properties.quantity_name('b_z', prefix)}^2)"
     )
     formula = f"abs({quantity_in}) / sqrt({formula_b2}) * {delta_x}"
-    label = rf"$\mid\nabla \cdot B\mid{label_postfix} / \|B\| \Delta x$"
+    label = (
+        r"$\mid\nabla \cdot \mathbf{b}\mid"
+        + label_postfix
+        + r" / \|\mathbf{b}\| \Delta x$"
+    )
 
     calculator, plot_properties = transform.calculator(
         solution,
