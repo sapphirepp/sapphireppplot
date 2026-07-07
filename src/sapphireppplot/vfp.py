@@ -601,7 +601,9 @@ def plot_f_lms_1d(
             ]
 
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     line_chart_view = pvplot.plot_line_chart_view(
         solution,
         layout,
@@ -691,7 +693,9 @@ def plot_f_lms_2d(
         prefix = "numeric_"
 
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     render_view = pvplot.plot_render_view_2d(
         solution,
         layout,
@@ -778,7 +782,9 @@ def plot_f_lms_3d(
         prefix = "numeric_"
 
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     render_view = pvplot.plot_render_view_3d(
         solution,
         layout,
@@ -938,7 +944,9 @@ def plot_f_lms_over_x(
     )
 
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     line_chart_view = pvplot.plot_line_chart_view(
         plot_over_line_x,
         layout,
@@ -1084,7 +1092,9 @@ def plot_f_lms_over_p(
     )
 
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     line_chart_view = pvplot.plot_line_chart_view(
         plot_over_line_p,
         layout,
@@ -1159,7 +1169,9 @@ def plot_phase_space_surface(
     sapphireppplot.pvplot.display_time : Display time.
     """
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     render_view = pvplot.plot_render_view_2d(
         solution,
         layout,
@@ -1241,7 +1253,9 @@ def plot_elevated_phase_space_surface(
     # plot_properties.representation_type = "StructuredGridRepresentation"
 
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     render_view = pvplot.plot_render_view_3d(
         warp_by_scalar,
         layout,
@@ -1331,7 +1345,9 @@ def plot_phase_space_spherical_density_map(
     sapphireppplot.pvplot.display_time : Display time.
     """
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     render_view = pvplot.plot_render_view_3d(
         solution,
         layout,

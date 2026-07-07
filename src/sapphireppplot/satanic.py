@@ -292,7 +292,9 @@ def plot_f_2d(
     sapphireppplot.pvplot.display_time : Display time.
     """
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     render_view = pvplot.plot_render_view_2d(
         solution,
         layout,
@@ -367,7 +369,9 @@ def plot_f_3d(
     sapphireppplot.pvplot.display_time : Display time.
     """
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     render_view = pvplot.plot_render_view_3d(
         solution,
         layout,

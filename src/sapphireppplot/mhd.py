@@ -1,6 +1,6 @@
 """Module for MHD specific plotting."""
 
-from typing import Optional, Literal
+from typing import cast, Optional, Literal
 from collections.abc import Sequence, Iterable
 import os
 import math
@@ -918,7 +918,9 @@ def plot_quantities_1d(
             ]
 
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     line_chart_view = pvplot.plot_line_chart_view(
         solution,
         layout,
@@ -995,7 +997,7 @@ def plot_split_view_1d(
     sapphireppplot.pvplot.plot_line_chart_view : Plot LineChartView.
     """
     # create new layout object
-    layout = ps.CreateLayout(name)
+    layout = cast(paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name))
 
     # split cell
     layout.SplitHorizontal(0, 0.5)
@@ -1125,7 +1127,9 @@ def plot_quantity_2d(
         prefix = "numeric_"
 
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     render_view = pvplot.plot_render_view_2d(
         solution,
         layout,
@@ -1210,7 +1214,9 @@ def plot_quantity_3d(
         prefix = "numeric_"
 
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     render_view = pvplot.plot_render_view_3d(
         solution,
         layout,
@@ -1375,7 +1381,9 @@ def plot_quantities_over_x(
     )
 
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     line_chart_view = pvplot.plot_line_chart_view(
         plot_over_line_x,
         layout,
@@ -1512,7 +1520,9 @@ def plot_integrated_quantities_over_time(
         t_array_name = "scaled_t_axes"
 
     if not layout:
-        layout = ps.CreateLayout(name)
+        layout = cast(
+            paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
+        )
     line_chart_view = pvplot.plot_line_chart_view(
         solution_integrated,
         layout,
