@@ -2,6 +2,7 @@
 
 from typing import Optional, Literal
 import os
+from matplotlib.typing import ColorType
 import matplotlib.colors
 import paraview.simple as ps
 import paraview.servermanager
@@ -557,6 +558,66 @@ def show_overlay_2d(
     # endregion
 
     return render_view
+
+
+def show_outline(
+    source: paraview.servermanager.SourceProxy,
+    render_view: paraview.servermanager.Proxy,
+    color: Optional[ColorType] = None,
+    line_width: float = 2.0,
+    plot_properties: PlotProperties = PlotProperties(),
+) -> paraview.servermanager.SourceProxy:
+    """
+    Show outlines of the solution a 2D/3D render view.
+
+    This can be used to highlight the grid axes more.
+
+    Parameters
+    ----------
+    source
+        The source that should be outlined.
+    render_view
+        ParaView 2D render view in which to show the outline.
+    color
+        Color for the outline.
+        Defaults to the grid color.
+    line_width:
+        Line width for the outline.
+    plot_properties
+        Properties for plotting like grid color.
+
+    Returns
+    -------
+    outline : SourceProxy
+        The configured outline.
+
+    See Also
+    --------
+    sapphireppplot.plot_properties.PlotProperties.grid_color : Color for grid.
+    """
+    if color is None:
+        color = plot_properties.grid_color
+    # set active view
+    ps.SetActiveView(render_view)
+
+    # create outline
+    outline = ps.Outline(registrationName="Outline", Input=source)
+
+    # show outline in view
+    outline_display = ps.Show(outline, render_view, "GeometryRepresentation")
+    outline_display.Representation = "Outline"
+    # update the view to ensure updated data information
+    render_view.Update()
+
+    # set color
+    outline_display.AmbientColor = matplotlib.colors.to_rgb(color)
+    outline_display.DiffuseColor = matplotlib.colors.to_rgb(color)
+
+    # set line width and ensure visibility
+    outline_display.LineWidth = line_width
+    outline_display.RenderLinesAsTubes = 1
+
+    return outline
 
 
 def display_text(
