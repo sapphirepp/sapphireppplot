@@ -15,7 +15,7 @@ PlotPropertiesVar = TypeVar("PlotPropertiesVar", bound=PlotProperties)
 def create_extractor(
     solution: paraview.servermanager.SourceProxy,
     filename: str,
-    file_format: Literal["pvtu", "pvtp"] = "pvtu",
+    file_format: Literal["pvtu", "pvtp"] = "pvtp",
     plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> paraview.servermanager.Proxy:
     """
@@ -458,7 +458,7 @@ def slice_plane(
     solution: paraview.servermanager.SourceProxy,
     normal: tuple[float, float, float],
     origin: tuple[float, float, float] = (0.0, 0.0, 0.0),
-    crinkle_slice: bool = True,
+    crinkle_slice: bool = False,
     plot_properties: Optional[PlotPropertiesVar] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
