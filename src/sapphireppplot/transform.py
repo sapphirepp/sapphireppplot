@@ -206,7 +206,7 @@ def calculator(
         plot_properties.series_names += [quantity]
     plot_properties.labels[quantity] = label
 
-    calculator_source.UpdatePipeline()
+    calculator_source.UpdatePipelineInformation()
 
     return calculator_source, plot_properties
 
