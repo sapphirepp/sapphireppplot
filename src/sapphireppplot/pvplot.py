@@ -876,7 +876,14 @@ def save_animation(
         The base name for the screenshot file (without extension).
     plot_properties
         Additional properties like background transparency.
+
+    See Also
+    --------
+    sapphireppplot.plot_properties.PlotProperties.animation_frame_stride:
+        Animation frame stride, skip if ``-1``.
     """
+    if plot_properties.animation_frame_stride == -1:
+        return
     file_path = os.path.join(results_folder, filename + ".png")
     print(f"Save animation '{file_path}'")
     ps.SaveAnimation(

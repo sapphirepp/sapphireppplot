@@ -96,7 +96,10 @@ class PlotProperties:
     For ``.gif`` using a transparent background is possible.
     """
     animation_frame_stride: int = 1
-    """Frame stride for the animation snapshots."""
+    """
+    Frame stride for the animation snapshots.
+    Use ``animation_frame_stride = -1`` to disable animations.
+    """
 
     extracts_frame_stride: int = 1
     """Frame stride for the saving extracts."""
