@@ -1,6 +1,6 @@
 .. image:: /_static/logo.png
 
-Sapphire++ — Plot
+Sapphire++ – Plot
 =================
 
 .. image:: https://img.shields.io/badge/GitHub-sapphirepp--sapphireppplot-blue?logo=github
@@ -27,7 +27,7 @@ An extensive
 `ParaView Python Introduction <https://sapphirepp.org/latest/paraview-python.html>`_
 is provided on the Sapphire++ website.
 
-An introduction to Sapphire++ — Plot is given in the
+An introduction to Sapphire++ – Plot is given in the
 :doc:`examples/plot_quick_start`
 and the :doc:`examples/jupyter_tutorial`.
 More example scripts can be found in the 

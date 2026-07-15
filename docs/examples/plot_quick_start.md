@@ -41,7 +41,7 @@ in a single place.
 Here, we use the
 {py:class}`PlotPropertiesVFP <sapphireppplot.plot_properties_vfp.PlotPropertiesVFP>` version,
 which automatically sets labels for `f_lms` and axes
-for results produced by the Sapphire++ — VFP module.
+for results produced by the Sapphire++ – VFP module.
 
 For the quick-start example,
 the reduced phase space is of dimension `2`,
