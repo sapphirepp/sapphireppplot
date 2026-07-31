@@ -1,0 +1,26 @@
+# Style optimized for Jupyter notebooks
+figure.dpi: 100
+
+font.size: 12
+axes.titlesize: 12
+axes.labelsize: 12
+legend.title_fontsize: 12
+legend.fontsize: 11
+xtick.labelsize: 11
+ytick.labelsize: 11
+
+axes.linewidth: 1.25
+grid.linewidth: 1.0
+lines.linewidth: 1.5
+lines.markersize: 6.0
+patch.linewidth: 1.0
+
+xtick.major.width: 1.25
+ytick.major.width: 1.25
+xtick.minor.width: 1.0
+ytick.minor.width: 1.0
+
+xtick.major.size: 6.0
+ytick.major.size: 6.0
+xtick.minor.size: 4.0
+ytick.minor.size: 4.0

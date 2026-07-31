@@ -1,0 +1,53 @@
+# Base style, mostly following matplotlib defaults
+figure.figsize: 6.4, 4.8
+figure.constrained_layout.use: True
+figure.dpi: 300  # matplotlib default is 100
+savefig.bbox: tight
+savefig.format: png
+
+axes.grid: False
+xtick.bottom: True
+ytick.left: True
+
+legend.frameon: True
+
+text.usetex: False
+text.latex.preamble:
+font.family: sans-serif
+font.style: normal
+font.serif: DejaVu Serif
+font.sans-serif: DejaVu Sans
+font.monospace: DejaVu Sans Mono
+
+# matplotlib defaults:
+# font.size: 10
+# axes.titlesize: large
+# axes.labelsize: medium
+# legend.title_fontsize: None
+# legend.fontsize: medium
+# xtick.labelsize: medium
+# ytick.labelsize: medium
+
+font.size: 11
+axes.titlesize: 11
+axes.labelsize: 11
+legend.title_fontsize: 11
+legend.fontsize: 10
+xtick.labelsize: 10
+ytick.labelsize: 10
+
+axes.linewidth: 0.8
+grid.linewidth: 0.8
+lines.linewidth: 1.5
+lines.markersize: 6.0
+patch.linewidth: 1.0
+
+xtick.major.width: 0.8
+ytick.major.width: 0.8
+xtick.minor.width: 0.6
+ytick.minor.width: 0.6
+
+xtick.major.size: 3.5
+ytick.major.size: 3.5
+xtick.minor.size: 2.0
+ytick.minor.size: 2.0

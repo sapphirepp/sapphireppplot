@@ -50,6 +50,7 @@ lms
 lnp
 log10p
 LSERK
+MNRAS
 nu0
 num
 p0
@@ -248,18 +249,23 @@ colorbar
 cstride
 facecolors
 figsize
+fontsize
 frameon
 gouraud
+gridspec
+labelsize
 linestyle
 linestyles
 linewidth
 loc
 loglog
 mappable
+markersize
 matplot
 matplotlib
 mpl
 mplot3d
+mplstyle
 Params
 pcolormesh
 plt
@@ -272,6 +278,7 @@ seaborn
 sharex
 sns
 suptitle
+titlesize
 toolkits
 usetex
 viridis
@@ -280,10 +287,12 @@ vmin
 xlabel
 xlim
 xscale
+xtick
 xytext
 ylabel
 ylim
 yscale
+ytick
 zlabel
 zlim
 
