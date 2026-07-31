@@ -201,3 +201,29 @@ def sapphirepp_colors() -> list[ColorType]:
         "#031330",
         "#5c6577",
     ]
+
+
+def colorblind_colors() -> list[ColorType]:
+    """
+    Get a list of colorblind friendly colors for line plots.
+
+    Uses the seaborn ``colorblind`` color palette,
+    see `seaborn documentation <https://seaborn.pydata.org/generated/seaborn.color_palette.html>`_.
+
+    Returns
+    -------
+    sapphirepp_colors
+        A list of ten colorblind friendly colors.
+    """
+    return [
+        "#0173b2",
+        "#de8f05",
+        "#029e73",
+        "#d55e00",
+        "#cc78bc",
+        "#ca9161",
+        "#fbafe4",
+        "#949494",
+        "#ece133",
+        "#56b4e9",
+    ]
