@@ -1,0 +1,35 @@
+# Style for MNRAS article
+figure.figsize: 3.26, 2.5  # matched to single \columnwidth
+figure.dpi: 600
+savefig.format: pdf
+
+legend.frameon: False
+
+text.usetex: True
+text.latex.preamble: \usepackage{newtxtext,newtxmath}
+font.family: serif
+font.serif: TeX Gyre Termes X, Times, DejaVu Serif
+
+font.size: 8
+axes.titlesize: 8
+axes.labelsize: 8
+legend.title_fontsize: 8
+legend.fontsize: 7
+xtick.labelsize: 7
+ytick.labelsize: 7
+
+axes.linewidth: 0.6
+grid.linewidth: 0.6
+lines.linewidth: 1.0
+lines.markersize: 4.0
+patch.linewidth: 0.8
+
+xtick.major.width: 0.6
+ytick.major.width: 0.6
+xtick.minor.width: 0.4
+ytick.minor.width: 0.4
+
+xtick.major.size: 2.5
+ytick.major.size: 2.5
+xtick.minor.size: 1.5
+ytick.minor.size: 1.5

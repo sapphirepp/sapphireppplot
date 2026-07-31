@@ -616,7 +616,7 @@ class PlotProperties:
 
     def set_style(
         self,
-        style: Optional[Literal["None", "notebook"]] = None,
+        style: Optional[Literal["None", "notebook", "MNRAS"]] = None,
         preview_size_1d_inches: Optional[tuple[float, float]] = None,
         preview_size_2d_inches: Optional[tuple[float, float]] = None,
         preview_size_3d_inches: Optional[tuple[float, float]] = None,
@@ -636,6 +636,7 @@ class PlotProperties:
 
             - ``None``: No style is applied, but scaling can be used
             - ``notebook``: Style optimised for Jupyter notebooks
+            - ``MNRAS``: Style for MNRAS article
         preview_size_1d_inches
             Preview window size in 1D in inches.
             Uses a fixed ``dpi`` value to ensure the correct size
@@ -694,6 +695,18 @@ class PlotProperties:
                 "color_bar_thickness": 10,
                 "default_line_width": 1.25,
             },
+            "MNRAS": {
+                "font_family": "Times",
+                "text_color": "white",
+                "label_size": 7,
+                "title_size": 8,
+                "text_size": 8,
+                "grid_color": "black",
+                "color_bar_range_labels": True,
+                "color_bar_range_label_format": "%-#6.0g",
+                "color_bar_thickness": 6,
+                "default_line_width": 1.0,
+            },
         }
 
         if style in plot_properties_styles.keys():
@@ -706,6 +719,7 @@ class PlotProperties:
 
         default_preview_size = {
             "notebook": (6.4, 4.3),
+            "MNRAS": (3.26, 2.5),
         }
         if preview_size_1d_inches is None:
             preview_size_1d_inches = default_preview_size[style]
