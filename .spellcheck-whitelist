@@ -157,6 +157,8 @@ globals
 ipynb
 ipython
 isabs
+iterdir
+joinpath
 locals
 maxsplit
 Miniforge
@@ -247,6 +249,7 @@ cmap
 cmesh
 colorbar
 cstride
+cycler
 facecolors
 figsize
 fontsize
@@ -312,6 +315,9 @@ typehints
 
 #mypy
 mypy
+
+# pylint
+toplevel
 
 # Words
 advection

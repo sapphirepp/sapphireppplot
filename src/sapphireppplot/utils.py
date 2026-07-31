@@ -2,9 +2,11 @@
 
 import sys
 import os
-from typing import cast, Any, Dict
+from typing import cast, Optional, Any, Dict, Literal
 from collections.abc import Sequence
+from importlib.resources import files
 from matplotlib.typing import ColorType
+from cycler import cycler
 import numpy as np
 
 # ParamDict = Dict[str, Union[str, "ParamDict"]] # Confuses autodoc_typehints
@@ -227,3 +229,86 @@ def colorblind_colors() -> list[ColorType]:
         "#ece133",
         "#56b4e9",
     ]
+
+
+def set_matplotlib_style(
+    style: Literal["notebook"] = "notebook",
+    font_scale: float = 1.0,
+    color_palette: (
+        Literal["colorblind", "sapphirepp"] | list[ColorType]
+    ) = "colorblind",
+    custom_rc: Optional[dict[str, Any]] = None,
+) -> None:
+    """
+    Set ``matplotlib.rcParams`` according to a style.
+
+    This can be used to set the style for a specific journal.
+
+    Parameters
+    ----------
+    style
+        Style of to use.
+
+        - ``notebook``: Style optimised for Jupyter notebooks
+    font_scale
+        Scaling factor for the font in titles, labels and legends.
+    color_palette
+        Color pallet to use for line colors.
+
+        - ``colorblind``: :py:func:`colorblind_colors`
+        - ``sapphirepp``: :py:func:`sapphirepp_colors`
+    custom_rc
+        Custom overwrite of ``rcParams``, applied after scaling.
+    """
+    import matplotlib as mpl  # pylint: disable=import-outside-toplevel
+    import matplotlib.pyplot as plt  # pylint: disable=import-outside-toplevel
+
+    base = files("sapphireppplot.styles").joinpath("base.mplstyle")
+    if not base.is_file():
+        raise FileNotFoundError(f"Base style not found: {base}")
+    theme = files("sapphireppplot.styles").joinpath(f"{style}.mplstyle")
+    if not theme.is_file():
+        available = [
+            f.name.replace(".mplstyle", "")
+            for f in files("sapphireppplot.styles").iterdir()
+            if f.name.endswith(".mplstyle") and f.name != "base.mplstyle"
+        ]
+        raise FileNotFoundError(
+            f"Style '{style}' not found. Available styles: {available}"
+        )
+    # Styles can also be used via: plt.style.use("sapphireppplot.styles.base")
+    plt.style.use([str(base), str(theme)])
+
+    colors = None
+    color_palettes: dict[str, list[ColorType]] = {
+        "colorblind": colorblind_colors(),
+        "sapphirepp": sapphirepp_colors(),
+    }
+    if isinstance(color_palette, list):
+        colors = color_palette
+    elif color_palette in color_palettes:
+        colors = color_palettes[color_palette]
+    else:
+        raise KeyError(
+            f"Color palette '{color_palette}' not found. "
+            f"Available color palettes: {list(color_palettes.keys())}"
+        )
+    if colors is not None:
+        mpl.rcParams["axes.prop_cycle"] = cycler(color=colors)
+
+    if font_scale != 1.0:
+        for key in (
+            "font.size",
+            "axes.titlesize",
+            "axes.labelsize",
+            "legend.title_fontsize",
+            "legend.fontsize",
+            "xtick.labelsize",
+            "ytick.labelsize",
+        ):
+            # Do not scale if 'medium', 'small', ...
+            if isinstance(mpl.rcParams[key], float):
+                mpl.rcParams[key] *= font_scale
+
+    if custom_rc:
+        mpl.rcParams.update(custom_rc)  # type: ignore
