@@ -43,14 +43,14 @@ class PlotProperties:
     This default will change to ``False`` in a future version.
     """
 
-    preview_size_1d: tuple[float, float] = field(
+    preview_size_1d: tuple[int, int] = field(
         default_factory=lambda: (1280, 720)
     )
     """
     Preview window size in 1D.
     Use ``preview_size = (0, 0)`` to deactivate preview mode.
     """
-    preview_size_2d: tuple[float, float] = field(
+    preview_size_2d: tuple[int, int] = field(
         default_factory=lambda: (1024, 1024)
     )
     """Preview window size in 2D."""
@@ -67,7 +67,7 @@ class PlotProperties:
     :pv:`paraview.simple.ResetCamera <paraview.simple.html#paraview.simple.ResetCamera>` :
         ParaView method to reset camera view.
     """
-    preview_size_3d: tuple[float, float] = field(
+    preview_size_3d: tuple[int, int] = field(
         default_factory=lambda: (1024, 1024)
     )
     """Preview window size in 3D."""
@@ -613,3 +613,156 @@ class PlotProperties:
         color_bar.ScalarBarThickness = self.color_bar_thickness
 
         return True
+
+    def set_style(
+        self,
+        style: Optional[Literal["None", "notebook"]] = None,
+        preview_size_1d_inches: Optional[tuple[float, float]] = None,
+        preview_size_2d_inches: Optional[tuple[float, float]] = None,
+        preview_size_3d_inches: Optional[tuple[float, float]] = None,
+        font_scale: float = 1.0,
+        global_scale: float = 1.0,
+        custom_style: Optional[dict[str, Any]] = None,
+    ) -> Self:
+        """
+        Set the ``PlotProperties`` according to a style.
+
+        This can be used to set the style for a specific journal.
+
+        Parameters
+        ----------
+        style
+            Style of to use.
+
+            - ``None``: No style is applied, but scaling can be used
+            - ``notebook``: Style optimised for Jupyter notebooks
+        preview_size_1d_inches
+            Preview window size in 1D in inches.
+            Uses a fixed ``dpi`` value to ensure the correct size
+            when exporting the view as a pdf.
+        preview_size_2d_inches
+            Preview window size in 2D in inches.
+        preview_size_3d_inches
+            Preview window size in 2D in inches.
+        font_scale
+            Scaling factor for the font in titles, labels and legends.
+        global_scale
+            Global scaling of the figures.
+            This scales the preview size, text size and line widths.
+            It can be used to artificially increase the ``dpi``.
+        custom_style
+            Custom overwrite of PlotProperties, applied after scaling.
+
+        Returns
+        -------
+        PlotProperties
+            Copy of the PlotProperties with the applied style.
+
+        See Also
+        --------
+        sapphireppplot.utils.set_matplotlib_style:
+            Set the style for  ``matplotlib`` plots.
+        sapphireppplot.pvplot.save_view:
+            Save views as e.g. ``pdf`` with the applied style
+            and matching ``dpi``.
+        """
+        dpi = 72  # ParaView fixes the dpi when exporting as pdf
+        if style is None:
+            style = "None"
+            if preview_size_1d_inches is None:
+                preview_size_1d_inches = (
+                    self.preview_size_1d[0] / dpi,
+                    self.preview_size_1d[1] / dpi,
+                )
+            if preview_size_2d_inches is None:
+                preview_size_2d_inches = (
+                    self.preview_size_2d[0] / dpi,
+                    self.preview_size_2d[1] / dpi,
+                )
+            if preview_size_3d_inches is None:
+                preview_size_3d_inches = (
+                    self.preview_size_3d[0] / dpi,
+                    self.preview_size_3d[1] / dpi,
+                )
+
+        plot_properties_styles = {
+            "None": {},
+            "notebook": {
+                "label_size": 11,
+                "title_size": 12,
+                "text_size": 12,
+                "color_bar_thickness": 10,
+                "default_line_width": 1.25,
+            },
+        }
+
+        if style in plot_properties_styles.keys():
+            plot_properties_style = plot_properties_styles[style]
+        else:
+            raise KeyError(
+                f"Style '{style}' not found. "
+                f"Available style: {list(plot_properties_styles.keys())}"
+            )
+
+        default_preview_size = {
+            "notebook": (6.4, 4.3),
+        }
+        if preview_size_1d_inches is None:
+            preview_size_1d_inches = default_preview_size[style]
+        if preview_size_2d_inches is None:
+            preview_size_2d_inches = default_preview_size[style]
+        if preview_size_3d_inches is None:
+            preview_size_3d_inches = default_preview_size[style]
+
+        plot_properties_style["preview_size_1d"] = (  # type: ignore
+            int(preview_size_1d_inches[0] * dpi * global_scale),
+            int(preview_size_1d_inches[1] * dpi * global_scale),
+        )
+        plot_properties_style["preview_size_2d"] = (  # type: ignore
+            int(preview_size_2d_inches[0] * dpi * global_scale),
+            int(preview_size_2d_inches[1] * dpi * global_scale),
+        )
+        plot_properties_style["preview_size_3d"] = (  # type: ignore
+            int(preview_size_3d_inches[0] * dpi * global_scale),
+            int(preview_size_3d_inches[1] * dpi * global_scale),
+        )
+
+        if font_scale != 1.0:
+            for key in (
+                "label_size",
+                "title_size",
+                "text_size",
+            ):
+                plot_properties_style[key] = int(  # type: ignore
+                    font_scale
+                    * plot_properties_style.get(  # type: ignore
+                        key, getattr(self, key)
+                    )
+                )
+
+        if global_scale != 1.0:
+            for key in ("default_line_width",):
+                plot_properties_style[key] = (  # type: ignore
+                    global_scale
+                    * plot_properties_style.get(  # type: ignore
+                        key, getattr(self, key)
+                    )
+                )
+            for key in (
+                "label_size",
+                "title_size",
+                "text_size",
+                "legend_symbol_width",
+                "color_bar_thickness",
+            ):
+                plot_properties_style[key] = int(  # type: ignore
+                    global_scale
+                    * plot_properties_style.get(  # type: ignore
+                        key, getattr(self, key)
+                    )
+                )
+
+        if custom_style:
+            plot_properties_style.update(custom_style)  # type: ignore
+
+        return self.replace(**plot_properties_style)  # type: ignore

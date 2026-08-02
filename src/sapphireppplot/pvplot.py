@@ -919,7 +919,9 @@ def save_view(
     filename
         The base name for the screenshot file (without extension).
     save_format
-        Save format, e.g. ``svg`` for vector graphics and ``csv`` for table.
+        Save format,
+        e.g. ``svg`` or ``pdf for vector graphics
+        and ``csv`` for table.
     fix_axes_titles
         In RenderView plots the axes titles often overlap with the axes labels
         because trailing whitespaces in the title are removed.
@@ -936,7 +938,10 @@ def save_view(
 
     See Also
     --------
-    :pv:`paraview.simple.ExportView <paraview.simple.html#paraview.simple.ExportView>`
+    :pv:`paraview.simple.ExportView <paraview.simple.html#paraview.simple.ExportView>` :
+        ParaView export view function.
+    :py:func:`sapphireppplot.plot_properties.PlotProperties.set_style` :
+        Set style to ensure consistent ``dpi``.
     """
     if fix_axes_titles:
         view.AxesGrid.YTitle += r"$_{_{_{_{_{_{_{_{_{_{.}}}}}}}}}}$"

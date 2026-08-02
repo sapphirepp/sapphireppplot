@@ -259,6 +259,11 @@ def set_matplotlib_style(
         - ``sapphirepp``: :py:func:`sapphirepp_colors`
     custom_rc
         Custom overwrite of ``rcParams``, applied after scaling.
+
+    See Also
+    --------
+    sapphireppplot.plot_properties.PlotProperties.set_style:
+        Set style for ParaView plots.
     """
     import matplotlib as mpl  # pylint: disable=import-outside-toplevel
     import matplotlib.pyplot as plt  # pylint: disable=import-outside-toplevel
