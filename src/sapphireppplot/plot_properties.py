@@ -112,6 +112,8 @@ class PlotProperties:
     A value between 1 (fastest write) to 9 (smallest filesize).
     """
 
+    font_family: Literal["Arial", "Courier", "Times"] = "Arial"
+    """The font family for labels and legends."""
     text_color: ColorType = field(default_factory=lambda: (0.5, 0.5, 0.5))
     """The text color for labels and legends."""
     label_size: int = 18
@@ -327,6 +329,14 @@ class PlotProperties:
         line_chart_view
             ParaView LineChartView object.
         """
+        # Set font family
+        line_chart_view.ChartTitleFontFamily = self.font_family
+        line_chart_view.LeftAxisTitleFontFamily = self.font_family
+        line_chart_view.BottomAxisTitleFontFamily = self.font_family
+        line_chart_view.LegendFontFamily = self.font_family
+        line_chart_view.LeftAxisLabelFontFamily = self.font_family
+        line_chart_view.BottomAxisLabelFontFamily = self.font_family
+        # Set default font size
         line_chart_view.ChartTitleFontSize = self.title_size
         line_chart_view.LeftAxisTitleFontSize = self.text_size
         line_chart_view.BottomAxisTitleFontSize = self.text_size
@@ -456,6 +466,13 @@ class PlotProperties:
         # Only show Axes Min-X//Y/Z
         render_view.AxesGrid.AxesToLabel = 7
         # render_view.AxesGrid.FacesToRender = 7
+        # Set font family
+        render_view.AxesGrid.XTitleFontFamily = self.font_family
+        render_view.AxesGrid.YTitleFontFamily = self.font_family
+        render_view.AxesGrid.ZTitleFontFamily = self.font_family
+        render_view.AxesGrid.XLabelFontFamily = self.font_family
+        render_view.AxesGrid.YLabelFontFamily = self.font_family
+        render_view.AxesGrid.ZLabelFontFamily = self.font_family
         # Set default font size
         render_view.AxesGrid.XTitleFontSize = self.text_size
         render_view.AxesGrid.YTitleFontSize = self.text_size
@@ -530,6 +547,13 @@ class PlotProperties:
         render_view.AxesGrid.AxesToLabel = 63
         # render_view.AxesGrid.FacesToRender = 63
         render_view.AxesGrid.LabelUniqueEdgesOnly = 1
+        # Set font family
+        render_view.AxesGrid.XTitleFontFamily = self.font_family
+        render_view.AxesGrid.YTitleFontFamily = self.font_family
+        render_view.AxesGrid.ZTitleFontFamily = self.font_family
+        render_view.AxesGrid.XLabelFontFamily = self.font_family
+        render_view.AxesGrid.YLabelFontFamily = self.font_family
+        render_view.AxesGrid.ZLabelFontFamily = self.font_family
         # Set default font size
         render_view.AxesGrid.XTitleFontSize = self.text_size
         render_view.AxesGrid.YTitleFontSize = self.text_size
@@ -583,6 +607,8 @@ class PlotProperties:
         bool
             ``True`` if color bar is visible, ``False`` otherwise.
         """
+        color_bar.TitleFontFamily = self.font_family
+        color_bar.LabelFontFamily = self.font_family
         color_bar.TitleFontSize = self.text_size
         color_bar.LabelFontSize = self.label_size
         color_bar.TitleColor = matplotlib.colors.to_rgb(self.text_color)
