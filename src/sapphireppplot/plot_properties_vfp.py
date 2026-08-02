@@ -266,19 +266,19 @@ class PlotPropertiesVFP(PlotProperties):
         prefix_list = [""]
         label_postfix_list = [""]
         line_style_list = ["1"]
-        line_width_list = [2.0]
+        line_width_list = [self.default_line_width]
         if self.prefix_numeric:
             prefix_list = ["numeric_"]
         if self.project:
             prefix_list += ["project_"]
             label_postfix_list += [self.annotation_project_interpol]
             line_style_list += ["2"]
-            line_width_list += [4.0]
+            line_width_list += [2 * self.default_line_width]
         if self.interpol:
             prefix_list += ["interpol_"]
             label_postfix_list += [self.annotation_project_interpol]
             line_style_list += ["2"]
-            line_width_list += [4.0]
+            line_width_list += [2 * self.default_line_width]
 
         for i, prefix in enumerate(prefix_list):
             label_postfix = label_postfix_list[i]

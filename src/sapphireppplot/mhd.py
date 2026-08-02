@@ -245,19 +245,19 @@ def compute_kinetic_energy(
     prefix_list = [""]
     label_postfix_list = [""]
     line_style_list = ["1"]
-    line_width_list = [2.0]
+    line_width_list = [plot_properties.default_line_width]
     if plot_properties.prefix_numeric:
         prefix_list = ["numeric_"]
     if plot_properties.project:
         prefix_list += ["project_"]
         label_postfix_list += [plot_properties.annotation_project_interpol]
         line_style_list += ["2"]
-        line_width_list += [4.0]
+        line_width_list += [2 * plot_properties.default_line_width]
     if plot_properties.interpol:
         prefix_list += ["interpol_"]
         label_postfix_list += [plot_properties.annotation_project_interpol]
         line_style_list += ["2"]
-        line_width_list += [4.0]
+        line_width_list += [2 * plot_properties.default_line_width]
 
     calculator = solution
     for i, prefix in enumerate(prefix_list):
@@ -335,19 +335,19 @@ def compute_sound_speed(
     prefix_list = [""]
     label_postfix_list = [""]
     line_style_list = ["1"]
-    line_width_list = [2.0]
+    line_width_list = [plot_properties.default_line_width]
     if plot_properties.prefix_numeric:
         prefix_list = ["numeric_"]
     if plot_properties.project:
         prefix_list += ["project_"]
         label_postfix_list += [plot_properties.annotation_project_interpol]
         line_style_list += ["2"]
-        line_width_list += [4.0]
+        line_width_list += [2 * plot_properties.default_line_width]
     if plot_properties.interpol:
         prefix_list += ["interpol_"]
         label_postfix_list += [plot_properties.annotation_project_interpol]
         line_style_list += ["2"]
-        line_width_list += [4.0]
+        line_width_list += [2 * plot_properties.default_line_width]
 
     calculator = solution
     for i, prefix in enumerate(prefix_list):
@@ -417,19 +417,19 @@ def compute_alfven_speed(
     prefix_list = [""]
     label_postfix_list = [""]
     line_style_list = ["1"]
-    line_width_list = [2.0]
+    line_width_list = [plot_properties.default_line_width]
     if plot_properties.prefix_numeric:
         prefix_list = ["numeric_"]
     if plot_properties.project:
         prefix_list += ["project_"]
         label_postfix_list += [plot_properties.annotation_project_interpol]
         line_style_list += ["2"]
-        line_width_list += [4.0]
+        line_width_list += [2 * plot_properties.default_line_width]
     if plot_properties.interpol:
         prefix_list += ["interpol_"]
         label_postfix_list += [plot_properties.annotation_project_interpol]
         line_style_list += ["2"]
-        line_width_list += [4.0]
+        line_width_list += [2 * plot_properties.default_line_width]
 
     calculator = solution
     for i, prefix in enumerate(prefix_list):
@@ -508,19 +508,19 @@ def compute_mach_number(
     prefix_list = [""]
     label_postfix_list = [""]
     line_style_list = ["1"]
-    line_width_list = [2.0]
+    line_width_list = [plot_properties.default_line_width]
     if plot_properties.prefix_numeric:
         prefix_list = ["numeric_"]
     if plot_properties.project:
         prefix_list += ["project_"]
         label_postfix_list += [plot_properties.annotation_project_interpol]
         line_style_list += ["2"]
-        line_width_list += [4.0]
+        line_width_list += [2 * plot_properties.default_line_width]
     if plot_properties.interpol:
         prefix_list += ["interpol_"]
         label_postfix_list += [plot_properties.annotation_project_interpol]
         line_style_list += ["2"]
-        line_width_list += [4.0]
+        line_width_list += [2 * plot_properties.default_line_width]
 
     calculator = solution
     for i, prefix in enumerate(prefix_list):
@@ -598,19 +598,19 @@ def compute_alfven_mach_number(
     prefix_list = [""]
     label_postfix_list = [""]
     line_style_list = ["1"]
-    line_width_list = [2.0]
+    line_width_list = [plot_properties.default_line_width]
     if plot_properties.prefix_numeric:
         prefix_list = ["numeric_"]
     if plot_properties.project:
         prefix_list += ["project_"]
         label_postfix_list += [plot_properties.annotation_project_interpol]
         line_style_list += ["2"]
-        line_width_list += [4.0]
+        line_width_list += [2 * plot_properties.default_line_width]
     if plot_properties.interpol:
         prefix_list += ["interpol_"]
         label_postfix_list += [plot_properties.annotation_project_interpol]
         line_style_list += ["2"]
-        line_width_list += [4.0]
+        line_width_list += [2 * plot_properties.default_line_width]
 
     calculator = solution
     for i, prefix in enumerate(prefix_list):
@@ -694,19 +694,19 @@ def compute_magnetic_pressure(
     prefix_list = [""]
     label_postfix_list = [""]
     line_style_list = ["1"]
-    line_width_list = [2.0]
+    line_width_list = [plot_properties.default_line_width]
     if plot_properties.prefix_numeric:
         prefix_list = ["numeric_"]
     if plot_properties.project:
         prefix_list += ["project_"]
         label_postfix_list += [plot_properties.annotation_project_interpol]
         line_style_list += ["2"]
-        line_width_list += [4.0]
+        line_width_list += [2 * plot_properties.default_line_width]
     if plot_properties.interpol:
         prefix_list += ["interpol_"]
         label_postfix_list += [plot_properties.annotation_project_interpol]
         line_style_list += ["2"]
-        line_width_list += [4.0]
+        line_width_list += [2 * plot_properties.default_line_width]
 
     calculator = solution
     for i, prefix in enumerate(prefix_list):

@@ -564,7 +564,7 @@ def show_outline(
     source: paraview.servermanager.SourceProxy,
     render_view: paraview.servermanager.Proxy,
     color: Optional[ColorType] = None,
-    line_width: float = 2.0,
+    line_width: Optional[float] = None,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.SourceProxy:
     """
@@ -583,6 +583,7 @@ def show_outline(
         Defaults to the grid color.
     line_width:
         Line width for the outline.
+        Defaults to the default line width.
     plot_properties
         Properties for plotting like grid color.
 
@@ -594,9 +595,12 @@ def show_outline(
     See Also
     --------
     sapphireppplot.plot_properties.PlotProperties.grid_color : Color for grid.
+    sapphireppplot.plot_properties.PlotProperties.default_line_width : Default line width.
     """
     if color is None:
         color = plot_properties.grid_color
+    if line_width is None:
+        line_width = plot_properties.default_line_width
     # set active view
     ps.SetActiveView(render_view)
 

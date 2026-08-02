@@ -142,6 +142,8 @@ class PlotProperties:
     """
     line_widths: dict[str, float] = field(default_factory=dict)
     """Line widths or thickness for the series quantities in the LineChartView."""
+    default_line_width: float = 2.0
+    """Default line width or thickness in the LineChartView."""
 
     legend_location: (
         Literal[
@@ -388,28 +390,15 @@ class PlotProperties:
         """
         if self.labels:
             flat_dict = []
-            default_keys = list(
-                set(self.series_names) - set(self.labels.keys())
-            )
-            for key in default_keys:
-                flat_dict += [key, key]
-            for key, label in self.labels.items():
+            for key in self.series_names:
+                label = self.labels.get(key, key)
                 flat_dict += [key, label]
             solution_display.SeriesLabel = flat_dict
         if self.line_colors:
             flat_dict = []
             default_color = "black"
-            default_keys = list(
-                set(self.series_names) - set(self.line_colors.keys())
-            )
-            for key in default_keys:
-                flat_dict += [
-                    key,
-                    str(matplotlib.colors.to_rgb(default_color)[0]),
-                    str(matplotlib.colors.to_rgb(default_color)[1]),
-                    str(matplotlib.colors.to_rgb(default_color)[2]),
-                ]
-            for key, color in self.line_colors.items():
+            for key in self.series_names:
+                color = self.line_colors.get(key, default_color)
                 flat_dict += [
                     key,
                     str(matplotlib.colors.to_rgb(color)[0]),
@@ -420,23 +409,14 @@ class PlotProperties:
         if self.line_styles:
             flat_dict = []
             default_style = "1"
-            default_keys = list(
-                set(self.series_names) - set(self.line_styles.keys())
-            )
-            for key in default_keys:
-                flat_dict += [key, default_style]
-            for key, line_style in self.line_styles.items():
+            for key in self.series_names:
+                line_style = self.line_styles.get(key, default_style)
                 flat_dict += [key, line_style]
             solution_display.SeriesLineStyle = flat_dict
         if self.line_widths:
             flat_dict = []
-            default_thickness = 2.0
-            default_keys = list(
-                set(self.series_names) - set(self.line_widths.keys())
-            )
-            for key in default_keys:
-                flat_dict += [key, str(default_thickness)]
-            for key, line_width in self.line_widths.items():
+            for key in self.series_names:
+                line_width = self.line_widths.get(key, self.default_line_width)
                 flat_dict += [key, str(line_width)]
             solution_display.SeriesLineThickness = flat_dict
 
