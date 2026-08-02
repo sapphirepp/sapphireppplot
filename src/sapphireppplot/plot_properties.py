@@ -213,6 +213,8 @@ class PlotProperties:
     Size of the color bar.
     Set to ``0`` to hide the color bar.
     """
+    color_bar_thickness: int = 16
+    """Thickness of the color bar."""
 
     axes_scale: tuple[float, float, float] = field(
         default_factory=lambda: (1.0, 1.0, 1.0)
@@ -602,5 +604,6 @@ class PlotProperties:
                 color_bar.WindowLocation = "Any Location"
                 color_bar.Position = list(self.color_bar_position)
         color_bar.ScalarBarLength = self.color_bar_length
+        color_bar.ScalarBarThickness = self.color_bar_thickness
 
         return True
