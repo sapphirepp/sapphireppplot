@@ -197,6 +197,8 @@ class PlotProperties:
     The format string for the color bar range labels,
     e.g. ``r"%-#6.1e"``.
     """
+    color_bar_orientation: Literal["Vertical", "Horizontal"] = "Vertical"
+    """Orientation of the color bar."""
     color_bar_position: (
         Literal[
             "Upper Left Corner",
@@ -603,6 +605,8 @@ class PlotProperties:
             return False
 
         # change scalar bar placement
+        color_bar.AutoOrient = False
+        color_bar.Orientation = self.color_bar_orientation
         match self.color_bar_position:
             case str():
                 color_bar.WindowLocation = self.color_bar_position
