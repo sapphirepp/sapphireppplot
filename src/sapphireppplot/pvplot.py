@@ -469,6 +469,7 @@ def show_overlay_2d(
     color_bar_visible: bool = False,
     value_range: Optional[tuple[float, float]] = None,
     log_scale: bool = False,
+    line_width: Optional[float] = None,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> paraview.servermanager.Proxy:
     """
@@ -490,6 +491,9 @@ def show_overlay_2d(
         and maximal (``value_range[1]``) value for the color bar.
     log_scale
         Use a logarithmic color scale?
+    line_width:
+        Line width for the outline.
+        Defaults to *half* the default line width.
     plot_properties
         Properties for plotting like the labels.
 
@@ -502,7 +506,10 @@ def show_overlay_2d(
     --------
     sapphireppplot.transform.contour_lines : Create contour lines.
     sapphireppplot.transform.stream_tracer : Create stream tracer.
+    sapphireppplot.plot_properties.PlotProperties.default_line_width : Default line width.
     """
+    if line_width is None:
+        line_width = 0.5 * plot_properties.default_line_width
     # set active view
     ps.SetActiveView(render_view)
 
@@ -510,6 +517,8 @@ def show_overlay_2d(
     solution_display = ps.Show(
         source, render_view, plot_properties.representation_type
     )
+    # set line_width
+    solution_display.LineWidth = line_width
     # update the view to ensure updated data information
     render_view.Update()
 
