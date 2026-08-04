@@ -707,7 +707,7 @@ class PlotProperties:
                 "text_size": 8,
                 "grid_color": "black",
                 "color_bar_range_labels": True,
-                "color_bar_range_label_format": "%-#6.0g",
+                "color_bar_range_label_format": "%g",
                 "color_bar_thickness": 6,
                 "default_line_width": 1.0,
             },
