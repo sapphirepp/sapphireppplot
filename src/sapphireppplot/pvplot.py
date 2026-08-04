@@ -981,9 +981,9 @@ def save_view(
                 view=view,
                 location=PARAVIEW_DATA_SERVER_LOCATION,
                 Plottitle=filename,
+                Rendertextaspaths=False,
                 # Rasterize3Dgeometry=True,
                 # Dontrasterizecubeaxes=True,
-                # Rendertextaspaths=True,
                 # Drawbackground=True,  # The background is always drawn on the OpenGL2 backend for GL2PS exports.
                 # Cullhiddenprimitives=True,
                 # Linewidthscalingfactor=0.714,
