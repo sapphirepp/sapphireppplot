@@ -283,7 +283,7 @@ def compute_kinetic_energy(
             calculator,
             quantity=plot_properties.quantity_name("E_kin", prefix),
             formula=formula,
-            label=r"$E_{\rm kin" + tmp_postfix + r"}$",
+            label=r"$\mathcal{E}_{\rm kin" + tmp_postfix + r"}$",
             plot_properties_in=plot_properties,
         )
         plot_properties.line_styles[
