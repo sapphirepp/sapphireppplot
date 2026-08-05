@@ -240,7 +240,7 @@ def plot_render_view_2d(
         vec_component = "Z"
         base_quantity = quantity.removesuffix("_Z")
 
-    # set scalar coloring
+    # set scalar colouring
     ps.ColorBy(
         solution_display,
         (plot_properties.data_type, base_quantity, vec_component),
@@ -414,7 +414,7 @@ def plot_render_view_3d(
         vec_component = "Z"
         base_quantity = quantity.removesuffix("_Z")
 
-    # set scalar coloring
+    # set scalar colouring
     ps.ColorBy(
         solution_display,
         (plot_properties.data_type, base_quantity, vec_component),
@@ -522,7 +522,7 @@ def show_overlay_2d(
     # update the view to ensure updated data information
     render_view.Update()
 
-    # set scalar coloring
+    # set scalar colouring
     ps.ColorBy(solution_display, (plot_properties.data_type, quantity))
 
     if quantity is None:
@@ -659,7 +659,7 @@ def display_text(
     text
         Text to display.
     location
-        Text postion.
+        Text position.
         Either descriptive string or coordinates.
     plot_properties
         Properties for plotting like the color.
