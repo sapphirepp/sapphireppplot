@@ -5,7 +5,7 @@ We recommend using virtual environments so packages are properly linked to ParaV
 For this we present two methods:
 
 - [Installation](#installation)
-  - [Use Conda to install ParaView](#use-conda-to-install-paraview)
+  - [Use Conda to install ParaView (recommended)](#use-conda-to-install-paraview-recommended)
   - [Link package to an existing ParaView installation using `venv`](#link-package-to-an-existing-paraview-installation-using-venv)
 
 :::{note}
@@ -14,7 +14,7 @@ If you need to visualize large simulations,
 we recommend linking to an existing ParaView build with MPI support.
 :::
 
-## Use Conda to install ParaView
+## Use Conda to install ParaView (recommended)
 
 If you do not have [Conda](https://docs.conda.io)/[conda-forge](https://conda-forge.org)/[Miniforge](https://github.com/conda-forge/miniforge),
 install Miniforge:
@@ -52,20 +52,23 @@ source ~/miniforge3/bin/activate
 
 After this, scripts should work from the terminal with `python`, `pvpython`, or `pvbatch`,
 and inside the ParaView GUI.
-To run ParaView using the Conda environment:
+Before running `python` or launching the ParaView GUI,
+always activate the Conda environment:
 
 ```shell
 conda activate sapplot
-paraview
+python script.py args  # run script
+paraview               # launch GUI
 ```
 
 ## Link package to an existing ParaView installation using `venv`
 
-This assumes you already have [ParaView](https://www.paraview.org)
-(and [`pvpython`](https://docs.paraview.org/en/latest/UsersGuide/introduction.html#getting-started-with-pvpython))
+This assumes you already have recent [ParaView](https://www.paraview.org) version
+(> v6.0.1)
+and [`pvpython`](https://docs.paraview.org/en/latest/UsersGuide/introduction.html#getting-started-with-pvpython)
 installed.
-Install it from the [ParaView download page](https://www.paraview.org/download/) if needed.
-Or follow the instructions to
+Install it from the [ParaView download page](https://www.paraview.org/download/) if needed,
+or follow the instructions to
 [compile ParaView from source](tips.md).
 
 The Python version used by the virtual environment must match the Python used by `pvpython`.
@@ -101,6 +104,13 @@ pvpython -c "import sys; print(sys.executable, sys.version)"
 Run scripts with `pvbatch` or start the GUI, pointing ParaView to the `venv`:
 
 ```shell
-pvbatch --venv=/path/to/venv/sapplot script.py args
-paraview --venv=/path/to/venv/sapplot
+pvbatch --venv=/path/to/venv/sapplot script.py args  # run script
+paraview --venv=/path/to/venv/sapplot                # launch GUI
 ```
+
+:::{note}
+Do not run scripts with the virtual environment's `python` binary directly
+— it does not provide ParaView's compiled Python extensions.
+Always use `pvpython`/`pvbatch` or start ParaView with `--venv`
+so ParaView can load the environment.
+:::
