@@ -42,6 +42,7 @@ gmf
 hd
 HLLD
 idx
+ij
 inj
 interpol
 k2
@@ -62,10 +63,13 @@ Param
 perp
 perp2
 prm
+pts
 rg
 rms
+sgn
 tmp
 u2
+vals
 vec
 x0
 xx
@@ -204,6 +208,7 @@ geomspace
 irfft
 irfftn
 isnan
+leggauss
 lexsort
 linspace
 loadtxt
@@ -229,6 +234,8 @@ seterr
 sqrt
 
 #scipy
+epsrel
+nquad
 prominences
 scipy
 
@@ -332,6 +339,7 @@ Courant
 florian
 Florian
 Institut
+integrand
 Iroshnikov
 Kernphysik
 Kolmogorov
@@ -342,5 +350,6 @@ Orszag
 positivity
 Postamble
 postfix
+precompute
 subfolder
 unscaled
