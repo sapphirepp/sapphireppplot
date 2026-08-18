@@ -684,6 +684,7 @@ def display_text(
         text_display = ps.Show(text_proxy, view, "TextSourceRepresentation")
 
     # Properties modified on text_display
+    text_display.FontFamily = plot_properties.font_family
     text_display.FontSize = plot_properties.text_size
     text_display.Color = matplotlib.colors.to_rgb(plot_properties.text_color)
     if is_line_char_view:
@@ -742,6 +743,7 @@ def display_time(
         time_display = ps.Show(annotate_time, view, "TextSourceRepresentation")
 
     # Properties modified on time_display
+    time_display.FontFamily = plot_properties.font_family
     time_display.FontSize = plot_properties.label_size
     time_display.Color = matplotlib.colors.to_rgb(plot_properties.text_color)
     if is_line_char_view:
