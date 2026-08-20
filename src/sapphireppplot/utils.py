@@ -237,6 +237,7 @@ def set_matplotlib_style(
     color_palette: (
         Literal["colorblind", "sapphirepp"] | list[ColorType]
     ) = "colorblind",
+    disable_tex: bool = False,
     custom_rc: Optional[dict[str, Any]] = None,
 ) -> None:
     """
@@ -258,6 +259,13 @@ def set_matplotlib_style(
 
         - ``colorblind``: :py:func:`colorblind_colors`
         - ``sapphirepp``: :py:func:`sapphirepp_colors`
+    disable_tex
+        Some styles use LaTeX to render text.
+        This can lead to rendering errors
+        if no working LaTeX installation is provided
+        or required packages are missing.
+        To avoid this isse, you can disable LaTeX rendering.
+        Note however, that this can drastically alter the style.
     custom_rc
         Custom overwrite of ``rcParams``, applied after scaling.
 
@@ -315,6 +323,9 @@ def set_matplotlib_style(
             # Do not scale if 'medium', 'small', ...
             if isinstance(mpl.rcParams[key], float):
                 mpl.rcParams[key] *= font_scale
+
+    if disable_tex:
+        mpl.rcParams.update({"text.usetex": False, "text.latex.preamble": ""})
 
     if custom_rc:
         mpl.rcParams.update(custom_rc)  # type: ignore
