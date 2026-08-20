@@ -182,20 +182,20 @@ class PlotProperties:
     grid_color: ColorType = field(default_factory=lambda: (0.5, 0.5, 0.5))
     """The color of grid axes and legend for 2D/3D plots."""
 
-    color_map: str = "Viridis (matplotlib)"
+    color_map: str = "Viridis"
     """Select a color map for the color bar."""
     color_bar_label_format: str = ""
     """
     The format string for the color bar labels,
-    e.g. ``r"%-#6.3g"``.
+    e.g. ``r"%-#6.3g"``. #TODO: Change?
     Use automatic formatting if empty.
     """
     color_bar_range_labels: bool = True
     """Show range labels of the color bar?"""
-    color_bar_range_label_format: str = r"%-#6.1e"
+    color_bar_range_label_format: str = r"{:<#6.1e}"
     """
     The format string for the color bar range labels,
-    e.g. ``r"%-#6.1e"``.
+    e.g. ``r"{:<#6.1e}"``.
     """
     color_bar_orientation: Literal["Vertical", "Horizontal"] = "Vertical"
     """Orientation of the color bar."""
@@ -707,7 +707,7 @@ class PlotProperties:
                 "text_size": 8,
                 "grid_color": "black",
                 "color_bar_range_labels": True,
-                "color_bar_range_label_format": "%g",
+                "color_bar_range_label_format": "%g",  # TODO: Check
                 "color_bar_thickness": 6,
                 "default_line_width": 1.0,
             },
