@@ -179,20 +179,21 @@ class PlotProperties:
     grid_color: ColorType = field(default_factory=lambda: (0.5, 0.5, 0.5))
     """The color of grid axes and legend for 2D/3D plots."""
 
-    color_map: str = "Viridis (matplotlib)"
+    color_map: str = "Viridis"
     """Select a color map for the color bar."""
     color_bar_label_format: str = ""
     """
     The format string for the color bar labels,
-    e.g. ``r"%-#6.3g"``.
+    using the ``fmt`` syntax,
+    e.g. ``r"{:<#6.3g}"``.
     Use automatic formatting if empty.
     """
     color_bar_range_labels: bool = True
     """Show range labels of the color bar?"""
-    color_bar_range_label_format: str = r"%-#6.1e"
+    color_bar_range_label_format: str = r"{:<#6.1e}"
     """
     The format string for the color bar range labels,
-    e.g. ``r"%-#6.1e"``.
+    e.g. ``r"{:<#6.1e}"``.
     """
     color_bar_orientation: Literal["Vertical", "Horizontal"] = "Vertical"
     """Orientation of the color bar."""
@@ -243,7 +244,10 @@ class PlotProperties:
     """
 
     time_format: str = r"$t = {time:.2f}$"
-    """Formatted text for the time."""
+    """
+    Formatted text for the time,
+    using the ``fmt`` syntax.
+    """
     time_location: (
         Literal[
             "Upper Left Corner",
@@ -481,6 +485,13 @@ class PlotProperties:
         render_view.AxesGrid.XLabelFontSize = self.label_size
         render_view.AxesGrid.YLabelFontSize = self.label_size
         render_view.AxesGrid.ZLabelFontSize = self.label_size
+        # Use non-bold fonts
+        render_view.AxesGrid.XTitleBold = False
+        render_view.AxesGrid.YTitleBold = False
+        render_view.AxesGrid.ZTitleBold = False
+        render_view.AxesGrid.XLabelBold = False
+        render_view.AxesGrid.YLabelBold = False
+        render_view.AxesGrid.ZLabelBold = False
         # Use gray color for label for good visibility in both light and dark mode
         render_view.AxesGrid.XTitleColor = matplotlib.colors.to_rgb(
             self.grid_color
@@ -562,6 +573,13 @@ class PlotProperties:
         render_view.AxesGrid.XLabelFontSize = self.label_size
         render_view.AxesGrid.YLabelFontSize = self.label_size
         render_view.AxesGrid.ZLabelFontSize = self.label_size
+        # Use non-bold fonts
+        render_view.AxesGrid.XTitleBold = False
+        render_view.AxesGrid.YTitleBold = False
+        render_view.AxesGrid.ZTitleBold = False
+        render_view.AxesGrid.XLabelBold = False
+        render_view.AxesGrid.YLabelBold = False
+        render_view.AxesGrid.ZLabelBold = False
         # Use gray color for label for good visibility in both light and dark mode
         render_view.AxesGrid.XTitleColor = matplotlib.colors.to_rgb(
             self.grid_color
@@ -736,7 +754,7 @@ class PlotProperties:
                 "text_size": 8,
                 "grid_color": "black",
                 "color_bar_range_labels": True,
-                "color_bar_range_label_format": "%g",
+                "color_bar_range_label_format": r"{:g}",
                 "color_bar_thickness": 6,
                 "default_line_width": 1.0,
             },
@@ -748,7 +766,7 @@ class PlotProperties:
                 "text_size": 25,
                 "grid_color": "black",
                 "color_bar_range_labels": True,
-                "color_bar_range_label_format": "%g",
+                "color_bar_range_label_format": r"{:g}",
                 "color_bar_thickness": 20,
                 "default_line_width": 4.0,
             },
@@ -760,7 +778,7 @@ class PlotProperties:
                 "text_size": 11,
                 "grid_color": "black",
                 "color_bar_range_labels": True,
-                "color_bar_range_label_format": "%g",
+                "color_bar_range_label_format": r"{:g}",
                 "color_bar_thickness": 12,
                 "default_line_width": 2.0,
             },
