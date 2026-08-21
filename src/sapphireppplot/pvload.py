@@ -190,10 +190,10 @@ def load_solution_vtk(
         registrationName=base_file_name,
         FileNames=vtk_files,
     )
-    solution.UpdatePipelineInformation()
     # if load_arrays:
     #     solution.PointArrayStatus = load_arrays
     # solution.TimeArray = "TIME"
+    solution.UpdatePipelineInformation()
     return solution
 
 
@@ -237,10 +237,10 @@ def load_solution_vtu(
         registrationName=base_file_name,
         FileName=vtu_files,
     )
-    solution.UpdatePipelineInformation()
     if load_arrays:
         solution.PointArrayStatus = load_arrays
     solution.TimeArray = "TIME"
+    solution.UpdatePipelineInformation()
     return solution
 
 
@@ -288,10 +288,10 @@ def load_solution_pvtu(
         registrationName=base_file_name,
         FileName=pvtu_files,
     )
-    solution.UpdatePipelineInformation()
     if load_arrays:
         solution.PointArrayStatus = load_arrays
     solution.TimeArray = "TIME"
+    solution.UpdatePipelineInformation()
     return solution
 
 
@@ -335,10 +335,10 @@ def load_solution_pvtp(
         registrationName=base_file_name,
         FileName=pvtp_files,
     )
-    solution.UpdatePipelineInformation()
     if load_arrays:
         solution.PointArrayStatus = load_arrays
     solution.TimeArray = "TIME"
+    solution.UpdatePipelineInformation()
     return solution
 
 
@@ -386,10 +386,10 @@ def load_solution_hdf5_with_xdmf(
         registrationName=base_file_name,
         FileName=xdmf_file,
     )
-    solution.UpdatePipelineInformation()
     if load_arrays:
         solution.PointArrays = load_arrays
     # solution.TimeArray = "TIME"
+    solution.UpdatePipelineInformation()
     return solution
 
 
@@ -435,7 +435,7 @@ def scale_time_steps(
     solution_temporal_scaled.PreShift = 0
     solution_temporal_scaled.PostShift = t_start
 
-    # solution_temporal_scaled.UpdatePipelineInformation()
+    solution_temporal_scaled.UpdatePipelineInformation()
     solution_temporal_scaled.UpdatePipeline()
 
     if animation_scene is not None:
