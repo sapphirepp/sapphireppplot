@@ -1,4 +1,5 @@
 # sapphireppplot
+beamerposter
 isosurfaces
 mhd
 numpyify
@@ -328,6 +329,9 @@ mypy
 
 # pylint
 toplevel
+
+# sapphirepp-results
+gamma26
 
 # Words
 advection

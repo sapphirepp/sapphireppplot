@@ -622,7 +622,14 @@ class PlotProperties:
 
     def set_style(
         self,
-        style: Optional[Literal["None", "notebook", "MNRAS"]] = None,
+        style: Optional[
+            Literal[
+                "None",
+                "notebook",
+                "MNRAS",
+                "beamerposter_A0",
+            ]
+        ] = None,
         preview_size_1d_inches: Optional[tuple[float, float]] = None,
         preview_size_2d_inches: Optional[tuple[float, float]] = None,
         preview_size_3d_inches: Optional[tuple[float, float]] = None,
@@ -643,6 +650,7 @@ class PlotProperties:
             - ``None``: No style is applied, but scaling can be used
             - ``notebook``: Style optimised for Jupyter notebooks
             - ``MNRAS``: Style for MNRAS article
+            - ``beamerposter_A0``: Style for A0 sized beamerposter
         preview_size_1d_inches
             Preview window size in 1D in inches.
             Uses a fixed ``dpi`` value to ensure the correct size
@@ -713,6 +721,18 @@ class PlotProperties:
                 "color_bar_thickness": 6,
                 "default_line_width": 1.0,
             },
+            "beamerposter_A0": {
+                "font_family": "Arial",
+                "text_color": "black",
+                "label_size": 21,
+                "title_size": 25,
+                "text_size": 25,
+                "grid_color": "black",
+                "color_bar_range_labels": True,
+                "color_bar_range_label_format": "%g",
+                "color_bar_thickness": 20,
+                "default_line_width": 4.0,
+            },
         }
 
         if style in plot_properties_styles.keys():
@@ -726,6 +746,7 @@ class PlotProperties:
         default_preview_size = {
             "notebook": (6.4, 4.3),
             "MNRAS": (3.26, 2.5),
+            "beamerposter_A0": (14.8, 10.0),
         }
         if preview_size_1d_inches is None:
             preview_size_1d_inches = default_preview_size[style]

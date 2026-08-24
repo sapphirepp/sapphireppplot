@@ -1,0 +1,35 @@
+# Style for A0 sized beamerposter
+figure.figsize: 14.8, 10.0  # matched to \columnwidth for two column layout
+figure.dpi: 600
+savefig.format: pdf
+savefig.transparent: True
+
+legend.frameon: True
+
+text.usetex: True
+text.latex.preamble:
+font.family: sans-serif
+font.sans-serif: Latin Modern, DejaVu Sans Mono
+
+font.size: 25
+axes.titlesize: 25
+axes.labelsize: 25
+legend.title_fontsize: 25
+legend.fontsize: 21
+xtick.labelsize: 21
+ytick.labelsize: 21
+
+axes.linewidth: 3.0
+grid.linewidth: 3.0
+lines.linewidth: 4.0
+lines.markersize: 18.0
+patch.linewidth: 3.0
+xtick.major.width: 3.0
+ytick.major.width: 3.0
+xtick.minor.width: 2.0
+ytick.minor.width: 2.0
+
+xtick.major.size: 12.0
+ytick.major.size: 12.0
+xtick.minor.size: 7.0
+ytick.minor.size: 7.0

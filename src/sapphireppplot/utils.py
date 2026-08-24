@@ -232,7 +232,11 @@ def colorblind_colors() -> list[ColorType]:
 
 
 def set_matplotlib_style(
-    style: Literal["notebook", "MNRAS"] = "notebook",
+    style: Literal[
+        "notebook",
+        "MNRAS",
+        "beamerposter_A0",
+    ] = "notebook",
     font_scale: float = 1.0,
     color_palette: (
         Literal["colorblind", "sapphirepp"] | list[ColorType]
@@ -252,6 +256,7 @@ def set_matplotlib_style(
 
         - ``notebook``: Style optimised for Jupyter notebooks
         - ``MNRAS``: Style for MNRAS article
+        - ``beamerposter_A0``: Style for A0 sized beamerposter
     font_scale
         Scaling factor for the font in titles, labels and legends.
     color_palette
