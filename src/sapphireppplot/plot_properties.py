@@ -674,7 +674,7 @@ class PlotProperties:
             and matching ``dpi``.
         """
         dpi = 72  # ParaView fixes the dpi when exporting as pdf
-        if style is None:
+        if style is None or style == "None":
             style = "None"
             if preview_size_1d_inches is None:
                 preview_size_1d_inches = (
@@ -703,7 +703,7 @@ class PlotProperties:
             },
             "MNRAS": {
                 "font_family": "Times",
-                "text_color": "white",
+                "text_color": "black",
                 "label_size": 7,
                 "title_size": 8,
                 "text_size": 8,

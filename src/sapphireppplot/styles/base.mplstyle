@@ -4,6 +4,7 @@ figure.constrained_layout.use: True
 figure.dpi: 300  # matplotlib default is 100
 savefig.bbox: tight
 savefig.format: png
+savefig.transparent: False
 
 axes.grid: False
 xtick.bottom: True
