@@ -914,7 +914,7 @@ def save_view(
     view: paraview.servermanager.Proxy,
     results_folder: str,
     filename: str,
-    save_format: Literal["svg", "pdf", "csv"] | str = "svg",
+    save_format: Literal["svg", "eps", "pdf", "csv"] | str = "svg",
     fix_axes_titles: bool = False,
     plot_properties: PlotProperties = PlotProperties(),
 ) -> None:
@@ -967,9 +967,25 @@ def save_view(
                 view=view,
                 location=PARAVIEW_DATA_SERVER_LOCATION,
                 Plottitle=filename,
+                Rendertextaspaths=False,  # Text is rendered as font
                 # Rasterize3Dgeometry=True,
                 # Dontrasterizecubeaxes=True,
-                # Rendertextaspaths=False,  # Text is always rendered as font/vector graphic?
+                # Drawbackground=True,  # The background is always drawn on the OpenGL2 backend for GL2PS exports.
+                # Cullhiddenprimitives=True,
+                # Linewidthscalingfactor=0.714,
+                # Pointsizescalingfactor=0.714,
+                # Compressoutputfile=False,
+                # GL2PSdepthsortmethod="Simple sorting (fast, good)",
+            )
+        case "eps":
+            ps.ExportView(
+                filename=file_path,
+                view=view,
+                location=PARAVIEW_DATA_SERVER_LOCATION,
+                Plottitle=filename,
+                Rendertextaspaths=False,  # Text is rendered as font
+                # Rasterize3Dgeometry=True,
+                # Dontrasterizecubeaxes=True,
                 # Drawbackground=True,  # The background is always drawn on the OpenGL2 backend for GL2PS exports.
                 # Cullhiddenprimitives=True,
                 # Linewidthscalingfactor=0.714,
@@ -983,7 +999,7 @@ def save_view(
                 view=view,
                 location=PARAVIEW_DATA_SERVER_LOCATION,
                 Plottitle=filename,
-                Rendertextaspaths=False,
+                Rendertextaspaths=False,  # Text is always rendered as font/vector graphic?
                 # Rasterize3Dgeometry=True,
                 # Dontrasterizecubeaxes=True,
                 # Drawbackground=True,  # The background is always drawn on the OpenGL2 backend for GL2PS exports.
