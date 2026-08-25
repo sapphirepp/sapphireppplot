@@ -211,7 +211,11 @@ def plot_render_view_2d(
     # Properties modified on render_view
     render_view.UseColorPaletteForBackground = 0
     render_view.BackgroundColorMode = "Single Color"
-    render_view.Background = [1.0, 1.0, 1.0]
+    render_view.Background = [
+        matplotlib.colors.to_rgb(plot_properties.background_color)[0],
+        matplotlib.colors.to_rgb(plot_properties.background_color)[1],
+        matplotlib.colors.to_rgb(plot_properties.background_color)[2],
+    ]
 
     # Properties modified on solution_display
     solution_display.DisableLighting = 1
@@ -385,7 +389,11 @@ def plot_render_view_3d(
     # Properties modified on render_view
     render_view.UseColorPaletteForBackground = 0
     render_view.BackgroundColorMode = "Single Color"
-    render_view.Background = [1.0, 1.0, 1.0]
+    render_view.Background = [
+        matplotlib.colors.to_rgb(plot_properties.background_color)[0],
+        matplotlib.colors.to_rgb(plot_properties.background_color)[1],
+        matplotlib.colors.to_rgb(plot_properties.background_color)[2],
+    ]
 
     # Properties modified on solution_display
     solution_display.DisableLighting = 1

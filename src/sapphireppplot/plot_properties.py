@@ -85,6 +85,8 @@ class PlotProperties:
         ParaView method to reset camera view.
     """
 
+    background_color: ColorType = field(default_factory=lambda: (1.0, 1.0, 1.0))
+    """The color for background."""
     screenshot_transparent_background: bool = True
     """Use a transparent background for screenshots?"""
     animation_transparent_background: bool = False
