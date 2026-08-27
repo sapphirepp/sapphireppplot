@@ -312,15 +312,23 @@ zlabel
 zlim
 
 # sphinx
+addnodes
 autoclass
 autodoc
 automodule
 autosummary
 copybutton
+docutils
 extlinks
 favicon
 magick
 nbsphinx
+rawtext
+rawtext
+refdomain
+reftarget
+reftype
+refwarn
 rtype
 toctree
 typehints
