@@ -69,7 +69,7 @@ and [`pvpython`](https://docs.paraview.org/en/latest/UsersGuide/introduction.htm
 installed.
 Install it from the [ParaView download page](https://www.paraview.org/download/) if needed,
 or follow the instructions to
-[compile ParaView from source](tips.md).
+[compile ParaView from source](advanced_usage.md).
 
 The Python version used by the virtual environment must match the Python used by `pvpython`.
 Check the version with:

@@ -46,5 +46,7 @@ More example scripts can be found in the
    installation
    examples/plot_quick_start
    examples/jupyter_tutorial
-   tips
+   faq
+   advanced_usage
+   resources
    api
