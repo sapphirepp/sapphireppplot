@@ -104,3 +104,86 @@ call {pv}`paraview.simple.Interact() <paraview.simple.html#paraview.simple.Inter
 ```python
 ps.Interact()
 ```
+
+## How can I disable the preview windows?
+
+By default, ParaView opens a preview window for each plot
+(see previous question).
+To avoid this,
+run the script with `pvbatch` instead of `python` or `pvpython`:
+
+```shell
+pvbatch script.py args
+```
+
+`pvbatch` executes the script in batch mode
+and therefore opens no windows at all.
+
+## Why do I get an `AttributeError` when running scripts with `pvbatch`?
+
+If your script fails with an error like
+
+```text
+AttributeError: 'paraview.modules.vtkRemotingServerManager.vtkSMProxy' object has no attribute 'UpdateAnimationUsingDataTimeSteps'
+```
+
+this usually indicates that `pvbatch` mixes two different ParaView installations.
+This can happen when linking the `sapplot` environment to ParaView,
+`pvbatch --venv=/path/to/venv/sapplot`
+(see [Link package to an existing ParaView installation using `venv`](installation.md)),
+if ParaView is also installed inside the `venv`.
+In that case,
+the external `pvbatch` may pick up the `paraview` Python package of the `venv`
+instead of the one bundled with your ParaView installation,
+and the mismatched versions may lead to conflicts.
+
+Make sure that the `venv` does **not** contain a ParaView installation installed via `conda`,
+and that only `sapphireppplot` and its dependencies are installed.
+
+## Why does `mpirun` fail when the `sapplot` environment is activated?
+
+If you run a command (e.g. `sapphirepp`) with `mpirun`
+while the `sapplot` environment is activated,
+it might fail with an MPI error.
+
+This is usually caused by a conflict of MPI versions,
+with an MPI installation in the `venv`.
+In particular, this happens if `mpi4py` is installed in the environment.
+
+Either deactivate the environment
+before executing other programs with `mpirun`,
+or remove the `mpi` packages from the `venv` if they are not needed.
+
+## How do I use LaTeX in the `time_format` property?
+
+The {prop}`time_format` string is a format string:
+the placeholder `{time}` is replaced by the current simulation time
+and can be given a format specifier, e.g. `{time:.2f}`.
+All other braces,
+such as those used for LaTeX super- and subscripts,
+must be escaped by doubling them,
+i.e. `{{` and `}}`.
+Otherwise, you will get an error like
+
+```text
+Invalid format specified '$\gamma_{\rm max} t = {time:.2f}$'
+Details: invalid format string
+```
+
+For example,
+
+```python
+plot_properties.time_format = r"$\gamma_{\rm max} t = {time:.2f}$"
+```
+
+raises the error above, while
+
+```python
+plot_properties.time_format = r"$\gamma_{{\rm max}} t = {time:.2f}$"
+```
+
+renders $\gamma_{\rm max} t = 12.34$.
+
+More information on the format specifiers
+can be found in the [fmt documentation](https://fmt.dev/latest/syntax/),
+which ParaView uses for this property.
