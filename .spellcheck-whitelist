@@ -16,6 +16,7 @@ vfp
 1e
 2d
 3d
+A0
 ath
 ax1
 ax2
@@ -261,13 +262,18 @@ cmesh
 colorbar
 cstride
 cycler
+edgecolor
+facecolor
 facecolors
 figsize
 fontsize
 frameon
 gouraud
 gridspec
+labelbottom
 labelsize
+lim
+lims
 linestyle
 linestyles
 linewidth
@@ -280,6 +286,8 @@ matplotlib
 mpl
 mplot3d
 mplstyle
+ncols
+nrows
 Params
 pcolormesh
 plt
@@ -292,6 +300,8 @@ seaborn
 sharex
 sharey
 sns
+subfigures
+subgridspec
 suptitle
 titlesize
 toolkits
@@ -340,7 +350,9 @@ mypy
 toplevel
 
 # sapphirepp-results
+EEEEEE
 gamma26
+SAB
 
 # Words
 advection
