@@ -80,6 +80,7 @@ def load_csv(
     skip_lines: int = 0,
     comments: str = "#",
     array_names: Optional[list[str]] = None,
+    registration_name: Optional[str] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
     Load contents of a ``.csv`` file as tabular data.
@@ -100,6 +101,9 @@ def load_csv(
         Character for comments.
     array_names
         If a list is given, the rows of the table will be renamed accordingly.
+    registration_name
+        The name of the solution to be displayed in ParaView.
+        Defaults to ``file_pattern``.
 
     Returns
     -------
@@ -118,6 +122,9 @@ def load_csv(
     This point cloud can be converted into a grid using
     :ps:`PointVolumeInterpolator`.
     """
+    if registration_name is None:
+        registration_name = file_pattern
+
     search_pattern = os.path.join(results_folder, file_pattern)
     csv_files = paraview.util.Glob(search_pattern)
     if not csv_files:
@@ -126,7 +133,7 @@ def load_csv(
 
     # create a new 'CSV Reader'
     solution = ps.CSVReader(
-        registrationName=file_pattern,
+        registrationName=registration_name,
         FileName=csv_files,
         DetectNumericColumns=1,
         UseStringDelimiter=1,
@@ -152,6 +159,7 @@ def load_csv(
 def load_solution_vtk(
     results_folder: str,
     base_file_name: str = "solution",
+    registration_name: Optional[str] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
     Load series of ``.vtk`` solution files.
@@ -162,6 +170,9 @@ def load_solution_vtk(
         Path to the folder containing ``solution_*.vtk`` files.
     base_file_name
         Base name of the solutions files.
+    registration_name
+        The name of the solution to be displayed in ParaView.
+        Defaults to ``base_file_name``.
 
     Returns
     -------
@@ -177,6 +188,9 @@ def load_solution_vtk(
     -----
     The 'TimeArray' property is not set.
     """
+    if registration_name is None:
+        registration_name = base_file_name
+
     search_pattern = os.path.join(results_folder, base_file_name + "*.vtk")
     vtk_files = paraview.util.Glob(search_pattern)
     if not vtk_files:
@@ -187,7 +201,7 @@ def load_solution_vtk(
 
     # create a new 'Legacy VTK Reader'
     solution = ps.LegacyVTKReader(
-        registrationName=base_file_name,
+        registrationName=registration_name,
         FileNames=vtk_files,
     )
     # if load_arrays:
@@ -201,6 +215,7 @@ def load_solution_vtu(
     results_folder: str,
     base_file_name: str = "solution",
     load_arrays: Optional[list[str]] = None,
+    registration_name: Optional[str] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
     Load series of ``.vtu`` solution files.
@@ -213,6 +228,9 @@ def load_solution_vtu(
         Base name of the solutions files.
     load_arrays
         The name of the arrays in the solution that should be loaded.
+    registration_name
+        The name of the solution to be displayed in ParaView.
+        Defaults to ``base_file_name``.
 
     Returns
     -------
@@ -224,6 +242,9 @@ def load_solution_vtu(
     FileNotFoundError
         If no ``.vtu`` files are found in the ``results_folder``.
     """
+    if registration_name is None:
+        registration_name = base_file_name
+
     search_pattern = os.path.join(results_folder, base_file_name + "*.vtu")
     vtu_files = paraview.util.Glob(search_pattern)
     if not vtu_files:
@@ -234,7 +255,7 @@ def load_solution_vtu(
 
     # create a new 'XML Unstructured Grid Reader'
     solution = ps.XMLUnstructuredGridReader(
-        registrationName=base_file_name,
+        registrationName=registration_name,
         FileName=vtu_files,
     )
     if load_arrays:
@@ -248,6 +269,7 @@ def load_solution_pvtu(
     results_folder: str,
     base_file_name: str = "solution",
     load_arrays: Optional[list[str]] = None,
+    registration_name: Optional[str] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
     Load series of ``.pvtu`` solution files.
@@ -260,6 +282,9 @@ def load_solution_pvtu(
         Base name of the solutions files.
     load_arrays
         The name of the arrays in the solution that should be loaded.
+    registration_name
+        The name of the solution to be displayed in ParaView.
+        Defaults to ``base_file_name``.
 
     Returns
     -------
@@ -275,6 +300,9 @@ def load_solution_pvtu(
     -----
     The 'TimeArray' property is not set.
     """
+    if registration_name is None:
+        registration_name = base_file_name
+
     search_pattern = os.path.join(results_folder, base_file_name + "*.pvtu")
     pvtu_files = paraview.util.Glob(search_pattern)
     if not pvtu_files:
@@ -285,7 +313,7 @@ def load_solution_pvtu(
 
     # create a new 'XML Partitioned Unstructured Grid Reader'
     solution = ps.XMLPartitionedUnstructuredGridReader(
-        registrationName=base_file_name,
+        registrationName=registration_name,
         FileName=pvtu_files,
     )
     if load_arrays:
@@ -299,6 +327,7 @@ def load_solution_pvtp(
     results_folder: str,
     base_file_name: str = "solution",
     load_arrays: Optional[list[str]] = None,
+    registration_name: Optional[str] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
     Load series of ``.pvtp`` solution files.
@@ -311,6 +340,9 @@ def load_solution_pvtp(
         Base name of the solutions files.
     load_arrays
         The name of the arrays in the solution that should be loaded.
+    registration_name
+        The name of the solution to be displayed in ParaView.
+        Defaults to ``base_file_name``.
 
     Returns
     -------
@@ -322,6 +354,9 @@ def load_solution_pvtp(
     FileNotFoundError
         If no ``.pvtp`` files are found in the ``results_folder``.
     """
+    if registration_name is None:
+        registration_name = base_file_name
+
     search_pattern = os.path.join(results_folder, base_file_name + "*.pvtp")
     pvtp_files = paraview.util.Glob(search_pattern)
     if not pvtp_files:
@@ -332,7 +367,7 @@ def load_solution_pvtp(
 
     # create a new 'XML Partitioned Unstructured Grid Reader'
     solution = ps.XMLPartitionedPolydataReader(
-        registrationName=base_file_name,
+        registrationName=registration_name,
         FileName=pvtp_files,
     )
     if load_arrays:
@@ -346,6 +381,7 @@ def load_solution_hdf5_with_xdmf(
     results_folder: str,
     base_file_name: str = "solution",
     load_arrays: Optional[list[str]] = None,
+    registration_name: Optional[str] = None,
 ) -> paraview.servermanager.SourceProxy:
     """
     Load series of ``.hdf5`` solution files from a ``.xdmf`` file.
@@ -358,6 +394,9 @@ def load_solution_hdf5_with_xdmf(
         Base name of the solutions files.
     load_arrays
         The name of the arrays in the solution that should be loaded.
+    registration_name
+        The name of the solution to be displayed in ParaView.
+        Defaults to ``base_file_name``.
 
     Returns
     -------
@@ -367,12 +406,15 @@ def load_solution_hdf5_with_xdmf(
     Raises
     ------
     FileNotFoundError
-        If no  matching ``.xdmf`` file found in the ``results_folder``.
+        If no matching ``.xdmf`` file found in the ``results_folder``.
 
     Notes
     -----
     - The 'TimeArray' property is set to "None".
     """
+    if registration_name is None:
+        registration_name = base_file_name
+
     search_pattern = os.path.join(results_folder, base_file_name + ".xdmf")
     xdmf_file = paraview.util.Glob(search_pattern)
     if not xdmf_file:
@@ -383,7 +425,7 @@ def load_solution_hdf5_with_xdmf(
 
     # create a new 'Xdmf3 Reader S'
     solution = ps.Xdmf3ReaderS(
-        registrationName=base_file_name,
+        registrationName=registration_name,
         FileName=xdmf_file,
     )
     if load_arrays:
@@ -530,11 +572,13 @@ def load_solution(
                 "Parameter dict is empty."
             )
 
+    registration_name = prm.get("Output", {}).get("Simulation identifier")
     match file_format:
         case "vtk":
             solution = load_solution_vtk(
                 results_folder,
                 base_file_name=base_file_name,
+                registration_name=registration_name,
             )
             solution = scale_time_steps(
                 solution,
@@ -547,12 +591,14 @@ def load_solution(
                 results_folder,
                 base_file_name=base_file_name,
                 load_arrays=plot_properties.series_names,
+                registration_name=registration_name,
             )
         case "pvtu":
             solution = load_solution_pvtu(
                 results_folder,
                 base_file_name=base_file_name,
                 load_arrays=plot_properties.series_names,
+                registration_name=registration_name,
             )
             if plot_properties.use_legacy_pvtu_reader:
                 solution = scale_time_steps(
@@ -566,6 +612,7 @@ def load_solution(
                 results_folder,
                 base_file_name=base_file_name,
                 load_arrays=plot_properties.series_names,
+                registration_name=registration_name,
             )
         case _:
             raise ValueError(f"Unknown file_format: '{file_format}'")
@@ -666,18 +713,22 @@ def load_extract(
                 "Parameter dict is empty."
             )
 
+    subfolder_path = os.path.join(results_folder, subfolder)
+    registration_name = prm.get("Output", {}).get("Simulation identifier")
     match file_format:
         case "pvtp":
             solution = load_solution_pvtp(
-                os.path.join(results_folder, subfolder),
+                subfolder_path,
                 base_file_name=base_file_name,
                 load_arrays=plot_properties.series_names,
+                registration_name=registration_name,
             )
         case "pvtu":
             solution = load_solution_pvtu(
-                os.path.join(results_folder, subfolder),
+                subfolder_path,
                 base_file_name=base_file_name,
                 load_arrays=plot_properties.series_names,
+                registration_name=registration_name,
             )
         case _:
             raise ValueError(f"Unknown file_format: '{file_format}'")

@@ -86,6 +86,7 @@ def load_solution(
     file_format = prm["Output"]["Format"]
     if not base_file_name:
         base_file_name = prm["Output"]["Base file name"]
+    registration_name = prm["Output"]["Simulation identifier"]
 
     match file_format:
         case "vtu":
@@ -93,12 +94,14 @@ def load_solution(
                 results_folder,
                 base_file_name=base_file_name,
                 load_arrays=plot_properties.series_names,
+                registration_name=registration_name,
             )
         case "pvtu":
             solution = pvload.load_solution_pvtu(
                 results_folder,
                 base_file_name=base_file_name,
                 load_arrays=plot_properties.series_names,
+                registration_name=registration_name,
             )
             if plot_properties.use_legacy_pvtu_reader:
                 t_start = 0.0
@@ -114,6 +117,7 @@ def load_solution(
                 results_folder,
                 base_file_name=base_file_name,
                 load_arrays=plot_properties.series_names,
+                registration_name=registration_name,
             )
         case _:
             raise ValueError(f"Unknown file_format: '{file_format}'")
