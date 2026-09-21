@@ -492,6 +492,7 @@ def load_solution(
     plot_properties: PlotProperties,
     file_format: Literal["vtk", "vtu", "pvtu", "hdf5"] = "vtu",
     path_prefix: str = "",
+    results_folder: str = "",
     base_file_name: str = "solution",
     t_start: float = 0.0,
     t_end: float = 1.0,
@@ -522,6 +523,8 @@ def load_solution(
         Format of the solution files.
     path_prefix
         Prefix for relative path.
+    results_folder
+        The path to the results folder.
     base_file_name
         Base name of the solutions files.
     t_start
@@ -557,7 +560,9 @@ def load_solution(
     sapphireppplot.plot_properties.PlotProperties.series_names :
         Series names list to load.
     """
-    results_folder = utils.get_results_folder(path_prefix=path_prefix)
+    results_folder = utils.get_results_folder(
+        path_prefix=path_prefix, results_folder=results_folder
+    )
 
     prm: ParamDict = {}
     if parameter_file_name:

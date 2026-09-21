@@ -13,7 +13,6 @@ vfp
 
 # Shorthands
 1d
-1e
 2d
 3d
 A0
@@ -159,6 +158,16 @@ xdmf
 Xdmf3
 
 # Python
+0e
+1e
+2e
+3e
+4e
+5e
+6e
+7e
+8e
+9e
 doctestplus
 endregion
 expandvars
@@ -311,15 +320,18 @@ vmax
 vmin
 xlabel
 xlim
+xmargin
 xscale
 xtick
 xytext
 ylabel
 ylim
+ymargin
 yscale
 ytick
 zlabel
 zlim
+zmargin
 
 # sphinx
 addnodes
