@@ -750,6 +750,7 @@ def compute_normalized_magnetic_divergence(
     plot_properties_in: PlotPropertiesMHD,
     divergence_type: Literal["total", "cells", "faces"] = "total",
     delta_x: Optional[float] = None,
+    b_0: Optional[float] = None,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesMHD]:
     r"""
     Compute ``normalized_magnetic_divergence`` for the solution.
@@ -769,6 +770,12 @@ def compute_normalized_magnetic_divergence(
     delta_x
         Cell size.
         If none is given assume square grid with square cells.
+    b_0
+        Compute the ``globally_normalized_magnetic_divergence``
+        by using a global magnetic field value :math:`b_0`
+        instead of the local one :math:`\|\mathbf{b}\|`:
+        :math:`\frac{|\nabla \cdot \mathbf{b}|}{b_0} \Delta x`.
+
 
     Returns
     -------
@@ -794,6 +801,8 @@ def compute_normalized_magnetic_divergence(
         delta_x = (solution_bounds[1] - solution_bounds[0]) / n_cells_x
 
     quantity = "normalized_magnetic_divergence"
+    if b_0 is not None:
+        quantity = "globally_normalized_magnetic_divergence"
     quantity_in = "magnetic_divergence"
     label_postfix = ""
     prefix = ""
@@ -819,12 +828,20 @@ def compute_normalized_magnetic_divergence(
         f" + {plot_properties.quantity_name('b_y', prefix)}^2"
         f" + {plot_properties.quantity_name('b_z', prefix)}^2)"
     )
+    if b_0 is not None:
+        formula_b2 = f"{b_0}^2"
     formula = f"abs({quantity_in}) / sqrt({formula_b2}) * {delta_x}"
     label = (
         r"$\mid\nabla \cdot \mathbf{b}\mid"
         + label_postfix
-        + r" / \|\mathbf{b}\| \Delta x$"
+        + r" \Delta x$ / \|\mathbf{b}\|"
     )
+    if b_0 is not None:
+        label = (
+            r"$\mid\nabla \cdot \mathbf{b}\mid"
+            + label_postfix
+            + r" \Delta x / b_0$"
+        )
 
     calculator, plot_properties = transform.calculator(
         solution,
