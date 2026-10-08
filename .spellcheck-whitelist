@@ -159,15 +159,35 @@ Xdmf3
 
 # Python
 0e
+0f
+0g
 1e
+1f
+1g
 2e
+2f
+2g
 3e
+3f
+3g
 4e
+4f
+4g
 5e
+5f
+5g
 6e
+6f
+6g
 7e
+7f
+7g
 8e
+8f
+8g
 9e
+9f
+9g
 doctestplus
 endregion
 expandvars
@@ -388,5 +408,6 @@ positivity
 Postamble
 postfix
 precompute
+prefactor
 subfolder
 unscaled
