@@ -604,7 +604,7 @@ def plot_f_lms_1d(
                 plot_properties.f_lms_name(lms_index, "interpol_")
             ]
 
-    if not layout:
+    if layout is None:
         layout = cast(
             paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
         )
@@ -696,7 +696,7 @@ def plot_f_lms_2d(
     if plot_properties.prefix_numeric and prefix == "":
         prefix = "numeric_"
 
-    if not layout:
+    if layout is None:
         layout = cast(
             paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
         )
@@ -785,7 +785,7 @@ def plot_f_lms_3d(
     if plot_properties.prefix_numeric and prefix == "":
         prefix = "numeric_"
 
-    if not layout:
+    if layout is None:
         layout = cast(
             paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
         )
@@ -947,7 +947,7 @@ def plot_f_lms_over_x(
         plot_properties=plot_properties,
     )
 
-    if not layout:
+    if layout is None:
         layout = cast(
             paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
         )
@@ -978,10 +978,9 @@ def plot_f_lms_over_p(
     name: str,
     plot_properties: PlotPropertiesVFP,
     lms_indices: Optional[Sequence[tuple[int, int, int]]] = None,
-    direction: (
-        Literal[""]
-        | tuple[tuple[float, float, float], tuple[float, float, float]]
-    ) = "",
+    direction: Optional[
+        tuple[tuple[float, float, float], tuple[float, float, float]]
+    ] = None,
     offset: Optional[tuple[float, float, float]] = None,
     x_range: Optional[tuple[float, float]] = None,
     value_range: Optional[tuple[float, float]] = None,
@@ -1043,6 +1042,7 @@ def plot_f_lms_over_p(
     sapphireppplot.transform.plot_over_line : Create PlotOverLine.
     sapphireppplot.pvplot.plot_line_chart_view : Plot LineChartView.
     """
+    assert plot_properties.momentum is True, "Can only plot p-dependent data"
     if lms_indices is None:
         lms_indices = plot_properties.lms_indices
 
@@ -1064,21 +1064,21 @@ def plot_f_lms_over_p(
 
     x_array_name = ""
     direction_p = cast(
-        Literal["x", "y", "z", "d"]
+        Literal["x", "y", "z"]
         | tuple[tuple[float, float, float], tuple[float, float, float]],
         direction,
     )
     match plot_properties.dim_ps:
         case 1:
-            if not direction_p:
+            if direction is None:
                 direction_p = "x"
             x_array_name = "Points_X"
         case 2:
-            if not direction_p:
+            if direction is None:
                 direction_p = "y"
             x_array_name = "Points_Y"
         case 3:
-            if not direction_p:
+            if direction is None:
                 direction_p = "z"
             x_array_name = "Points_Z"
         case _:
@@ -1095,7 +1095,7 @@ def plot_f_lms_over_p(
         plot_properties=plot_properties,
     )
 
-    if not layout:
+    if layout is None:
         layout = cast(
             paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
         )
@@ -1172,7 +1172,7 @@ def plot_phase_space_surface(
     sapphireppplot.pvplot.plot_render_view_2d : Plot 2D RenderView.
     sapphireppplot.pvplot.display_time : Display time.
     """
-    if not layout:
+    if layout is None:
         layout = cast(
             paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
         )
@@ -1256,7 +1256,7 @@ def plot_elevated_phase_space_surface(
     )
     # plot_properties.representation_type = "StructuredGridRepresentation"
 
-    if not layout:
+    if layout is None:
         layout = cast(
             paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
         )
@@ -1348,7 +1348,7 @@ def plot_phase_space_spherical_density_map(
     sapphireppplot.pvplot.plot_render_view_3d : Plot 3D RenderView.
     sapphireppplot.pvplot.display_time : Display time.
     """
-    if not layout:
+    if layout is None:
         layout = cast(
             paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
         )

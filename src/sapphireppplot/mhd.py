@@ -938,7 +938,7 @@ def plot_quantities_1d(
                 plot_properties.quantity_name(quantity, "interpol_")
             ]
 
-    if not layout:
+    if layout is None:
         layout = cast(
             paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
         )
@@ -1147,7 +1147,7 @@ def plot_quantity_2d(
     if plot_properties.prefix_numeric and prefix == "":
         prefix = "numeric_"
 
-    if not layout:
+    if layout is None:
         layout = cast(
             paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
         )
@@ -1234,7 +1234,7 @@ def plot_quantity_3d(
     if plot_properties.prefix_numeric and prefix == "":
         prefix = "numeric_"
 
-    if not layout:
+    if layout is None:
         layout = cast(
             paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
         )
@@ -1401,7 +1401,7 @@ def plot_quantities_over_x(
         plot_properties=plot_properties,
     )
 
-    if not layout:
+    if layout is None:
         layout = cast(
             paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
         )
@@ -1540,7 +1540,7 @@ def plot_integrated_quantities_over_time(
     if t_axes_scale is not None:
         t_array_name = "scaled_t_axes"
 
-    if not layout:
+    if layout is None:
         layout = cast(
             paraview.servermanager.ViewLayoutProxy, ps.CreateLayout(name)
         )

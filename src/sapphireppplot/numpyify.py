@@ -397,7 +397,7 @@ def to_numpy_time_steps(
     source_time_steps = cast(
         list[float], animation_scene.TimeKeeper.TimestepValues
     )
-    if not time_steps:
+    if time_steps is None:
         time_steps = source_time_steps
     else:
         time_steps = [
@@ -702,7 +702,7 @@ def to_numpy_integrate_variables(
     :pv:`paraview.simple.proxy.UpdatePipeline <paraview.simple.proxy.html#paraview.simple.proxy.UpdatePipeline>` :
         ParaView method to set the time.
     """
-    if not time_steps:
+    if time_steps is None:
         time_steps = cast(list[float], solution.TimestepValues)
     time_steps = np.array(time_steps)
 
