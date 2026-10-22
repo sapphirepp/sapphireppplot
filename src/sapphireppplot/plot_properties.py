@@ -650,6 +650,7 @@ class PlotProperties:
                 "notebook",
                 "MNRAS",
                 "beamerposter_A0",
+                "beamer_mpik_169",
             ]
         ] = None,
         preview_size_1d_inches: Optional[tuple[float, float]] = None,
@@ -673,6 +674,7 @@ class PlotProperties:
             - ``notebook``: Style optimised for Jupyter notebooks
             - ``MNRAS``: Style for MNRAS article
             - ``beamerposter_A0``: Style for A0 sized beamerposter
+            - ``beamer_mpik_169``: Style for beamer presentation with theme MPIK and aspect ratio 16:9
         preview_size_1d_inches
             Preview window size in 1D in inches.
             Uses a fixed ``dpi`` value to ensure the correct size
@@ -755,6 +757,18 @@ class PlotProperties:
                 "color_bar_thickness": 20,
                 "default_line_width": 4.0,
             },
+            "beamer_mpik_169": {
+                "font_family": "Arial",
+                "text_color": "black",
+                "label_size": 10,
+                "title_size": 11,
+                "text_size": 11,
+                "grid_color": "black",
+                "color_bar_range_labels": True,
+                "color_bar_range_label_format": "%g",
+                "color_bar_thickness": 12,
+                "default_line_width": 2.0,
+            },
         }
 
         if style in plot_properties_styles.keys():
@@ -769,6 +783,7 @@ class PlotProperties:
             "notebook": (6.4, 4.3),
             "MNRAS": (3.26, 2.5),
             "beamerposter_A0": (14.8, 10.0),
+            "beamer_mpik_169": (5.5, 3.0),
         }
         if preview_size_1d_inches is None:
             preview_size_1d_inches = default_preview_size[style]

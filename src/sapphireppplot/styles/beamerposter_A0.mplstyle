@@ -24,6 +24,7 @@ grid.linewidth: 3.0
 lines.linewidth: 4.0
 lines.markersize: 18.0
 patch.linewidth: 3.0
+
 xtick.major.width: 3.0
 ytick.major.width: 3.0
 xtick.minor.width: 2.0
