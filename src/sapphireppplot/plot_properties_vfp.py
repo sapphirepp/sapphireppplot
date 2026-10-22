@@ -27,7 +27,7 @@ class PlotPropertiesVFP(PlotProperties):
     scaled_distribution_function: bool = False
     """
     Is the distribution function scaled in Sapphire++ as
-    :math:`g = p^s f`?
+    :math:`g = p^3 f`?
     """
 
     lms_indices: Sequence[tuple[int, int, int]] = field(default_factory=list)
@@ -189,7 +189,7 @@ class PlotPropertiesVFP(PlotProperties):
             Prefix.
         base_name
             Base name for variable.
-            Defaults to "f", "g" or "p^s f".
+            Defaults to "f", "g" or "F".
 
         Returns
         -------
@@ -201,7 +201,7 @@ class PlotPropertiesVFP(PlotProperties):
             if self.scaled_distribution_function:
                 base_name = "g"
             if self._spectral_index:
-                base_name = "p^s f"
+                base_name = "F"
 
         return (
             prefix + f"{base_name}_{lms_index[0]}{lms_index[1]}{lms_index[2]}"
@@ -224,7 +224,7 @@ class PlotPropertiesVFP(PlotProperties):
             Postfix annotation of quantity.
         variable_name
             Name of the variable.
-            Defaults to "f", "g" or "p^s f".
+            Defaults to "f", "g" or "F".
 
         Returns
         -------
@@ -236,7 +236,7 @@ class PlotPropertiesVFP(PlotProperties):
             if self.scaled_distribution_function:
                 variable_name = "g"
             if self._spectral_index:
-                variable_name = f"p^{{ {self._spectral_index:g} }} f"
+                variable_name = "F"
 
         tmp_postfix = ""
         if annotation:
