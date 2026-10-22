@@ -366,7 +366,6 @@ favicon
 magick
 nbsphinx
 rawtext
-rawtext
 refdomain
 reftarget
 reftype
@@ -382,8 +381,11 @@ mypy
 toplevel
 
 # sapphirepp-results
+D26
 EEEEEE
 gamma26
+o10
+ParCFD26
 SAB
 
 # Words
@@ -402,6 +404,7 @@ Kernphysik
 Kolmogorov
 Kraichnan
 minmod
+mpik
 orszag
 Orszag
 positivity

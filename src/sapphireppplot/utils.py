@@ -236,6 +236,7 @@ def set_matplotlib_style(
         "notebook",
         "MNRAS",
         "beamerposter_A0",
+        "beamer_mpik_169",
     ] = "notebook",
     font_scale: float = 1.0,
     color_palette: (
@@ -257,6 +258,7 @@ def set_matplotlib_style(
         - ``notebook``: Style optimised for Jupyter notebooks
         - ``MNRAS``: Style for MNRAS article
         - ``beamerposter_A0``: Style for A0 sized beamerposter
+        - ``beamer_mpik_169``: Style for beamer presentation with theme MPIK and aspect ratio 16:9
     font_scale
         Scaling factor for the font in titles, labels and legends.
     color_palette
