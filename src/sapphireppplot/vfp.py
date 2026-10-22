@@ -348,7 +348,7 @@ def scale_distribution_function(
     spectral_index: float = 4.0,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVFP]:
     """
-    Scales the distribution function to the desired spectral index :math:`s`.
+    Compute the scaled distribution function :math:`F_{lms}`.
 
     This will create a number of calculator objects,
     each scaling one specific lms_index.
@@ -356,19 +356,19 @@ def scale_distribution_function(
     Parameters
     ----------
     solution
-        The the data to scale.
+        The the data to scale, :math:`f_{lms}` or :math:`g_{lms}`.
     plot_properties_in
         Properties of the source.
     lms_indices
         The list of indices ``[(l_1,m_1,s_1), (l_2,m_2,s_2)]`` to scale.
         Only these indices will be active in the new solution.
     spectral_index
-        Spectral index to scale the distributions function f.
+        Spectral index :math:`s`.
 
     Returns
     -------
     solution_scaled : SourceProxy
-        The scaled distribution function :math:`p^s f_{lms}` for lms_indices.
+        The scaled distribution function `F_lms` for `lms_indices`.
     plot_properties : PlotPropertiesVFP
         Solution properties for the scaled distribution function.
     """

@@ -144,9 +144,9 @@ and use an offset to specify that the profile is shown at $\ln p = 0.05$
 
 ![Quick-start spatial profile](figures/quick-start-f-x.png)
 
-## Plotting $p^4 f(p)$
+## Plotting $F(p) = p^4 f(p)$
 
-As second to final plot, we show the scaled spectrum $p^4 f_{000}$ at $x=0.1$.
+As second to final plot, we show the scaled spectrum $F_{000} = p^4 f_{000}$ at $x=0.1$.
 First, scale the distribution function to $p^4 f$ using
 {py:func}`vfp.scale_distribution_function() <sapphireppplot.vfp.scale_distribution_function>`.
 Then, plot the spectrum of the scaled solution (`solution_scaled`)
