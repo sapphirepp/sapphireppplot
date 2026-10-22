@@ -346,9 +346,13 @@ def scale_distribution_function(
     plot_properties_in: PlotPropertiesVFP,
     lms_indices: Optional[Sequence[tuple[int, int, int]]] = None,
     spectral_index: float = 4.0,
+    normalization: float = 1.0,
 ) -> tuple[paraview.servermanager.SourceProxy, PlotPropertiesVFP]:
-    """
+    r"""
     Compute the scaled distribution function :math:`F_{lms}`.
+
+    .. math::
+        F_{lms} = \mathcal{N} p^s f_{lms} = \mathcal{N} p^{s-3} g_{lms}
 
     This will create a number of calculator objects,
     each scaling one specific lms_index.
@@ -364,6 +368,8 @@ def scale_distribution_function(
         Only these indices will be active in the new solution.
     spectral_index
         Spectral index :math:`s`.
+    normalization
+        Normalization :math:`\mathcal{N}` of the scaled distribution function.
 
     Returns
     -------
@@ -414,12 +420,10 @@ def scale_distribution_function(
             # Properties modified on solution_scaled
             solution_scaled.ResultArrayName = name_new
             solution_scaled.Function = (
-                f"{coord_p}^{spectral_index} * {name_old}"
+                f"{normalization} * {coord_p}^{spectral_index} * {name_old}"
             )
             if plot_properties.scaled_distribution_function:
-                solution_scaled.Function = (
-                    f"{coord_p}^{spectral_index-3} * {name_old}"
-                )
+                solution_scaled.Function = f"{normalization} * {coord_p}^{spectral_index-3} * {name_old}"
 
             if plot_properties.line_colors:
                 if name_old in plot_properties.line_colors.keys():
