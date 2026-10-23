@@ -174,7 +174,7 @@ class PlotPropertiesVFP(PlotProperties):
 
     def f_lms_name(
         self,
-        lms_index: tuple[int, int, int],
+        lms_index: tuple[int | str, int | str, int | str] = ("l", "m", "s"),
         prefix: str = "",
         base_name: Optional[str] = None,
     ) -> str:
@@ -285,6 +285,11 @@ class PlotPropertiesVFP(PlotProperties):
             line_style = line_style_list[i]
             line_width = line_width_list[i]
 
+            f_lms_name = self.f_lms_name(("l", "m", "s"), prefix)
+            self.labels[f_lms_name] = self.f_lms_label(
+                ("l", "m", "s"), label_postfix
+            )
+
             for lms_index in lms_indices:
                 f_lms_name = self.f_lms_name(lms_index, prefix)
                 self.series_names += [f_lms_name]
@@ -354,6 +359,11 @@ class PlotPropertiesVFP(PlotProperties):
 
         for i, prefix in enumerate(prefix_list):
             label_postfix = label_postfix_list[i]
+
+            f_lms_name = self.f_lms_name(("l", "m", "s"), prefix)
+            self.labels[f_lms_name] = self.f_lms_label(
+                ("l", "m", "s"), label_postfix
+            )
 
             for lms_index in lms_indices:
                 f_lms_name = self.f_lms_name(lms_index, prefix)

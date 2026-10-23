@@ -591,9 +591,11 @@ def plot_f_lms_1d(
         else:
             x_label = r"$x$"
 
-    y_label = plot_properties.f_lms_label(("l", "m", "s"))
+    y_label = plot_properties.labels[plot_properties.f_lms_name()]
     if len(lms_indices) == 1:
-        y_label = plot_properties.f_lms_label(lms_indices[0])
+        y_label = plot_properties.labels[
+            plot_properties.f_lms_name(lms_indices[0])
+        ]
 
     visible_lines = []
     for lms_index in lms_indices:
@@ -893,9 +895,11 @@ def plot_f_lms_over_x(
     if lms_indices is None:
         lms_indices = plot_properties.lms_indices
 
-    y_label = plot_properties.f_lms_label(("l", "m", "s"))
+    y_label = plot_properties.labels[plot_properties.f_lms_name()]
     if len(lms_indices) == 1:
-        y_label = plot_properties.f_lms_label(lms_indices[0])
+        y_label = plot_properties.labels[
+            plot_properties.f_lms_name(lms_indices[0])
+        ]
     visible_lines = []
     for lms_index in lms_indices:
         if plot_properties.prefix_numeric:
@@ -1050,9 +1054,11 @@ def plot_f_lms_over_p(
     if lms_indices is None:
         lms_indices = plot_properties.lms_indices
 
-    y_label = plot_properties.f_lms_label(("l", "m", "s"))
+    y_label = plot_properties.labels[plot_properties.f_lms_name()]
     if len(lms_indices) == 1:
-        y_label = plot_properties.f_lms_label(lms_indices[0])
+        y_label = plot_properties.labels[
+            plot_properties.f_lms_name(lms_indices[0])
+        ]
     visible_lines = []
     for lms_index in lms_indices:
         if plot_properties.prefix_numeric:
