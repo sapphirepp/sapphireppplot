@@ -102,8 +102,8 @@ class PlotPropertiesVFP(PlotProperties):
             s_lms_name = self.f_lms_name(lms_index, prefix, base_name="S")
             if self.series_names:
                 self.series_names += [s_lms_name]
-            self.labels[s_lms_name] = self.f_lms_label(
-                lms_index, variable_name="S"
+            self.labels[s_lms_name] = (
+                f"$S_{{ {lms_index[0]} {lms_index[1]} {lms_index[2]}}}$"
             )
             self.line_styles[s_lms_name] = line_style
 
@@ -207,43 +207,6 @@ class PlotPropertiesVFP(PlotProperties):
             prefix + f"{base_name}_{lms_index[0]}{lms_index[1]}{lms_index[2]}"
         )
 
-    def f_lms_label(
-        self,
-        lms_index: tuple[int | str, int | str, int | str],
-        annotation: str = "",
-        variable_name: Optional[str] = None,
-    ) -> str:
-        """
-        Look up of label for lms_index.
-
-        Parameters
-        ----------
-        lms_index
-            The index ``(l,m,s)``.
-        annotation
-            Postfix annotation of quantity.
-        variable_name
-            Name of the variable.
-            Defaults to "f", "g" or "F".
-
-        Returns
-        -------
-        quantity_label : str
-            The label for the lms_index.
-        """
-        if not variable_name:
-            variable_name = "f"
-            if self.scaled_distribution_function:
-                variable_name = "g"
-            if self._spectral_index:
-                variable_name = "F"
-
-        tmp_postfix = ""
-        if annotation:
-            tmp_postfix = " ," + annotation
-
-        return f"${variable_name}_{{ {lms_index[0]} {lms_index[1]} {lms_index[2]} {tmp_postfix} }}$"
-
     def set_lms_indices(
         self,
         lms_indices: Sequence[tuple[int, int, int]],
@@ -259,6 +222,12 @@ class PlotPropertiesVFP(PlotProperties):
         """
         self.lms_indices = lms_indices
 
+        variable_name = "f"
+        if self.scaled_distribution_function:
+            variable_name = "g"
+        if self._spectral_index:
+            variable_name = "F"
+
         self.series_names = []
         self.labels = {}
         self.line_styles = {}
@@ -271,12 +240,12 @@ class PlotPropertiesVFP(PlotProperties):
             prefix_list = ["numeric_"]
         if self.project:
             prefix_list += ["project_"]
-            label_postfix_list += [self.annotation_project_interpol]
+            label_postfix_list += [" ," + self.annotation_project_interpol]
             line_style_list += ["2"]
             line_width_list += [2 * self.default_line_width]
         if self.interpol:
             prefix_list += ["interpol_"]
-            label_postfix_list += [self.annotation_project_interpol]
+            label_postfix_list += [" ," + self.annotation_project_interpol]
             line_style_list += ["2"]
             line_width_list += [2 * self.default_line_width]
 
@@ -286,15 +255,15 @@ class PlotPropertiesVFP(PlotProperties):
             line_width = line_width_list[i]
 
             f_lms_name = self.f_lms_name(("l", "m", "s"), prefix)
-            self.labels[f_lms_name] = self.f_lms_label(
-                ("l", "m", "s"), label_postfix
+            self.labels[f_lms_name] = (
+                f"${variable_name}_{{ l m s {label_postfix} }}$"
             )
 
             for lms_index in lms_indices:
                 f_lms_name = self.f_lms_name(lms_index, prefix)
                 self.series_names += [f_lms_name]
-                self.labels[f_lms_name] = self.f_lms_label(
-                    lms_index, label_postfix
+                self.labels[f_lms_name] = (
+                    f"${variable_name}_{{ {lms_index[0]} {lms_index[1]} {lms_index[2]} {label_postfix} }}$"
                 )
                 self.line_styles[f_lms_name] = line_style
                 self.line_widths[f_lms_name] = line_width
@@ -343,6 +312,7 @@ class PlotPropertiesVFP(PlotProperties):
         """
         plot_properties_old = self.copy()
         self._spectral_index = spectral_index
+        variable_name = "F"
 
         self.series_names = []
 
@@ -352,17 +322,17 @@ class PlotPropertiesVFP(PlotProperties):
             prefix_list = ["numeric_"]
         if self.project:
             prefix_list += ["project_"]
-            label_postfix_list += [self.annotation_project_interpol]
+            label_postfix_list += [" ," + self.annotation_project_interpol]
         if self.interpol:
             prefix_list += ["interpol_"]
-            label_postfix_list += [self.annotation_project_interpol]
+            label_postfix_list += [" ," + self.annotation_project_interpol]
 
         for i, prefix in enumerate(prefix_list):
             label_postfix = label_postfix_list[i]
 
             f_lms_name = self.f_lms_name(("l", "m", "s"), prefix)
-            self.labels[f_lms_name] = self.f_lms_label(
-                ("l", "m", "s"), label_postfix
+            self.labels[f_lms_name] = (
+                f"${variable_name}_{{ l m s {label_postfix} }}$"
             )
 
             for lms_index in lms_indices:
@@ -371,8 +341,8 @@ class PlotPropertiesVFP(PlotProperties):
                     lms_index, prefix
                 )
                 self.series_names += [f_lms_name]
-                self.labels[f_lms_name] = self.f_lms_label(
-                    lms_index, label_postfix
+                self.labels[f_lms_name] = (
+                    f"${variable_name}_{{ {lms_index[0]} {lms_index[1]} {lms_index[2]} {label_postfix} }}$"
                 )
                 if plot_properties_old.line_styles:
                     self.line_styles[f_lms_name] = (
