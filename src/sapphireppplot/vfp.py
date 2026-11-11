@@ -381,17 +381,28 @@ def scale_distribution_function(
     if lms_indices is None:
         lms_indices = plot_properties_in.lms_indices
     prefix_list = [""]
+    label_postfix_list = [""]
     if plot_properties_in.prefix_numeric:
         prefix_list = ["numeric_"]
     if plot_properties_in.project:
         prefix_list += ["project_"]
+        label_postfix_list += [
+            " ," + plot_properties_in.annotation_project_interpol
+        ]
     if plot_properties_in.interpol:
         prefix_list += ["interpol_"]
+        label_postfix_list += [
+            " ," + plot_properties_in.annotation_project_interpol
+        ]
     plot_properties = plot_properties_in.copy()
-    plot_properties.scale_by_spectral_index(spectral_index, lms_indices)
+    plot_properties._spectral_index = spectral_index
 
     assert plot_properties.momentum is True, "Can only scale p-dependent data"
 
+    old_base_name = "f"
+    if plot_properties_in.scaled_distribution_function:
+        old_base_name = "g"
+    new_base_name = "F"
     coord_p = ""
     match plot_properties.dim_ps:
         case 1:
@@ -407,24 +418,44 @@ def scale_distribution_function(
 
     solution_scaled = solution
 
-    for lms_index in lms_indices:
-        for prefix in prefix_list:
-            name_old = plot_properties_in.f_lms_name(lms_index, prefix=prefix)
-            name_new = plot_properties.f_lms_name(lms_index, prefix=prefix)
+    for i, prefix in enumerate(prefix_list):
+        label_postfix = label_postfix_list[i]
 
-            # Add a new 'Calculator' to the pipeline
-            solution_scaled = ps.Calculator(
-                registrationName=name_new, Input=solution_scaled
+        name_new = plot_properties.f_lms_name(
+            ("l", "m", "s"), prefix, new_base_name
+        )
+        plot_properties.labels[name_new] = (
+            f"${new_base_name}_{{ l m s {label_postfix} }}$"
+        )
+
+        for lms_index in lms_indices:
+            name_old = plot_properties_in.f_lms_name(
+                lms_index, prefix, old_base_name
+            )
+            name_new = plot_properties.f_lms_name(
+                lms_index, prefix, new_base_name
             )
 
-            # Properties modified on solution_scaled
-            solution_scaled.ResultArrayName = name_new
-            solution_scaled.Function = (
+            formula = (
                 f"{normalization} * {coord_p}^{spectral_index} * {name_old}"
             )
             if plot_properties.scaled_distribution_function:
-                solution_scaled.Function = f"{normalization} * {coord_p}^{spectral_index-3} * {name_old}"
+                formula = f"{normalization} * {coord_p}^{spectral_index-3} * {name_old}"
 
+            label = f"${new_base_name}_{{ {lms_index[0]} {lms_index[1]} {lms_index[2]} {label_postfix} }}$"
+
+            solution_scaled, plot_properties = transform.calculator(
+                solution_scaled, name_new, formula, label, plot_properties
+            )
+
+            if plot_properties.line_styles:
+                plot_properties.line_styles[name_new] = (
+                    plot_properties.line_styles[name_old]
+                )
+            if plot_properties.line_widths:
+                plot_properties.line_widths[name_new] = (
+                    plot_properties.line_widths[name_old]
+                )
             if plot_properties.line_colors:
                 if name_old in plot_properties.line_colors.keys():
                     plot_properties.line_colors[name_new] = (
