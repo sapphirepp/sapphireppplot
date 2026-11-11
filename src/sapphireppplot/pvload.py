@@ -465,14 +465,17 @@ def scale_time_steps(
     solution_temporal_scaled: SourceProxy
         Solution with scaled time steps.
     """
+    if scale is None:
+        num = len(solution.GetProperty("TimestepValues"))
+        if num == 1:  # Nothing to be scaled
+            return solution
+        scale = (t_end - t_start) / (num - 1)
+
     # create a new 'Temporal Shift Scale'
     solution_temporal_scaled = ps.TemporalShiftScale(
         registrationName="TemporalShiftScale", Input=solution
     )
 
-    if scale is None:
-        num = len(solution.GetProperty("TimestepValues"))
-        scale = (t_end - t_start) / (num - 1)
     solution_temporal_scaled.Scale = scale
     solution_temporal_scaled.PreShift = 0
     solution_temporal_scaled.PostShift = t_start
