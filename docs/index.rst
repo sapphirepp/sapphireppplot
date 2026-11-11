@@ -50,3 +50,4 @@ More example scripts can be found in the
    advanced_usage
    resources
    api
+   changelog
