@@ -401,6 +401,7 @@ def plot_f_over_r(
     time: Optional[float] = None,
     results_folder: str = "",
     filename: Optional[str] = None,
+    save_animation: bool = False,
 ) -> tuple[
     np.ndarray[tuple[int], DFloatLike],
     np.ndarray[tuple[int], DFloatLike],
@@ -428,6 +429,8 @@ def plot_f_over_r(
     filename
         The base name for the saved data file (without extension).
         If no filename is given, the data and ParaView plot are not saved.
+    save_animation
+        Save an animation of the plot.
 
     Returns
     -------
@@ -477,6 +480,10 @@ def plot_f_over_r(
         pvplot.save_screenshot(
             layout, results_folder, filename, plot_properties
         )
+        if save_animation:
+            pvplot.save_animation(
+                layout, results_folder, filename, plot_properties
+            )
 
     return r, f
 
@@ -490,6 +497,7 @@ def plot_f_over_p(
     time: Optional[float] = None,
     results_folder: str = "",
     filename: Optional[str] = None,
+    save_animation: bool = False,
 ) -> tuple[
     np.ndarray[tuple[int], DFloatLike],
     np.ndarray[tuple[int], DFloatLike],
@@ -517,6 +525,8 @@ def plot_f_over_p(
     filename
         The base name for the saved data file (without extension).
         If no filename is given, the data and ParaView plot are not saved.
+    save_animation
+        Save an animation of the plot.
 
     Returns
     -------
@@ -572,6 +582,10 @@ def plot_f_over_p(
         pvplot.save_screenshot(
             layout, results_folder, filename, plot_properties
         )
+        if save_animation:
+            pvplot.save_animation(
+                layout, results_folder, filename, plot_properties
+            )
 
     return ln_p, f
 
@@ -585,6 +599,7 @@ def plot_f_over_mu(
     time: Optional[float] = None,
     results_folder: str = "",
     filename: Optional[str] = None,
+    save_animation: bool = False,
 ) -> tuple[
     np.ndarray[tuple[int], DFloatLike],
     np.ndarray[tuple[int], DFloatLike],
@@ -612,6 +627,8 @@ def plot_f_over_mu(
     filename
         The base name for the saved data file (without extension).
         If no filename is given, the data and ParaView plot are not saved.
+    save_animation
+        Save an animation of the plot.
 
     Returns
     -------
@@ -661,6 +678,10 @@ def plot_f_over_mu(
         pvplot.save_screenshot(
             layout, results_folder, filename, plot_properties
         )
+        if save_animation:
+            pvplot.save_animation(
+                layout, results_folder, filename, plot_properties
+            )
 
     return mu, f
 
