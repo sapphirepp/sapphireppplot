@@ -471,6 +471,7 @@ def plot_f_over_r(
             x_label=plot_properties.grid_labels[0],
             y_label=plot_properties.labels[plot_properties.quantity_name],
             x_array_name="Points_X",
+            log_y_scale=True,
             plot_properties=plot_properties,
         )
         pvplot.save_screenshot(
@@ -654,6 +655,7 @@ def plot_f_over_mu(
             x_label=plot_properties.grid_labels[2],
             y_label=plot_properties.labels[plot_properties.quantity_name],
             x_array_name="Points_Z",
+            log_y_scale=True,
             plot_properties=plot_properties,
         )
         pvplot.save_screenshot(
