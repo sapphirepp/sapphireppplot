@@ -21,6 +21,9 @@ class PlotPropertiesSatanic(PlotProperties):
     quantity_name: str = "F"
     """Name of quantity to plot."""
 
+    exact_solution: bool = False
+    """Show the exact solution?"""
+
     unit_r: str = "pc"
     """Unit for radius :math:`r`."""
     unit_p: str = "GeV/c"
@@ -48,3 +51,12 @@ class PlotPropertiesSatanic(PlotProperties):
         # self.labels[self.quantity_name] = r"$p^s f$"
         self.labels[self.quantity_name] = rf"$p^{self.spectral_rescale:.0f} f$"
         self.grid_labels = (r"$r$ / " + self.unit_r, r"$\ln p$", r"$\mu$")
+
+        if self.exact_solution:
+            self.series_names += ["exact_solution", "error"]
+
+            self.labels["exact_solution"] = "exact solution"
+            self.labels["error"] = "error"
+
+            self.line_styles["exact_solution"] = "2"
+            self.line_widths["exact_solution"] = 2 * self.default_line_width
